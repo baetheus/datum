@@ -1,7 +1,7 @@
 {
-  "name": "@nll/async-data",
-  "version": "1.0.3",
-  "description": "ADT for handling asynchronous data",
+  "name": "@nll/datum",
+  "version": "1.0.0",
+  "description": "ADT for handling fetchable and refreshable data",
   "main": "lib/index.js",
   "module": "es6/index.js",
   "typings": "lib/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nullpub/async-data.git"
+    "url": "git+https://github.com/nullpub/datum.git"
   },
   "keywords": [
     "fp-ts",
@@ -30,9 +30,9 @@
   "author": "Brandon Blaylock <brandon@null.pub> (https://blaylock/dev)",
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/nullpub/async-data/issues"
+    "url": "https://github.com/nullpub/datum/issues"
   },
-  "homepage": "https://github.com/nullpub/async-data#readme",
+  "homepage": "https://github.com/nullpub/datum#readme",
   "devDependencies": {
     "docs-ts": "^0.2.0",
     "standard-version": "^5.0.0",
