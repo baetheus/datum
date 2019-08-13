@@ -1,0 +1,44 @@
+{
+  "name": "@nll/async-data",
+  "version": "1.0.3",
+  "description": "ADT for handling asynchronous data",
+  "main": "lib/index.js",
+  "module": "es6/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "es6"
+  ],
+  "scripts": {
+    "build": "npm run build-es6 && npm run build-lib",
+    "build-es6": "tsc",
+    "build-lib": "tsc --build tsconfig.lib.json",
+    "test": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "release": "npx standard-version",
+    "docs": "npx docs-ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nullpub/async-data.git"
+  },
+  "keywords": [
+    "fp-ts",
+    "adt",
+    "AsyncData"
+  ],
+  "author": "Brandon Blaylock <brandon@null.pub> (https://blaylock/dev)",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/nullpub/async-data/issues"
+  },
+  "homepage": "https://github.com/nullpub/async-data#readme",
+  "devDependencies": {
+    "docs-ts": "^0.2.0",
+    "standard-version": "^5.0.0",
+    "typescript": "^3.3.3333"
+  },
+  "peerDependencies": {
+    "fp-ts": "^2.0.5"
+  }
+}
