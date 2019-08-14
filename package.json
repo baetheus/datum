@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/nullpub/datum#readme",
   "devDependencies": {
-    "docs-ts": "^0.2.0",
+    "docs-ts": "^0.2.1",
     "standard-version": "^5.0.0",
     "typescript": "^3.3.3333"
   },
