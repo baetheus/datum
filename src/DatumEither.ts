@@ -53,14 +53,14 @@ import { Lazy } from 'fp-ts/es6/function';
  */
 declare module 'fp-ts/es6/HKT' {
   interface URItoKind2<E, A> {
-    '@nll/async-data/datum-either': Datum<Either<E, A>>;
+    '@nll/datum/datum-either': Datum<Either<E, A>>;
   }
 }
 
 /**
  * @since 2.0.0
  */
-export const URI = '@nll/async-data/datum-either';
+export const URI = '@nll/datum/datum-either';
 
 /**
  * @since 2.0.0

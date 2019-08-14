@@ -32,14 +32,14 @@ import { Witherable1 } from 'fp-ts/es6/Witherable';
 
 declare module 'fp-ts/es6/HKT' {
   interface URItoKind<A> {
-    '@nll/async-data/datum': Datum<A>;
+    '@nll/datum/datum': Datum<A>;
   }
 }
 
 /**
  * @since 2.0.0
  */
-export const URI = '@nll/async-data/datum';
+export const URI = '@nll/datum/datum';
 
 /**
  * @since 2.0.0

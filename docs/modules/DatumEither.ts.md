@@ -33,6 +33,8 @@ There are additional helper methods for going from refresh to replete and back.
 - [URI (constant)](#uri-constant)
 - [datumEither (constant)](#datumeither-constant)
 - [failure (function)](#failure-function)
+- [fromEither (function)](#fromeither-function)
+- [fromOption (function)](#fromoption-function)
 - [isFailure (function)](#isfailure-function)
 - [isSuccess (function)](#issuccess-function)
 - [refreshFold (function)](#refreshfold-function)
@@ -57,7 +59,7 @@ There are additional helper methods for going from refresh to replete and back.
 **Signature**
 
 ```ts
-export type DatumEither<E, A> = Datum<Either<E, A>>
+export type DatumEither<E, A> = Datum<Either<E, A>>;
 ```
 
 Added in v2.1.0
@@ -67,7 +69,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export type URI = typeof URI
+export type URI = typeof URI;
 ```
 
 Added in v2.0.0
@@ -77,7 +79,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const URI: "@nll/async-data/datum-either" = ...
+export const URI: "@nll/datum/datum-either" = ...
 ```
 
 Added in v2.0.0
@@ -101,6 +103,28 @@ export const failure = <E>(e: E) => ...
 ```
 
 Added in v2.1.0
+
+# fromEither (function)
+
+**Signature**
+
+```ts
+export const fromEither = <E, A>(e: Either<E, A>): DatumEither<E, A> => ...
+```
+
+Added in v2.2.0
+
+# fromOption (function)
+
+**Signature**
+
+```ts
+export const fromOption = <E, A>(onNone: Lazy<E>) => (
+  o: Option<A>
+): DatumEither<unknown, A> => ...
+```
+
+Added in v2.2.0
 
 # isFailure (function)
 
