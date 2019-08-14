@@ -1,6 +1,6 @@
 {
   "name": "@nll/datum",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "ADT for handling fetchable and refreshable data",
   "main": "lib/index.js",
   "module": "es6/index.js",
@@ -15,7 +15,7 @@
     "build-lib": "tsc --build tsconfig.lib.json",
     "test": "tsc --noEmit",
     "prepublishOnly": "npm run build",
-    "release": "npx standard-version",
+    "release": "npm run docs && npx standard-version",
     "docs": "npx docs-ts"
   },
   "repository": {
