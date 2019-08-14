@@ -18,7 +18,16 @@
  * There are additional helper methods for going from refresh to replete and back.
  */
 
-import { Either, left, isRight, Right, isLeft, Left } from 'fp-ts/es6/Either';
+import {
+  Either,
+  left,
+  isRight,
+  Right,
+  isLeft,
+  Left,
+  right,
+  fromOption as eitherFromOption,
+} from 'fp-ts/es6/Either';
 import { EitherM1, getEitherM } from 'fp-ts/es6/EitherT';
 import { Monad2 } from 'fp-ts/es6/Monad';
 import { pipeable } from 'fp-ts/es6/pipeable';
@@ -34,8 +43,8 @@ import {
   Replete,
   constPending,
 } from './Datum';
-
-export { initial, pending, constInitial, constPending } from './Datum';
+import { Option } from 'fp-ts/es6/Option';
+import { Lazy } from 'fp-ts/es6/function';
 
 /**
  * A Monad instance for `Datum<Either<E, A>>`
@@ -59,7 +68,7 @@ export const URI = '@nll/async-data/datum-either';
 export type URI = typeof URI;
 
 /**
- * 2.1.0
+ * @since 2.1.0
  */
 export type DatumEither<E, A> = Datum<Either<E, A>>;
 
@@ -74,7 +83,7 @@ export const datumEither: Monad2<URI> & EitherM1<DatumURI> = {
 /**
  * @since 2.1.0
  */
-export const success = <A>(a: A) => datumEither.of(a);
+export const success = <A>(a: A) => replete(right(a));
 
 /**
  * @since 2.1.0
@@ -105,6 +114,19 @@ export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
     () => fea,
     a => refresh(a)
   )(fea);
+
+/**
+ * @since 2.2.0
+ */
+export const fromEither = <E, A>(e: Either<E, A>): DatumEither<E, A> =>
+  replete(e);
+
+/**
+ * @since 2.2.0
+ */
+export const fromOption = <E, A>(onNone: Lazy<E>) => (
+  o: Option<A>
+): DatumEither<unknown, A> => replete(eitherFromOption(onNone)(o));
 
 /**
  * @since 2.1.0
