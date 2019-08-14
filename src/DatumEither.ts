@@ -34,7 +34,20 @@ export const datumEither: Monad2<URI> & EitherM1<DatumURI> = {
   URI,
 };
 
-export const {
+const {
+  alt,
+  ap,
+  apFirst,
+  apSecond,
+  bimap,
+  chain,
+  chainFirst,
+  flatten,
+  map,
+  mapLeft,
+} = pipeable(datumEither);
+
+export {
   /**
    * @since 2.0.0
    */
@@ -75,4 +88,4 @@ export const {
    * @since 2.0.0
    */
   mapLeft,
-} = pipeable(datumEither);
+};

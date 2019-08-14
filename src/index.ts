@@ -1,4 +1,13 @@
 import * as datum from './Datum';
 import * as datumEither from './DatumEither';
 
-export { datum, datumEither };
+export {
+  /**
+   * @since 2.0.0
+   */
+  datum,
+  /**
+   * @since 2.0.0
+   */
+  datumEither,
+};
