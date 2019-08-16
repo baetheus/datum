@@ -59,7 +59,7 @@ There are additional helper methods for going from refresh to replete and back.
 **Signature**
 
 ```ts
-export type DatumEither<E, A> = Datum<Either<E, A>>;
+export type DatumEither<E, A> = Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
@@ -69,7 +69,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export type URI = typeof URI;
+export type URI = typeof URI
 ```
 
 Added in v2.0.0

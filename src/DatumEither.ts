@@ -37,11 +37,14 @@ import {
   Datum,
   fold,
   URI as DatumURI,
+  initial,
+  pending,
   refresh,
   replete,
-  isReplete,
+  isValued,
   Replete,
   constPending,
+  Refresh,
 } from './Datum';
 import { Option } from 'fp-ts/es6/Option';
 import { Lazy } from 'fp-ts/es6/function';
@@ -73,6 +76,16 @@ export type URI = typeof URI;
 export type DatumEither<E, A> = Datum<Either<E, A>>;
 
 /**
+ * @since 2.3.0
+ */
+export type Success<A> = Replete<Right<A>> | Refresh<Right<A>>;
+
+/**
+ * @since 2.3.0
+ */
+export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>;
+
+/**
  * @since 2.0.0
  */
 export const datumEither: Monad2<URI> & EitherM1<DatumURI> = {
@@ -93,16 +106,14 @@ export const failure = <E>(e: E) => replete(left(e));
 /**
  * @since 2.1.0
  */
-export const isSuccess = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Replete<Right<A>> => isReplete(fea) && isRight(fea.value);
+export const isSuccess = <E, A>(fea: DatumEither<E, A>): fea is Success<A> =>
+  isValued(fea) && isRight(fea.value);
 
 /**
  * @since 2.1.0
  */
-export const isFailure = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Replete<Left<E>> => isReplete(fea) && isLeft(fea.value);
+export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> =>
+  isValued(fea) && isLeft(fea.value);
 
 /**
  * @since 2.1.0
@@ -154,6 +165,21 @@ export const refreshFoldR = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ): B => refreshFold(onInitial, onPending, onFailure, onSuccess)(fea);
+
+/**
+ * @since 2.3.0
+ */
+export const squash = <E, A, B>(
+  onNone: (r?: boolean) => B,
+  onFailure: (e: E, r?: boolean) => B,
+  onSuccess: (a: A, r?: boolean) => B
+) => (fea: DatumEither<E, A>) =>
+  fold<Either<E, A>, B>(
+    () => onNone(false),
+    () => onNone(true),
+    e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
+    e => (isRight(e) ? onSuccess(e.right, false) : onFailure(e.left, false))
+  )(fea);
 
 const {
   alt,
@@ -209,4 +235,12 @@ export {
    * @since 2.0.0
    */
   mapLeft,
+  /**
+   * @since 2.3.0
+   */
+  initial,
+  /**
+   * @since 2.3.0
+   */
+  pending,
 };

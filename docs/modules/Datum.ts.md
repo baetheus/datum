@@ -78,7 +78,7 @@ refreshed.
 
 ```ts
 export interface Initial {
-  readonly _tag: 'Initial';
+  readonly _tag: 'Initial'
 }
 ```
 
@@ -90,7 +90,7 @@ Added in v2.0.0
 
 ```ts
 export interface Pending {
-  readonly _tag: 'Pending';
+  readonly _tag: 'Pending'
 }
 ```
 
@@ -102,8 +102,8 @@ Added in v2.0.0
 
 ```ts
 export interface Refresh<D> {
-  readonly _tag: 'Refresh';
-  readonly value: D;
+  readonly _tag: 'Refresh'
+  readonly value: D
 }
 ```
 
@@ -115,8 +115,8 @@ Added in v2.0.0
 
 ```ts
 export interface Replete<D> {
-  readonly _tag: 'Replete';
-  readonly value: D;
+  readonly _tag: 'Replete'
+  readonly value: D
 }
 ```
 
@@ -127,7 +127,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>;
+export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>
 ```
 
 Added in v2.0.0
@@ -137,7 +137,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export type URI = typeof URI;
+export type URI = typeof URI
 ```
 
 Added in v2.0.0
@@ -564,7 +564,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Datum<A>) => M;
+;<M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Datum<A>) => M
 ```
 
 Added in v2.0.0
@@ -614,7 +614,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>) => B;
+;<A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>) => B
 ```
 
 Added in v2.0.0
@@ -624,7 +624,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(b: B, f: (a: A, b: B) => B) => (fa: Datum<A>) => B;
+;<A, B>(b: B, f: (a: A, b: B) => B) => (fa: Datum<A>) => B
 ```
 
 Added in v2.0.0
