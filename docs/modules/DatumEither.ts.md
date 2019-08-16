@@ -29,6 +29,8 @@ There are additional helper methods for going from refresh to replete and back.
 <h2 class="text-delta">Table of contents</h2>
 
 - [DatumEither (type alias)](#datumeither-type-alias)
+- [Failure (type alias)](#failure-type-alias)
+- [Success (type alias)](#success-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [datumEither (constant)](#datumeither-constant)
@@ -39,6 +41,7 @@ There are additional helper methods for going from refresh to replete and back.
 - [isSuccess (function)](#issuccess-function)
 - [refreshFold (function)](#refreshfold-function)
 - [refreshFoldR (function)](#refreshfoldr-function)
+- [squash (function)](#squash-function)
 - [success (function)](#success-function)
 - [toRefresh (function)](#torefresh-function)
 - [alt (export)](#alt-export)
@@ -49,8 +52,10 @@ There are additional helper methods for going from refresh to replete and back.
 - [chain (export)](#chain-export)
 - [chainFirst (export)](#chainfirst-export)
 - [flatten (export)](#flatten-export)
+- [initial (export)](#initial-export)
 - [map (export)](#map-export)
 - [mapLeft (export)](#mapleft-export)
+- [pending (export)](#pending-export)
 
 ---
 
@@ -63,6 +68,26 @@ export type DatumEither<E, A> = Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
+
+# Failure (type alias)
+
+**Signature**
+
+```ts
+export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>
+```
+
+Added in v2.3.0
+
+# Success (type alias)
+
+**Signature**
+
+```ts
+export type Success<A> = Replete<Right<A>> | Refresh<Right<A>>
+```
+
+Added in v2.3.0
 
 # URI (type alias)
 
@@ -131,9 +156,7 @@ Added in v2.2.0
 **Signature**
 
 ```ts
-export const isFailure = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Replete<Left<E>> => ...
+export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> => ...
 ```
 
 Added in v2.1.0
@@ -143,9 +166,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export const isSuccess = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Replete<Right<A>> => ...
+export const isSuccess = <E, A>(fea: DatumEither<E, A>): fea is Success<A> => ...
 ```
 
 Added in v2.1.0
@@ -185,6 +206,25 @@ export const refreshFoldR = <E, A, B>(
 ```
 
 Added in v2.1.0
+
+# squash (function)
+
+**Signature**
+
+```ts
+export const squash = <E, A, B>(
+  onNone: (r?: boolean) => B,
+  onFailure: (e: E, r?: boolean) => B,
+  onSuccess: (a: A, r?: boolean) => B
+) => (fea: DatumEither<E, A>) =>
+  fold<Either<E, A>, B>(
+    () => onNone(false),
+    () => onNone(true),
+    e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
+    e => ...
+```
+
+Added in v2.3.0
 
 # success (function)
 
@@ -291,6 +331,16 @@ Added in v2.0.0
 
 Added in v2.0.0
 
+# initial (export)
+
+**Signature**
+
+```ts
+Datum<never>
+```
+
+Added in v2.3.0
+
 # map (export)
 
 **Signature**
@@ -310,3 +360,13 @@ Added in v2.0.0
 ```
 
 Added in v2.0.0
+
+# pending (export)
+
+**Signature**
+
+```ts
+Datum<never>
+```
+
+Added in v2.3.0
