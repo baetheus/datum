@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.3.0](https://github.com/nullpub/datum/compare/v2.2.1...v2.3.0) (2019-08-16)
+
+
+### Features
+
+* additions to DatumEither ([e7e2e7a](https://github.com/nullpub/datum/commit/e7e2e7a))
+
+
+
 ## [2.2.1](https://github.com/nullpub/datum/compare/v2.2.0...v2.2.1) (2019-08-14)
 
 
