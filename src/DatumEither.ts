@@ -140,6 +140,15 @@ export const fromOption = <E, A>(onNone: Lazy<E>) => (
 ): DatumEither<unknown, A> => replete(eitherFromOption(onNone)(o));
 
 /**
+ * Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.
+ *
+ * @since 2.4.0
+ */
+export const fromNullable = <E, A>(
+  a: A | null | undefined
+): DatumEither<E, A> => (a === null || a === undefined ? initial : success(a));
+
+/**
  * @since 2.1.0
  */
 export const refreshFold = <E, A, B>(

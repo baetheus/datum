@@ -162,18 +162,12 @@ export const fold = <A, B>(
  * @since 2.0.0
  */
 export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
-  show: ma => {
-    switch (ma._tag) {
-      case 'Initial':
-        return 'initial';
-      case 'Pending':
-        return 'pending';
-      case 'Refresh':
-        return `refresh(${S.show(ma.value)})`;
-      case 'Replete':
-        return `replete(${S.show(ma.value)})`;
-    }
-  },
+  show: fold(
+    () => 'initial',
+    () => 'pending',
+    v => `refresh(${S.show(v)})`,
+    v => `replete(${S.show(v)})`
+  ),
 });
 
 /**
@@ -235,7 +229,7 @@ export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
 export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
   return {
     equals: getEq(O).equals,
-    compare: (xa, ya) =>
+    compare: (xa, ya): Ordering =>
       fold<A, Ordering>(
         // x Initial
         () => fold<A, Ordering>(() => 0, () => -1, () => -1, () => -1)(ya),
