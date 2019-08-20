@@ -16,8 +16,8 @@
     "docs": "npx docs-ts",
     "jest-clear-cache": "jest --clearCache",
     "jest": "jest --ci",
-    "prepublishOnly": "npm run build",
-    "release": "npm run docs && npx standard-version",
+    "prepublishOnly": "npm run test && npm run build",
+    "release": "npm run test && npm run build && npm run docs && npx standard-version",
     "test": "npm run jest-clear-cache && npm run jest"
   },
   "repository": {
