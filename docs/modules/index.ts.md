@@ -8,27 +8,27 @@ parent: Modules
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [datum (export)](#datum-export)
-- [datumEither (export)](#datumeither-export)
+- [Datum (export)](#datum-export)
+- [DatumEither (export)](#datumeither-export)
 
 ---
 
-# datum (export)
+# Datum (export)
 
 **Signature**
 
 ```ts
-typeof datum
+any
 ```
 
-Added in v2.0.0
+Added in v2.3.1
 
-# datumEither (export)
+# DatumEither (export)
 
 **Signature**
 
 ```ts
-typeof datumEither
+any
 ```
 
-Added in v2.0.0
+Added in v2.3.1

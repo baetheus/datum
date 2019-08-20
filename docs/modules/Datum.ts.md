@@ -341,7 +341,29 @@ are `Replete`s or `Refresh`s then the inner values are appended using the provid
 
 ```ts
 export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
-  concat: (x, y) => ...
+  concat: (fx, fy): Datum<A> =>
+    fold<A, Datum<A>>(
+      constInitial,
+      () =>
+        fold<A, Datum<A>>(
+          constInitial,
+          constPending,
+          constPending,
+          constPending
+        )(fy),
+      x =>
+        fold<A, Datum<A>>(
+          constInitial,
+          constPending,
+          y => refresh(S.concat(x, y)),
+          y => refresh(S.concat(x, y))
+        )(fy),
+      x =>
+        fold<A, Datum<A>>(
+          constInitial,
+          constPending,
+          y => refresh(S.concat(x, y)),
+          y => ...
 ```
 
 Added in v2.0.0

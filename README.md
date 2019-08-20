@@ -11,9 +11,9 @@ npm i @nll/datum fp-ts
 ```
 
 ```typescript
-import { datumEither, map } from '@nll/datum/es6/DatumEither';
+import { datumEither, map } from '@nll/datum/lib/DatumEither';
 
-import { sequenceT } from 'fp-ts/es6/Apply';
+import { sequenceT } from 'fp-ts/lib/Apply';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 const myData = datumEither.of(1);
@@ -26,5 +26,5 @@ const result = pipe(
   map(([a, b]) => a + b)
 );
 
-// Replete<Right<unknown, number>> => result.value.right === 3;
+// result.value.right === 3;
 ```

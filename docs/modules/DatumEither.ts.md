@@ -13,14 +13,14 @@ An instance of `DatumEither` is equivalent to `Datum<Either<E, A>>`
 A common use of `DatumEither` is as a container for dealing with refreshable data values that
 can have error conditions. The full type list is:
 
-`Initial`
-`Pending`
-`Refresh<Either<E, A>>`
-`Refresh<Left<E>>`
-`Refresh<Right<A>>`
-`Replete<Either<E, A>>`
-`Replete<Left<E>>`
-`Replete<Right<A>>`
+- `Initial`
+- `Pending`
+- `Refresh<Either<E, A>>`
+  - `Refresh<Left<E>>`
+  - `Refresh<Right<A>>`
+- `Replete<Either<E, A>>`
+  - `Replete<Left<E>>`
+  - `Replete<Right<A>>`
 
 There are additional helper methods for going from refresh to replete and back.
 

@@ -1,2 +1,12 @@
-export { Datum } from './Datum';
-export { DatumEither } from './DatumEither';
+export {
+  /**
+   * @since 2.3.1
+   */
+  Datum,
+} from './Datum';
+export {
+  /**
+   * @since 2.3.1
+   */
+  DatumEither,
+} from './DatumEither';
