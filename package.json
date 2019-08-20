@@ -10,13 +10,15 @@
     "es6"
   ],
   "scripts": {
-    "build": "npm run build-es6 && npm run build-lib",
     "build-es6": "tsc",
     "build-lib": "tsc --build tsconfig.lib.json",
-    "test": "tsc --noEmit",
+    "build": "npm run build-es6 && npm run build-lib",
+    "docs": "npx docs-ts",
+    "jest-clear-cache": "jest --clearCache",
+    "jest": "jest --ci",
     "prepublishOnly": "npm run build",
     "release": "npm run docs && npx standard-version",
-    "docs": "npx docs-ts"
+    "test": "npm run jest-clear-cache && npm run jest"
   },
   "repository": {
     "type": "git",
@@ -34,8 +36,13 @@
   },
   "homepage": "https://github.com/nullpub/datum#readme",
   "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.2",
     "docs-ts": "^0.2.1",
+    "fp-ts": "^2.0.5",
+    "jest": "^24.9.0",
     "standard-version": "^5.0.0",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.3.3333"
   },
   "peerDependencies": {

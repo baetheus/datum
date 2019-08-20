@@ -8,29 +8,29 @@
  * that data exists but is being refreshed, and `Replete` meands data exists and is not being
  * refreshed.
  */
-import { Alternative1 } from 'fp-ts/es6/Alternative';
-import { Applicative } from 'fp-ts/es6/Applicative';
-import { Compactable1, Separated } from 'fp-ts/es6/Compactable';
-import { Either, isLeft, isRight } from 'fp-ts/es6/Either';
-import { Eq } from 'fp-ts/es6/Eq';
-import { Extend1 } from 'fp-ts/es6/Extend';
-import { Filterable1 } from 'fp-ts/es6/Filterable';
-import { Foldable1 } from 'fp-ts/es6/Foldable';
-import { constFalse, identity, Predicate } from 'fp-ts/es6/function';
-import { HKT } from 'fp-ts/es6/HKT';
-import { Monad1 } from 'fp-ts/es6/Monad';
-import { MonadThrow1 } from 'fp-ts/es6/MonadThrow';
-import { Monoid } from 'fp-ts/es6/Monoid';
-import { isSome, Option } from 'fp-ts/es6/Option';
-import { Ord } from 'fp-ts/es6/Ord';
-import { Ordering } from 'fp-ts/es6/Ordering';
-import { pipeable } from 'fp-ts/es6/pipeable';
-import { Semigroup } from 'fp-ts/es6/Semigroup';
-import { Show } from 'fp-ts/es6/Show';
-import { Traversable1 } from 'fp-ts/es6/Traversable';
-import { Witherable1 } from 'fp-ts/es6/Witherable';
+import { Alternative1 } from 'fp-ts/lib/Alternative';
+import { Applicative } from 'fp-ts/lib/Applicative';
+import { Compactable1, Separated } from 'fp-ts/lib/Compactable';
+import { Either, isLeft, isRight } from 'fp-ts/lib/Either';
+import { Eq } from 'fp-ts/lib/Eq';
+import { Extend1 } from 'fp-ts/lib/Extend';
+import { Filterable1 } from 'fp-ts/lib/Filterable';
+import { Foldable1 } from 'fp-ts/lib/Foldable';
+import { constFalse, identity, Predicate } from 'fp-ts/lib/function';
+import { HKT } from 'fp-ts/lib/HKT';
+import { Monad1 } from 'fp-ts/lib/Monad';
+import { MonadThrow1 } from 'fp-ts/lib/MonadThrow';
+import { Monoid } from 'fp-ts/lib/Monoid';
+import { isSome, Option } from 'fp-ts/lib/Option';
+import { Ord } from 'fp-ts/lib/Ord';
+import { Ordering } from 'fp-ts/lib/Ordering';
+import { pipeable } from 'fp-ts/lib/pipeable';
+import { Semigroup } from 'fp-ts/lib/Semigroup';
+import { Show } from 'fp-ts/lib/Show';
+import { Traversable1 } from 'fp-ts/lib/Traversable';
+import { Witherable1 } from 'fp-ts/lib/Witherable';
 
-declare module 'fp-ts/es6/HKT' {
+declare module 'fp-ts/lib/HKT' {
   interface URItoKind<A> {
     '@nll/datum/datum': Datum<A>;
   }
@@ -165,9 +165,9 @@ export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
   show: ma => {
     switch (ma._tag) {
       case 'Initial':
-        return 'initial()';
+        return 'initial';
       case 'Pending':
-        return 'pending()';
+        return 'pending';
       case 'Refresh':
         return `refresh(${S.show(ma.value)})`;
       case 'Replete':
@@ -196,21 +196,31 @@ export const getEq = <A>(E: Eq<A>): Eq<Datum<A>> => ({
  * @since 2.0.0
  */
 export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
-  concat: (x, y) => {
-    if ((isReplete(x) || isRefresh(x)) && (isReplete(y) || isRefresh(y))) {
-      if (isRefresh(x) || isRefresh(y)) {
-        return refresh(S.concat(x.value, y.value));
-      } else {
-        return replete(S.concat(x.value, y.value));
-      }
-    } else if (isReplete(x) || isRefresh(x)) {
-      return x;
-    } else if (isReplete(y) || isRefresh(y)) {
-      return y;
-    } else {
-      return x;
-    }
-  },
+  concat: (fx, fy): Datum<A> =>
+    fold<A, Datum<A>>(
+      constInitial,
+      () =>
+        fold<A, Datum<A>>(
+          constInitial,
+          constPending,
+          constPending,
+          constPending
+        )(fy),
+      x =>
+        fold<A, Datum<A>>(
+          constInitial,
+          constPending,
+          y => refresh(S.concat(x, y)),
+          y => refresh(S.concat(x, y))
+        )(fy),
+      x =>
+        fold<A, Datum<A>>(
+          constInitial,
+          constPending,
+          y => refresh(S.concat(x, y)),
+          y => replete(S.concat(x, y))
+        )(fy)
+    )(fx),
 });
 
 /**
@@ -233,20 +243,12 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
         () => fold<A, Ordering>(() => 1, () => 0, () => -1, () => -1)(ya),
         // x Refresh
         x =>
-          fold<A, Ordering>(
-            () => 1,
-            () => 1,
-            y => O.compare(x, y),
-            y => O.compare(x, y)
-          )(ya),
+          fold<A, Ordering>(() => 1, () => 1, y => O.compare(x, y), () => -1)(
+            ya
+          ),
         // x Replete
         x =>
-          fold<A, Ordering>(
-            () => 1,
-            () => 1,
-            y => O.compare(x, y),
-            y => O.compare(x, y)
-          )(ya)
+          fold<A, Ordering>(() => 1, () => 1, () => 1, y => O.compare(x, y))(ya)
       )(xa),
   };
 }
@@ -350,7 +352,10 @@ const mapC = <A, B>(fa: Datum<A>, f: (a: A) => B): Datum<B> =>
 const apC = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> =>
   fold<(a: A) => B, Datum<B>>(
     constInitial,
-    constPending,
+    () =>
+      fold<A, Datum<B>>(constInitial, constPending, constPending, constPending)(
+        fa
+      ),
     f =>
       fold<A, Datum<B>>(
         constInitial,
