@@ -184,17 +184,6 @@ export const refreshFold = <E, A, B>(
   )(fea);
 
 /**
- * @since 2.1.0
- */
-// export const refreshFoldR = <E, A, B>(
-//   fea: DatumEither<E, A>,
-//   onInitial: () => B,
-//   onPending: () => B,
-//   onFailure: (e: E, r?: boolean) => B,
-//   onSuccess: (a: A, r?: boolean) => B
-// ): B => refreshFold(onInitial, onPending, onFailure, onSuccess)(fea);
-
-/**
  * @since 2.3.0
  */
 export const squash = <E, A, B>(
