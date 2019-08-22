@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.5.0](https://github.com/nullpub/datum/compare/v2.4.0...v2.5.0) (2019-08-22)
+
+
+### Features
+
+* added better typing to exports of initial and pending from DatumEither ([2b95784](https://github.com/nullpub/datum/commit/2b95784))
+
+
+
 # [2.4.0](https://github.com/nullpub/datum/compare/v2.3.0...v2.4.0) (2019-08-20)
 
 
