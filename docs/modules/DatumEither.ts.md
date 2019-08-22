@@ -45,7 +45,6 @@ There are additional helper methods for going from refresh to replete and back.
 - [isFailure (function)](#isfailure-function)
 - [isSuccess (function)](#issuccess-function)
 - [refreshFold (function)](#refreshfold-function)
-- [refreshFoldR (function)](#refreshfoldr-function)
 - [squash (function)](#squash-function)
 - [success (function)](#success-function)
 - [toRefresh (function)](#torefresh-function)
@@ -177,7 +176,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export const fromEither = <E, A>(e: Either<E, A>): DatumEither<E, A> => ...
+export const fromEither = <E, A>(e: Lazy<Either<E, A>>): DatumEither<E, A> => ...
 ```
 
 Added in v2.2.0
@@ -244,22 +243,6 @@ export const refreshFold = <E, A, B>(
     onPending,
     e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
     e => ...
-```
-
-Added in v2.1.0
-
-# refreshFoldR (function)
-
-**Signature**
-
-```ts
-export const refreshFoldR = <E, A, B>(
-  fea: DatumEither<E, A>,
-  onInitial: () => B,
-  onPending: () => B,
-  onFailure: (e: E, r?: boolean) => B,
-  onSuccess: (a: A, r?: boolean) => B
-): B => ...
 ```
 
 Added in v2.1.0
