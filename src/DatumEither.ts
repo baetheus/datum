@@ -148,8 +148,8 @@ export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
 /**
  * @since 2.2.0
  */
-export const fromEither = <E, A>(e: Either<E, A>): DatumEither<E, A> =>
-  replete(e);
+export const fromEither = <E, A>(e: Lazy<Either<E, A>>): DatumEither<E, A> =>
+  replete(e());
 
 /**
  * @since 2.2.0
@@ -186,13 +186,13 @@ export const refreshFold = <E, A, B>(
 /**
  * @since 2.1.0
  */
-export const refreshFoldR = <E, A, B>(
-  fea: DatumEither<E, A>,
-  onInitial: () => B,
-  onPending: () => B,
-  onFailure: (e: E, r?: boolean) => B,
-  onSuccess: (a: A, r?: boolean) => B
-): B => refreshFold(onInitial, onPending, onFailure, onSuccess)(fea);
+// export const refreshFoldR = <E, A, B>(
+//   fea: DatumEither<E, A>,
+//   onInitial: () => B,
+//   onPending: () => B,
+//   onFailure: (e: E, r?: boolean) => B,
+//   onSuccess: (a: A, r?: boolean) => B
+// ): B => refreshFold(onInitial, onPending, onFailure, onSuccess)(fea);
 
 /**
  * @since 2.3.0

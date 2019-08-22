@@ -3,17 +3,30 @@ import { left, right } from 'fp-ts/lib/Either';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { identity } from 'fp-ts/lib/function';
 import { monoidString, monoidSum } from 'fp-ts/lib/Monoid';
-import { none, some } from 'fp-ts/lib/Option';
+import { none, some, option } from 'fp-ts/lib/Option';
 import { ordString } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { semigroupSum } from 'fp-ts/lib/Semigroup';
 import { showString } from 'fp-ts/lib/Show';
+import * as I from 'fp-ts/lib/Identity';
+import { array } from 'fp-ts/lib/Array';
 
 import * as D from '../src/Datum';
 
 const predicate = (n: number): boolean => n > 2;
 
 describe('Datum', () => {
+  it('URI', () => {
+    assert.strictEqual(D.URI, '@nll/datum/datum');
+  });
+
+  it('creates', () => {
+    assert.deepStrictEqual(D.constInitial(), { _tag: 'Initial' });
+    assert.deepStrictEqual(D.constPending(), { _tag: 'Pending' });
+    assert.deepStrictEqual(D.refresh(1), { _tag: 'Refresh', value: 1 });
+    assert.deepStrictEqual(D.replete(1), { _tag: 'Replete', value: 1 });
+  });
+
   it('fold', () => {
     const onInitial = () => 'initial';
     const onPending = () => `pending`;
@@ -239,26 +252,58 @@ describe('Datum', () => {
   });
 
   // TODO Fix these tests!
-  // it('traverse', () => {
-  //   assert.deepStrictEqual(
-  //     D.datum.traverse(option)(D.replete('hello'), some),
-  //     some('hello')
-  //   );
-  //   assert.deepStrictEqual(
-  //     D.datum.traverse(option)(D.replete('hello'), () => none),
-  //     none
-  //   );
-  //   assert.deepStrictEqual(D.datum.traverse(option)(D.initial, some), [none]);
-  // });
+  it('traverse', () => {
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.initial, () => none),
+      some(D.initial)
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.pending, () => none),
+      some(D.pending)
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.refresh('foo'), a =>
+        a.length >= 2 ? some(a) : none
+      ),
+      some(D.refresh('foo'))
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.refresh(1), a => (a >= 2 ? some(a) : none)),
+      none
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.refresh(3), a => (a >= 2 ? some(a) : none)),
+      some(D.refresh(3))
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.replete('foo'), a =>
+        a.length >= 2 ? some(a) : none
+      ),
+      some(D.replete('foo'))
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.replete(1), a => (a >= 2 ? some(a) : none)),
+      none
+    );
+    assert.deepStrictEqual(
+      D.datum.traverse(option)(D.replete(3), a => (a >= 2 ? some(a) : none)),
+      some(D.replete(3))
+    );
+  });
 
   // TODO Fix these tests!
-  // it('sequence', () => {
-  //   assert.deepStrictEqual(D.datum.sequence(array)(D.replete([1, 2])), [
-  //     D.replete(1),
-  //     D.replete(2),
-  //   ]);
-  //   assert.deepStrictEqual(D.datum.sequence(array)(D.initial), [D.initial]);
-  // });
+  it('sequence', () => {
+    assert.deepStrictEqual(D.datum.sequence(array)(D.initial), [D.initial]);
+    assert.deepStrictEqual(D.datum.sequence(array)(D.pending), [D.pending]);
+    assert.deepStrictEqual(D.datum.sequence(array)(D.refresh([1, 2])), [
+      D.refresh(1),
+      D.refresh(2),
+    ]);
+    assert.deepStrictEqual(D.datum.sequence(array)(D.replete([1, 2])), [
+      D.replete(1),
+      D.replete(2),
+    ]);
+  });
 
   it('reduce', () => {
     assert.strictEqual(D.datum.reduce(D.initial, 2, (b, a) => b + a), 2);
@@ -284,11 +329,31 @@ describe('Datum', () => {
     assert.strictEqual(reduceRight(x2, init1, f1), '');
   });
 
+  it('getSemigroup', () => {
+    const S = D.getSemigroup(semigroupSum);
+    assert.deepStrictEqual(S.concat(D.initial, D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.pending, D.pending), D.pending);
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.initial, D.refresh(1)), D.initial);
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.refresh(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.replete(1), D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.initial, D.replete(1)), D.initial);
+    assert.deepStrictEqual(S.concat(D.replete(1), D.refresh(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.replete(1), D.replete(2)), D.replete(3));
+  });
+
   it('getApplySemigroup', () => {
     const S = D.getApplySemigroup(semigroupSum);
     assert.deepStrictEqual(S.concat(D.initial, D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.pending, D.pending), D.pending);
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.initial, D.refresh(1)), D.initial);
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.refresh(2)), D.refresh(3));
     assert.deepStrictEqual(S.concat(D.replete(1), D.initial), D.initial);
     assert.deepStrictEqual(S.concat(D.initial, D.replete(1)), D.initial);
+    assert.deepStrictEqual(S.concat(D.replete(1), D.refresh(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.refresh(3));
     assert.deepStrictEqual(S.concat(D.replete(1), D.replete(2)), D.replete(3));
   });
 
@@ -296,12 +361,19 @@ describe('Datum', () => {
     const M = D.getApplyMonoid(monoidSum);
     assert.deepStrictEqual(M.concat(M.empty, D.initial), D.initial);
     assert.deepStrictEqual(M.concat(D.initial, M.empty), D.initial);
+    assert.deepStrictEqual(M.concat(M.empty, D.pending), D.pending);
+    assert.deepStrictEqual(M.concat(D.pending, M.empty), D.pending);
+    assert.deepStrictEqual(M.concat(M.empty, D.refresh(1)), D.refresh(1));
+    assert.deepStrictEqual(M.concat(D.refresh(1), M.empty), D.refresh(1));
     assert.deepStrictEqual(M.concat(M.empty, D.replete(1)), D.replete(1));
     assert.deepStrictEqual(M.concat(D.replete(1), M.empty), D.replete(1));
   });
 
   it('elem', () => {
     assert.deepStrictEqual(D.elem(eqNumber)(2, D.initial), false);
+    assert.deepStrictEqual(D.elem(eqNumber)(2, D.pending), false);
+    assert.deepStrictEqual(D.elem(eqNumber)(2, D.refresh(2)), true);
+    assert.deepStrictEqual(D.elem(eqNumber)(1, D.refresh(2)), false);
     assert.deepStrictEqual(D.elem(eqNumber)(2, D.replete(2)), true);
     assert.deepStrictEqual(D.elem(eqNumber)(1, D.replete(2)), false);
   });
@@ -334,6 +406,13 @@ describe('Datum', () => {
     assert.deepStrictEqual(D.isReplete(D.replete(1)), true);
   });
 
+  it('isValued', () => {
+    assert.deepStrictEqual(D.isValued(D.initial), false);
+    assert.deepStrictEqual(D.isValued(D.pending), false);
+    assert.deepStrictEqual(D.isValued(D.refresh(1)), true);
+    assert.deepStrictEqual(D.isValued(D.replete(1)), true);
+  });
+
   it('exists', () => {
     const predicate = (a: number) => a === 2;
     assert.deepStrictEqual(
@@ -361,6 +440,12 @@ describe('Datum', () => {
 
   it('compact', () => {
     assert.deepStrictEqual(D.datum.compact(D.initial), D.initial);
+    assert.deepStrictEqual(D.datum.compact(D.pending), D.pending);
+    assert.deepStrictEqual(D.datum.compact(D.refresh(none)), D.initial);
+    assert.deepStrictEqual(
+      D.datum.compact(D.refresh(some('123'))),
+      D.refresh('123')
+    );
     assert.deepStrictEqual(D.datum.compact(D.replete(none)), D.initial);
     assert.deepStrictEqual(
       D.datum.compact(D.replete(some('123'))),
@@ -386,6 +471,11 @@ describe('Datum', () => {
   it('filter', () => {
     const predicate = (a: number) => a === 2;
     assert.deepStrictEqual(D.datum.filter(D.initial, predicate), D.initial);
+    assert.deepStrictEqual(D.datum.filter(D.refresh(1), predicate), D.initial);
+    assert.deepStrictEqual(
+      D.datum.filter(D.refresh(2), predicate),
+      D.refresh(2)
+    );
     assert.deepStrictEqual(D.datum.filter(D.replete(1), predicate), D.initial);
     assert.deepStrictEqual(
       D.datum.filter(D.replete(2), predicate),
@@ -432,46 +522,60 @@ describe('Datum', () => {
   });
 
   // TODO Fix these tests
-  // it('wither', () => {
-  //   const witherIdentity = D.datum.wither(I.identity);
-  //   const f = (n: number) => I.identity.of(predicate(n) ? some(n + 1) : none);
-  //   assert.deepStrictEqual(
-  //     witherIdentity(D.initial, f),
-  //     I.identity.of(D.initial)
-  //   );
-  //   assert.deepStrictEqual(
-  //     witherIdentity(D.replete(1), f),
-  //     I.identity.of(D.initial)
-  //   );
-  //   assert.deepStrictEqual(
-  //     witherIdentity(D.replete(3), f),
-  //     I.identity.of(D.replete(4))
-  //   );
-  // });
+  it('wither', () => {
+    const witherIdentity = D.datum.wither(I.identity);
+    const f = (n: number) => I.identity.of(predicate(n) ? some(n + 1) : none);
+    assert.deepStrictEqual(
+      witherIdentity(D.initial, f),
+      I.identity.of(D.initial)
+    );
+    assert.deepStrictEqual(
+      witherIdentity(D.pending, f),
+      I.identity.of(D.pending)
+    );
+    assert.deepStrictEqual(
+      witherIdentity(D.refresh(1), f),
+      I.identity.of(D.initial)
+    );
+    assert.deepStrictEqual(
+      witherIdentity(D.refresh(3), f),
+      I.identity.of(D.refresh(4))
+    );
+    assert.deepStrictEqual(
+      witherIdentity(D.replete(1), f),
+      I.identity.of(D.initial)
+    );
+    assert.deepStrictEqual(
+      witherIdentity(D.replete(3), f),
+      I.identity.of(D.replete(4))
+    );
+  });
 
   // TODO Fix these tests
-  // it('wilt', () => {
-  //   const wiltIdentity = D.datum.wilt(I.identity);
-  //   const f = (n: number) =>
-  //     I.identity.of(predicate(n) ? right(n + 1) : left(n - 1));
-  //   assert.deepStrictEqual(
-  //     wiltIdentity(D.initial, f),
-  //     I.identity.of({ left: D.initial, right: D.initial })
-  //   );
-  //   assert.deepStrictEqual(
-  //     wiltIdentity(D.replete(1), f),
-  //     I.identity.of({ left: D.replete(0), right: D.initial })
-  //   );
-  //   assert.deepStrictEqual(
-  //     wiltIdentity(D.replete(3), f),
-  //     I.identity.of({ left: D.initial, right: D.replete(4) })
-  //   );
-  // });
+  it('wilt', () => {
+    const wiltIdentity = D.datum.wilt(I.identity);
+    const f = (n: number) =>
+      I.identity.of(predicate(n) ? right(n + 1) : left(n - 1));
+    assert.deepStrictEqual(
+      wiltIdentity(D.initial, f),
+      I.identity.of({ left: D.initial, right: D.initial })
+    );
+    assert.deepStrictEqual(
+      wiltIdentity(D.replete(1), f),
+      I.identity.of({ left: D.replete(0), right: D.initial })
+    );
+    assert.deepStrictEqual(
+      wiltIdentity(D.replete(3), f),
+      I.identity.of({ left: D.initial, right: D.replete(4) })
+    );
+  });
 
   it('getShow', () => {
     const S = D.getShow(showString);
-    assert.strictEqual(S.show(D.replete('a')), `replete("a")`);
     assert.strictEqual(S.show(D.initial), `initial`);
+    assert.strictEqual(S.show(D.pending), `pending`);
+    assert.strictEqual(S.show(D.refresh('a')), `refresh("a")`);
+    assert.strictEqual(S.show(D.replete('a')), `replete("a")`);
   });
 
   it('fromEither', () => {

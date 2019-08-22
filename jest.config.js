@@ -10,10 +10,10 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js'],
   coverageThreshold: {
     global: {
-      branches: 40,
-      functions: 40,
-      lines: 40,
-      statements: 40,
+      branches: 100,
+      functions: 95,
+      lines: 100,
+      statements: 97,
     },
   },
 };
