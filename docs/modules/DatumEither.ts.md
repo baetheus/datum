@@ -34,8 +34,13 @@ There are additional helper methods for going from refresh to replete and back.
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [datumEither (constant)](#datumeither-constant)
+- [initial (constant)](#initial-constant)
+- [pending (constant)](#pending-constant)
+- [constInitial (function)](#constinitial-function)
+- [constPending (function)](#constpending-function)
 - [failure (function)](#failure-function)
 - [fromEither (function)](#fromeither-function)
+- [fromNullable (function)](#fromnullable-function)
 - [fromOption (function)](#fromoption-function)
 - [isFailure (function)](#isfailure-function)
 - [isSuccess (function)](#issuccess-function)
@@ -52,10 +57,8 @@ There are additional helper methods for going from refresh to replete and back.
 - [chain (export)](#chain-export)
 - [chainFirst (export)](#chainfirst-export)
 - [flatten (export)](#flatten-export)
-- [initial (export)](#initial-export)
 - [map (export)](#map-export)
 - [mapLeft (export)](#mapleft-export)
-- [pending (export)](#pending-export)
 
 ---
 
@@ -119,6 +122,46 @@ export const datumEither: Monad2<URI> & EitherM1<DatumURI> = ...
 
 Added in v2.0.0
 
+# initial (constant)
+
+**Signature**
+
+```ts
+export const initial: DatumEither<never, never> = ...
+```
+
+Added in v2.4.1
+
+# pending (constant)
+
+**Signature**
+
+```ts
+export const pending: DatumEither<never, never> = ...
+```
+
+Added in v2.4.1
+
+# constInitial (function)
+
+**Signature**
+
+```ts
+export const constInitial = <E, D>(): DatumEither<E, D> => ...
+```
+
+Added in v2.4.1
+
+# constPending (function)
+
+**Signature**
+
+```ts
+export const constPending = <E, D>(): DatumEither<E, D> => ...
+```
+
+Added in v2.4.1
+
 # failure (function)
 
 **Signature**
@@ -138,6 +181,20 @@ export const fromEither = <E, A>(e: Either<E, A>): DatumEither<E, A> => ...
 ```
 
 Added in v2.2.0
+
+# fromNullable (function)
+
+Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.
+
+**Signature**
+
+```ts
+export const fromNullable = <E, A>(
+  a: A | null | undefined
+): DatumEither<E, A> => ...
+```
+
+Added in v2.4.0
 
 # fromOption (function)
 
@@ -331,16 +388,6 @@ Added in v2.0.0
 
 Added in v2.0.0
 
-# initial (export)
-
-**Signature**
-
-```ts
-Datum<never>
-```
-
-Added in v2.3.0
-
 # map (export)
 
 **Signature**
@@ -360,13 +407,3 @@ Added in v2.0.0
 ```
 
 Added in v2.0.0
-
-# pending (export)
-
-**Signature**
-
-```ts
-Datum<never>
-```
-
-Added in v2.3.0

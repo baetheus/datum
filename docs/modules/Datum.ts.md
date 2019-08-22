@@ -374,7 +374,11 @@ Added in v2.0.0
 
 ```ts
 export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
-  show: ma => ...
+  show: fold(
+    () => 'initial',
+    () => 'pending',
+    v => `refresh(${S.show(v)})`,
+    v => ...
 ```
 
 Added in v2.0.0

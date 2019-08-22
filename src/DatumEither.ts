@@ -37,13 +37,12 @@ import {
   Datum,
   fold,
   URI as DatumURI,
-  initial,
-  pending,
+  initial as initialD,
+  pending as pendingD,
   refresh,
   replete,
   isValued,
   Replete,
-  constPending,
   Refresh,
 } from './Datum';
 import { Option } from 'fp-ts/lib/Option';
@@ -102,6 +101,26 @@ export const success = <A>(a: A) => replete(right(a));
  * @since 2.1.0
  */
 export const failure = <E>(e: E) => replete(left(e));
+
+/**
+ * @since 2.4.1
+ */
+export const initial: DatumEither<never, never> = initialD;
+
+/**
+ * @since 2.4.1
+ */
+export const pending: DatumEither<never, never> = pendingD;
+
+/**
+ * @since 2.4.1
+ */
+export const constInitial = <E, D>(): DatumEither<E, D> => initial;
+
+/**
+ * @since 2.4.1
+ */
+export const constPending = <E, D>(): DatumEither<E, D> => pending;
 
 /**
  * @since 2.1.0
@@ -244,12 +263,4 @@ export {
    * @since 2.0.0
    */
   mapLeft,
-  /**
-   * @since 2.3.0
-   */
-  initial,
-  /**
-   * @since 2.3.0
-   */
-  pending,
 };
