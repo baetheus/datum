@@ -7,3 +7,6 @@ es6
 
 # test
 coverage
+
+# editor
+.vscode
