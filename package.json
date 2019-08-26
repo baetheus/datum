@@ -9,6 +9,7 @@
     "lib",
     "es6"
   ],
+  "sideEffects": false,
   "scripts": {
     "build-es6": "tsc",
     "build-lib": "tsc --build tsconfig.lib.json",
@@ -16,9 +17,10 @@
     "docs": "npx docs-ts",
     "jest-clear-cache": "jest --clearCache",
     "jest": "jest --ci",
+    "coveralls": "cat ./coverage/lcov.info | npx coveralls",
     "prepublishOnly": "npm run test && npm run build",
     "release": "npm run test && npm run build && npm run docs && npx standard-version",
-    "test": "npm run jest-clear-cache && npm run jest"
+    "test": "npm run jest-clear-cache && npm run jest && npm run coveralls"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.2",
+    "coveralls": "^3.0.6",
     "docs-ts": "^0.2.1",
     "fp-ts": "^2.0.5",
     "jest": "^24.9.0",

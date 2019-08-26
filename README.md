@@ -1,3 +1,19 @@
+<p align="center">
+  An <a href="https://www.github.com/gcanti/fp-ts">fp-ts</a> style ADT to capture the concept of an Option in progress.
+</p>
+
+<p align="center">
+  <a href="https://travis-ci.org/nullpub/datum">
+    <img src="https://img.shields.io/travis/nullpub/datum/master.svg?style=flat-square" alt="build status" height="20">
+  </a>
+  <a href="https://david-dm.org/nullpub/datum">
+    <img src="https://img.shields.io/david/nullpub/datum.svg?style=flat-square" alt="dependency status" height="20">
+  </a>
+  <a href="https://www.npmjs.com/package/@nll/datum">
+    <img src="https://img.shields.io/npm/dm/@nll/datum.svg" alt="npm downloads" height="20">
+  </a>
+</p>
+
 # @nll/datum
 
 ADT for asynchronous data updated to work with [fp-ts@2+](https://github.com/gcanti/fp-ts).
