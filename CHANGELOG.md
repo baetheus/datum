@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.6.0](https://github.com/nullpub/datum/compare/v2.5.1...v2.6.0) (2019-08-26)
+
+
+### Features
+
+* added additional pipeable Datum operators that were missed ([ae71d30](https://github.com/nullpub/datum/commit/ae71d30))
+
+
+
 ## [2.5.1](https://github.com/nullpub/datum/compare/v2.5.0...v2.5.1) (2019-08-22)
 
 
