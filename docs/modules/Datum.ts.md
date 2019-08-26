@@ -60,9 +60,12 @@ refreshed.
 - [extend (export)](#extend-export)
 - [filter (export)](#filter-export)
 - [filterMap (export)](#filtermap-export)
+- [filterOrElse (export)](#filterorelse-export)
 - [flatten (export)](#flatten-export)
 - [foldMap (export)](#foldmap-export)
 - [fromEither (export)](#fromeither-export)
+- [fromOption (export)](#fromoption-export)
+- [fromPredicate (export)](#frompredicate-export)
 - [map (export)](#map-export)
 - [partition (export)](#partition-export)
 - [partitionMap (export)](#partitionmap-export)
@@ -575,6 +578,16 @@ Added in v2.0.0
 
 Added in v2.0.0
 
+# filterOrElse (export)
+
+**Signature**
+
+```ts
+{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<A>; }
+```
+
+Added in v2.6.0
+
 # flatten (export)
 
 **Signature**
@@ -604,6 +617,26 @@ Added in v2.0.0
 ```
 
 Added in v2.0.0
+
+# fromOption (export)
+
+**Signature**
+
+```ts
+<E>(onNone: () => E) => <A>(ma: Option<A>) => Datum<A>
+```
+
+Added in v2.6.0
+
+# fromPredicate (export)
+
+**Signature**
+
+```ts
+{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Datum<A>; }
+```
+
+Added in v2.6.0
 
 # map (export)
 

@@ -585,6 +585,9 @@ const {
   compact,
   separate,
   fromEither,
+  filterOrElse,
+  fromOption,
+  fromPredicate,
 } = pipeable(datum);
 
 export {
@@ -668,4 +671,16 @@ export {
    * @since 2.0.0
    */
   fromEither,
+  /**
+   * @since 2.6.0
+   */
+  filterOrElse,
+  /**
+   * @since 2.6.0
+   */
+  fromOption,
+  /**
+   * @since 2.6.0
+   */
+  fromPredicate,
 };
