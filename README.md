@@ -6,6 +6,7 @@
   <a href="https://travis-ci.org/nullpub/datum">
     <img src="https://img.shields.io/travis/nullpub/datum/master.svg?style=flat-square" alt="build status" height="20">
   </a>
+  <a href='https://coveralls.io/github/nullpub/datum?branch=master'><img src='https://coveralls.io/repos/github/nullpub/datum/badge.svg?branch=master' alt='Coverage Status' height="20"/></a>
   <a href="https://david-dm.org/nullpub/datum">
     <img src="https://img.shields.io/david/nullpub/datum.svg?style=flat-square" alt="dependency status" height="20">
   </a>
