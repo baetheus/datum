@@ -31,7 +31,7 @@
     "adt",
     "AsyncData"
   ],
-  "author": "Brandon Blaylock <brandon@null.pub> (https://blaylock/dev)",
+  "author": "Brandon Blaylock <brandon@null.pub> (https://blaylock.dev)",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/nullpub/datum/issues"
