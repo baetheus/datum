@@ -6,12 +6,23 @@
   <a href="https://travis-ci.org/nullpub/datum">
     <img src="https://img.shields.io/travis/nullpub/datum/master.svg" alt="build status" height="20">
   </a>
-  <a href='https://coveralls.io/github/nullpub/datum?branch=master'><img src='https://coveralls.io/repos/github/nullpub/datum/badge.svg?branch=master' alt='Coverage Status' height="20"/></a>
-  <a href="https://david-dm.org/nullpub/datum">
-    <img src="https://img.shields.io/david/nullpub/datum.svg" alt="dependency status" height="20">
+  <a href='https://coveralls.io/github/nullpub/datum?branch=master'>
+    <img src='https://coveralls.io/repos/github/nullpub/datum/badge.svg?branch=master' alt='Coverage Status' height="20"/>
   </a>
   <a href="https://www.npmjs.com/package/@nll/datum">
     <img src="https://img.shields.io/npm/dm/@nll/datum.svg" alt="npm downloads" height="20">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://david-dm.org/nullpub/datum">
+    <img src="https://img.shields.io/david/nullpub/datum.svg" alt="dependency status" height="20">
+  </a>
+  <a href="https://david-dm.org/nullpub/datum?type=dev">
+    <img src="https://img.shields.io/david/dev/nullpub/datum.svg" alt="dev dependency status" height="20">
+  </a>
+  <a href="https://david-dm.org/nullpub/datum?type=peer">
+    <img src="https://img.shields.io/david/peer/nullpub/datum.svg" alt="peer dependency status" height="20">
   </a>
 </p>
 
