@@ -21,6 +21,8 @@ describe('Datum', () => {
   });
 
   it('creates', () => {
+    assert.deepStrictEqual(D.initial, { _tag: 'Initial' });
+    assert.deepStrictEqual(D.pending, { _tag: 'Pending' });
     assert.deepStrictEqual(D.constInitial(), { _tag: 'Initial' });
     assert.deepStrictEqual(D.constPending(), { _tag: 'Pending' });
     assert.deepStrictEqual(D.refresh(1), { _tag: 'Refresh', value: 1 });

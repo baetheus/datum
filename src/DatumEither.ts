@@ -27,6 +27,7 @@ import {
   Left,
   right,
   fromOption as eitherFromOption,
+  fold as eitherFold,
 } from 'fp-ts/lib/Either';
 import { EitherM1, getEitherM } from 'fp-ts/lib/EitherT';
 import { Monad2 } from 'fp-ts/lib/Monad';
@@ -35,7 +36,7 @@ import { pipeable } from 'fp-ts/lib/pipeable';
 import {
   datum,
   Datum,
-  fold,
+  fold as datumFold,
   URI as DatumURI,
   initial as initialD,
   pending as pendingD,
@@ -44,9 +45,13 @@ import {
   isValued,
   Replete,
   Refresh,
+  isInitial,
+  isPending,
+  isRefresh,
+  isReplete,
 } from './Datum';
 import { Option } from 'fp-ts/lib/Option';
-import { Lazy } from 'fp-ts/lib/function';
+import { Lazy, constant, FunctionN } from 'fp-ts/lib/function';
 
 /**
  * A Monad instance for `Datum<Either<E, A>>`
@@ -122,6 +127,57 @@ export const constInitial = <E, D>(): DatumEither<E, D> => initial;
  */
 export const constPending = <E, D>(): DatumEither<E, D> => pending;
 
+export {
+  /**
+   * @since 2.7.0
+   */
+  isInitial,
+  /**
+   * @since 2.7.0
+   */
+  isPending,
+  /**
+   * @since 2.7.0
+   */
+  isRefresh,
+  /**
+   * @since 2.7.0
+   */
+  isReplete,
+  /**
+   * @since 2.7.0
+   */
+  isValued,
+};
+
+/**
+ * @since 2.7.0
+ */
+export const isRefreshLeft = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Refresh<Left<E>> => isRefresh(fea) && isLeft(fea.value);
+
+/**
+ * @since 2.7.0
+ */
+export const isRefreshRight = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Refresh<Right<A>> => isRefresh(fea) && isRight(fea.value);
+
+/**
+ * @since 2.7.0
+ */
+export const isRepleteLeft = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Replete<Left<E>> => isReplete(fea) && isLeft(fea.value);
+
+/**
+ * @since 2.7.0
+ */
+export const isRepleteRight = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Replete<Right<A>> => isReplete(fea) && isRight(fea.value);
+
 /**
  * @since 2.1.0
  */
@@ -138,11 +194,22 @@ export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> =>
  * @since 2.1.0
  */
 export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
-  fold<Either<E, A>, DatumEither<E, A>>(
+  datumFold<Either<E, A>, DatumEither<E, A>>(
     constPending,
     constPending,
-    () => fea,
-    a => refresh(a)
+    constant(fea),
+    refresh
+  )(fea);
+
+/**
+ * @since 2.7.0
+ */
+export const toReplete = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
+  datumFold<Either<E, A>, DatumEither<E, A>>(
+    constInitial,
+    constInitial,
+    replete,
+    constant(fea)
   )(fea);
 
 /**
@@ -168,6 +235,29 @@ export const fromNullable = <E, A>(
 ): DatumEither<E, A> => (a === null || a === undefined ? initial : success(a));
 
 /**
+ * @since 2.7.0
+ */
+export const fold = <E, A, B>(
+  onInitial: Lazy<B>,
+  onPending: Lazy<B>,
+  onRefreshLeft: FunctionN<[E], B>,
+  onRefreshRight: FunctionN<[A], B>,
+  onRepleteLeft: FunctionN<[E], B>,
+  onRepleteRight: FunctionN<[A], B>
+) => (fea: DatumEither<E, A>): B => {
+  switch (fea._tag) {
+    case 'Initial':
+      return onInitial();
+    case 'Pending':
+      return onPending();
+    case 'Refresh':
+      return eitherFold(onRefreshLeft, onRefreshRight)(fea.value);
+    case 'Replete':
+      return eitherFold(onRepleteLeft, onRepleteRight)(fea.value);
+  }
+};
+
+/**
  * @since 2.1.0
  */
 export const refreshFold = <E, A, B>(
@@ -176,7 +266,7 @@ export const refreshFold = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ) => (fea: DatumEither<E, A>): B =>
-  fold<Either<E, A>, B>(
+  datumFold<Either<E, A>, B>(
     onInitial,
     onPending,
     e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
@@ -191,7 +281,7 @@ export const squash = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ) => (fea: DatumEither<E, A>) =>
-  fold<Either<E, A>, B>(
+  datumFold<Either<E, A>, B>(
     () => onNone(false),
     () => onNone(true),
     e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
