@@ -39,22 +39,20 @@
   },
   "homepage": "https://github.com/nullpub/datum#readme",
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.2",
-    "coveralls": "^3.0.6",
-    "docs-ts": "^0.2.1",
-    "fp-ts": "^2.0.5",
-    "jest": "^24.9.0",
-    "standard-version": "^7.0.0",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.3.3333"
+    "@types/jest": "^25.1.1",
+    "@types/node": "^12.12.26",
+    "coveralls": "^3.0.9",
+    "docs-ts": "^0.3.1",
+    "fp-ts": "^2.4.3",
+    "jest": "^25.1.0",
+    "standard-version": "^7.1.0",
+    "ts-jest": "^25.0.0",
+    "typescript": "^3.7.5"
   },
   "peerDependencies": {
-    "fp-ts": "^2.0.5"
+    "fp-ts": "^2.4.3"
   },
   "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "printWidth": 80
+    "singleQuote": true
   }
 }

@@ -39,15 +39,21 @@ There are additional helper methods for going from refresh to replete and back.
 - [constInitial (function)](#constinitial-function)
 - [constPending (function)](#constpending-function)
 - [failure (function)](#failure-function)
+- [fold (function)](#fold-function)
 - [fromEither (function)](#fromeither-function)
 - [fromNullable (function)](#fromnullable-function)
 - [fromOption (function)](#fromoption-function)
 - [isFailure (function)](#isfailure-function)
+- [isRefreshLeft (function)](#isrefreshleft-function)
+- [isRefreshRight (function)](#isrefreshright-function)
+- [isRepleteLeft (function)](#isrepleteleft-function)
+- [isRepleteRight (function)](#isrepleteright-function)
 - [isSuccess (function)](#issuccess-function)
 - [refreshFold (function)](#refreshfold-function)
 - [squash (function)](#squash-function)
 - [success (function)](#success-function)
 - [toRefresh (function)](#torefresh-function)
+- [toReplete (function)](#toreplete-function)
 - [alt (export)](#alt-export)
 - [ap (export)](#ap-export)
 - [apFirst (export)](#apfirst-export)
@@ -56,6 +62,11 @@ There are additional helper methods for going from refresh to replete and back.
 - [chain (export)](#chain-export)
 - [chainFirst (export)](#chainfirst-export)
 - [flatten (export)](#flatten-export)
+- [isInitial (export)](#isinitial-export)
+- [isPending (export)](#ispending-export)
+- [isRefresh (export)](#isrefresh-export)
+- [isReplete (export)](#isreplete-export)
+- [isValued (export)](#isvalued-export)
 - [map (export)](#map-export)
 - [mapLeft (export)](#mapleft-export)
 
@@ -171,6 +182,23 @@ export const failure = <E>(e: E) => ...
 
 Added in v2.1.0
 
+# fold (function)
+
+**Signature**
+
+```ts
+export const fold = <E, A, B>(
+  onInitial: Lazy<B>,
+  onPending: Lazy<B>,
+  onRefreshLeft: FunctionN<[E], B>,
+  onRefreshRight: FunctionN<[A], B>,
+  onRepleteLeft: FunctionN<[E], B>,
+  onRepleteRight: FunctionN<[A], B>
+) => (fea: DatumEither<E, A>): B => ...
+```
+
+Added in v2.7.0
+
 # fromEither (function)
 
 **Signature**
@@ -217,6 +245,54 @@ export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> => ..
 
 Added in v2.1.0
 
+# isRefreshLeft (function)
+
+**Signature**
+
+```ts
+export const isRefreshLeft = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Refresh<Left<E>> => ...
+```
+
+Added in v2.7.0
+
+# isRefreshRight (function)
+
+**Signature**
+
+```ts
+export const isRefreshRight = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Refresh<Right<A>> => ...
+```
+
+Added in v2.7.0
+
+# isRepleteLeft (function)
+
+**Signature**
+
+```ts
+export const isRepleteLeft = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Replete<Left<E>> => ...
+```
+
+Added in v2.7.0
+
+# isRepleteRight (function)
+
+**Signature**
+
+```ts
+export const isRepleteRight = <E, A>(
+  fea: DatumEither<E, A>
+): fea is Replete<Right<A>> => ...
+```
+
+Added in v2.7.0
+
 # isSuccess (function)
 
 **Signature**
@@ -238,7 +314,7 @@ export const refreshFold = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ) => (fea: DatumEither<E, A>): B =>
-  fold<Either<E, A>, B>(
+  datumFold<Either<E, A>, B>(
     onInitial,
     onPending,
     e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
@@ -257,7 +333,7 @@ export const squash = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ) => (fea: DatumEither<E, A>) =>
-  fold<Either<E, A>, B>(
+  datumFold<Either<E, A>, B>(
     () => onNone(false),
     () => onNone(true),
     e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
@@ -281,15 +357,20 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
-  fold<Either<E, A>, DatumEither<E, A>>(
-    constPending,
-    constPending,
-    () => fea,
-    a => ...
+export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> => ...
 ```
 
 Added in v2.1.0
+
+# toReplete (function)
+
+**Signature**
+
+```ts
+export const toReplete = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> => ...
+```
+
+Added in v2.7.0
 
 # alt (export)
 
@@ -370,6 +451,56 @@ Added in v2.0.0
 ```
 
 Added in v2.0.0
+
+# isInitial (export)
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Initial
+```
+
+Added in v2.7.0
+
+# isPending (export)
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Pending
+```
+
+Added in v2.7.0
+
+# isRefresh (export)
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Refresh<A>
+```
+
+Added in v2.7.0
+
+# isReplete (export)
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Replete<A>
+```
+
+Added in v2.7.0
+
+# isValued (export)
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Refresh<A> | Replete<A>
+```
+
+Added in v2.7.0
 
 # map (export)
 

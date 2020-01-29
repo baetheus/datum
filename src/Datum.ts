@@ -16,7 +16,7 @@ import { Eq } from 'fp-ts/lib/Eq';
 import { Extend1 } from 'fp-ts/lib/Extend';
 import { Filterable1 } from 'fp-ts/lib/Filterable';
 import { Foldable1 } from 'fp-ts/lib/Foldable';
-import { constFalse, identity, Predicate } from 'fp-ts/lib/function';
+import { constFalse, identity, Predicate, constant } from 'fp-ts/lib/function';
 import { HKT } from 'fp-ts/lib/HKT';
 import { Monad1 } from 'fp-ts/lib/Monad';
 import { MonadThrow1 } from 'fp-ts/lib/MonadThrow';
@@ -87,7 +87,7 @@ export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>;
  * @since 2.0.0
  */
 export const initial: Datum<never> = {
-  _tag: 'Initial',
+  _tag: 'Initial'
 };
 
 /**
@@ -96,7 +96,7 @@ export const initial: Datum<never> = {
  * @since 2.0.0
  */
 export const pending: Datum<never> = {
-  _tag: 'Pending',
+  _tag: 'Pending'
 };
 
 /**
@@ -106,7 +106,7 @@ export const pending: Datum<never> = {
  */
 export const refresh = <A = never>(value: A): Datum<A> => ({
   _tag: 'Refresh',
-  value,
+  value
 });
 
 /**
@@ -116,18 +116,18 @@ export const refresh = <A = never>(value: A): Datum<A> => ({
  */
 export const replete = <A = never>(value: A): Datum<A> => ({
   _tag: 'Replete',
-  value,
+  value
 });
 
 /**
  * @since 2.0.0
  */
-export const constInitial = () => initial;
+export const constInitial = constant(initial);
 
 /**
  * @since 2.0.0
  */
-export const constPending = () => pending;
+export const constPending = constant(pending);
 
 /**
  * Takes a nullable value, if the value is not nully, turn it into a `Replete`, otherwise `Initial`.
@@ -163,11 +163,11 @@ export const fold = <A, B>(
  */
 export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
   show: fold(
-    () => 'initial',
-    () => 'pending',
+    constant('initial'),
+    constant('pending'),
     v => `refresh(${S.show(v)})`,
     v => `replete(${S.show(v)})`
-  ),
+  )
 });
 
 /**
@@ -179,7 +179,7 @@ export const getEq = <A>(E: Eq<A>): Eq<Datum<A>> => ({
     (isReplete(x) && isReplete(y) && E.equals(x.value, y.value)) ||
     (isRefresh(x) && isRefresh(y) && E.equals(x.value, y.value)) ||
     (isInitial(x) && isInitial(y)) ||
-    (isPending(x) && isPending(y)),
+    (isPending(x) && isPending(y))
 });
 
 /**
@@ -193,13 +193,14 @@ export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
   concat: (fx, fy): Datum<A> =>
     fold<A, Datum<A>>(
       constInitial,
-      () =>
+      constant(
         fold<A, Datum<A>>(
           constInitial,
           constPending,
           constPending,
           constPending
-        )(fy),
+        )(fy)
+      ),
       x =>
         fold<A, Datum<A>>(
           constInitial,
@@ -214,8 +215,12 @@ export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
           y => refresh(S.concat(x, y)),
           y => replete(S.concat(x, y))
         )(fy)
-    )(fx),
+    )(fx)
 });
+
+const constZero = constant<0>(0);
+const constNegOne = constant<-1>(-1);
+const constOne = constant<1>(1);
 
 /**
  * The `Ord` instance allows `Datum` values to be compared with
@@ -232,18 +237,29 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
     compare: (xa, ya): Ordering =>
       fold<A, Ordering>(
         // x Initial
-        () => fold<A, Ordering>(() => 0, () => -1, () => -1, () => -1)(ya),
+        constant(
+          fold<A, Ordering>(constZero, constNegOne, constNegOne, constNegOne)(
+            ya
+          )
+        ),
         // x Pending
-        () => fold<A, Ordering>(() => 1, () => 0, () => -1, () => -1)(ya),
+        constant(
+          fold<A, Ordering>(constOne, constZero, constNegOne, constNegOne)(ya)
+        ),
         // x Refresh
         x =>
-          fold<A, Ordering>(() => 1, () => 1, y => O.compare(x, y), () => -1)(
-            ya
-          ),
+          fold<A, Ordering>(
+            constOne,
+            constOne,
+            y => O.compare(x, y),
+            constNegOne
+          )(ya),
         // x Replete
         x =>
-          fold<A, Ordering>(() => 1, () => 1, () => 1, y => O.compare(x, y))(ya)
-      )(xa),
+          fold<A, Ordering>(constOne, constOne, constOne, y => O.compare(x, y))(
+            ya
+          )
+      )(xa)
   };
 }
 
@@ -260,7 +276,7 @@ export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> =>
  */
 export const getApplyMonoid = <A>(M: Monoid<A>): Monoid<Datum<A>> => ({
   ...getApplySemigroup(M),
-  empty: replete(M.empty),
+  empty: replete(M.empty)
 });
 
 /**
@@ -442,7 +458,7 @@ const compactC = <A>(fa: Datum<Option<A>>): Datum<A> =>
 
 const defaultSeparate = {
   left: initial as Datum<any>,
-  right: initial as Datum<any>,
+  right: initial as Datum<any>
 };
 
 /**
@@ -453,7 +469,7 @@ const separateC = <A, B>(
 ): Separated<Datum<A>, Datum<B>> => {
   const s = mapC(fa, e => ({
     left: isLeft(e) ? replete(e.left) : initial,
-    right: isRight(e) ? replete(e.right) : initial,
+    right: isRight(e) ? replete(e.right) : initial
   }));
 
   return getOrElse(() => defaultSeparate, () => defaultSeparate)(s);
@@ -484,7 +500,7 @@ const partitionC = <A>(
   predicate: Predicate<A>
 ): Separated<Datum<A>, Datum<A>> => ({
   left: filterC(fa, a => !predicate(a)),
-  right: filterC(fa, predicate),
+  right: filterC(fa, predicate)
 });
 
 /**
@@ -501,8 +517,8 @@ const witherC = <F>(F: Applicative<F>) => <A, B>(
   f: (a: A) => HKT<F, Option<B>>
 ): HKT<F, Datum<B>> =>
   fold<A, HKT<F, Datum<B>>>(
-    () => F.of(initial),
-    () => F.of(pending),
+    constant(F.of(initial)),
+    constant(F.of(pending)),
     a => F.map(f(a), o => (isSome(o) ? refresh(o.value) : initial)),
     a => F.map(f(a), o => (isSome(o) ? replete(o.value) : initial))
   )(fa);
@@ -517,7 +533,7 @@ const wiltC = <F>(F: Applicative<F>) => <A, B, C>(
   const s = mapC(fa, a =>
     F.map(f(a), e => ({
       left: isLeft(e) ? replete(e.left) : initial,
-      right: isRight(e) ? replete(e.right) : initial,
+      right: isRight(e) ? replete(e.right) : initial
     }))
   );
   return isValued(s) ? s.value : F.of(defaultSeparate);
@@ -561,7 +577,7 @@ export const datum: Monad1<URI> &
   partitionMap: partitionMapC,
   wither: witherC,
   wilt: wiltC,
-  throwError: throwErrorC,
+  throwError: throwErrorC
 };
 
 const {
@@ -587,7 +603,7 @@ const {
   fromEither,
   filterOrElse,
   fromOption,
-  fromPredicate,
+  fromPredicate
 } = pipeable(datum);
 
 export {
@@ -682,5 +698,5 @@ export {
   /**
    * @since 2.6.0
    */
-  fromPredicate,
+  fromPredicate
 };
