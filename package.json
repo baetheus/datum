@@ -1,6 +1,6 @@
 {
   "name": "@nll/datum",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "ADT for handling fetchable and refreshable data",
   "main": "lib/index.js",
   "module": "es6/index.js",
