@@ -1,5 +1,7 @@
 /**
- * @file Represents a value of one of six possible types (a disjoint union).
+ * @since 2.0.0
+ *
+ * Represents a value of one of six possible types (a disjoint union).
  *
  * An instance of `DatumEither` is equivalent to `Datum<Either<E, A>>`
  *
@@ -27,7 +29,7 @@ import {
   Left,
   right,
   fromOption as eitherFromOption,
-  fold as eitherFold,
+  fold as eitherFold
 } from 'fp-ts/lib/Either';
 import { EitherM1, getEitherM } from 'fp-ts/lib/EitherT';
 import { Monad2 } from 'fp-ts/lib/Monad';
@@ -48,7 +50,7 @@ import {
   isInitial,
   isPending,
   isRefresh,
-  isReplete,
+  isReplete
 } from './Datum';
 import { Option } from 'fp-ts/lib/Option';
 import { Lazy, constant, FunctionN } from 'fp-ts/lib/function';
@@ -94,7 +96,7 @@ export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>;
  */
 export const datumEither: Monad2<URI> & EitherM1<DatumURI> = {
   ...getEitherM(datum),
-  URI,
+  URI
 };
 
 /**
@@ -147,7 +149,7 @@ export {
   /**
    * @since 2.7.0
    */
-  isValued,
+  isValued
 };
 
 /**
@@ -298,7 +300,7 @@ const {
   chainFirst,
   flatten,
   map,
-  mapLeft,
+  mapLeft
 } = pipeable(datumEither);
 
 export {
@@ -341,5 +343,5 @@ export {
   /**
    * @since 2.0.0
    */
-  mapLeft,
+  mapLeft
 };

@@ -1,5 +1,7 @@
 /**
- * @file Represents a value of one of four possible types (a disjoint union).
+ * @since 2.0.0
+ *
+ * Represents a value of one of four possible types (a disjoint union).
  *
  * An instance of `Datum` is either an instance of `Initial`, `Pending`, `Refresh` or `Replete`.
  *
@@ -30,6 +32,9 @@ import { Show } from 'fp-ts/lib/Show';
 import { Traversable1 } from 'fp-ts/lib/Traversable';
 import { Witherable1 } from 'fp-ts/lib/Witherable';
 
+/**
+ * @since 1.0.0
+ */
 declare module 'fp-ts/lib/HKT' {
   interface URItoKind<A> {
     '@nll/datum/datum': Datum<A>;
@@ -238,9 +243,12 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
       fold<A, Ordering>(
         // x Initial
         constant(
-          fold<A, Ordering>(constZero, constNegOne, constNegOne, constNegOne)(
-            ya
-          )
+          fold<A, Ordering>(
+            constZero,
+            constNegOne,
+            constNegOne,
+            constNegOne
+          )(ya)
         ),
         // x Pending
         constant(
@@ -363,9 +371,12 @@ const apC = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> =>
   fold<(a: A) => B, Datum<B>>(
     constInitial,
     () =>
-      fold<A, Datum<B>>(constInitial, constPending, constPending, constPending)(
-        fa
-      ),
+      fold<A, Datum<B>>(
+        constInitial,
+        constPending,
+        constPending,
+        constPending
+      )(fa),
     f =>
       fold<A, Datum<B>>(
         constInitial,
@@ -392,19 +403,34 @@ const chainC = <A, B>(fa: Datum<A>, f: (a: A) => Datum<B>): Datum<B> =>
  * @since 2.0.0
  */
 const reduceC = <A, B>(fa: Datum<A>, b: B, f: (b: B, a: A) => B): B =>
-  fold<A, B>(() => b, () => b, a => f(b, a), a => f(b, a))(fa);
+  fold<A, B>(
+    () => b,
+    () => b,
+    a => f(b, a),
+    a => f(b, a)
+  )(fa);
 
 /**
  * @since 2.0.0
  */
 const foldMapC = <M>(M: Monoid<M>) => <A>(fa: Datum<A>, f: (a: A) => M): M =>
-  fold<A, M>(() => M.empty, () => M.empty, f, f)(fa);
+  fold<A, M>(
+    () => M.empty,
+    () => M.empty,
+    f,
+    f
+  )(fa);
 
 /**
  * @since 2.0.0
  */
 const reduceRightC = <A, B>(fa: Datum<A>, b: B, f: (a: A, b: B) => B): B =>
-  fold<A, B>(() => b, () => b, a => f(a, b), a => f(a, b))(fa);
+  fold<A, B>(
+    () => b,
+    () => b,
+    a => f(a, b),
+    a => f(a, b)
+  )(fa);
 
 /**
  * @since 2.0.0
@@ -472,7 +498,10 @@ const separateC = <A, B>(
     right: isRight(e) ? replete(e.right) : initial
   }));
 
-  return getOrElse(() => defaultSeparate, () => defaultSeparate)(s);
+  return getOrElse(
+    () => defaultSeparate,
+    () => defaultSeparate
+  )(s);
 };
 
 /**

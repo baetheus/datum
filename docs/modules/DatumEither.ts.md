@@ -4,7 +4,9 @@ nav_order: 2
 parent: Modules
 ---
 
-# Overview
+# DatumEither overview
+
+Added in v2.0.0
 
 Represents a value of one of six possible types (a disjoint union).
 
@@ -497,7 +499,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => ma is Refresh<A> | Replete<A>
+<A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
 ```
 
 Added in v2.7.0

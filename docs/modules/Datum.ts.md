@@ -4,7 +4,9 @@ nav_order: 1
 parent: Modules
 ---
 
-# Overview
+# Datum overview
+
+Added in v2.0.0
 
 Represents a value of one of four possible types (a disjoint union).
 
@@ -26,11 +28,11 @@ refreshed.
 - [Datum (type alias)](#datum-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [constInitial (constant)](#constinitial-constant)
+- [constPending (constant)](#constpending-constant)
 - [datum (constant)](#datum-constant)
 - [initial (constant)](#initial-constant)
 - [pending (constant)](#pending-constant)
-- [constInitial (function)](#constinitial-function)
-- [constPending (function)](#constpending-function)
 - [elem (function)](#elem-function)
 - [exists (function)](#exists-function)
 - [fold (function)](#fold-function)
@@ -155,6 +157,26 @@ export const URI: "@nll/datum/datum" = ...
 
 Added in v2.0.0
 
+# constInitial (constant)
+
+**Signature**
+
+```ts
+export const constInitial: Lazy<Initial> = ...
+```
+
+Added in v2.0.0
+
+# constPending (constant)
+
+**Signature**
+
+```ts
+export const constPending: Lazy<Pending> = ...
+```
+
+Added in v2.0.0
+
 # datum (constant)
 
 **Signature**
@@ -193,26 +215,6 @@ Constructs a pending `Datum` holding no value.
 
 ```ts
 export const pending: Datum<never> = ...
-```
-
-Added in v2.0.0
-
-# constInitial (function)
-
-**Signature**
-
-```ts
-export const constInitial = () => ...
-```
-
-Added in v2.0.0
-
-# constPending (function)
-
-**Signature**
-
-```ts
-export const constPending = () => ...
 ```
 
 Added in v2.0.0
@@ -347,13 +349,14 @@ export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
   concat: (fx, fy): Datum<A> =>
     fold<A, Datum<A>>(
       constInitial,
-      () =>
+      constant(
         fold<A, Datum<A>>(
           constInitial,
           constPending,
           constPending,
           constPending
-        )(fy),
+        )(fy)
+      ),
       x =>
         fold<A, Datum<A>>(
           constInitial,
@@ -378,8 +381,8 @@ Added in v2.0.0
 ```ts
 export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
   show: fold(
-    () => 'initial',
-    () => 'pending',
+    constant('initial'),
+    constant('pending'),
     v => `refresh(${S.show(v)})`,
     v => ...
 ```
