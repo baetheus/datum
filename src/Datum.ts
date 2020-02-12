@@ -87,6 +87,16 @@ export interface Replete<D> {
 export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>;
 
 /**
+ * @since 2.8.0
+ */
+export type Valued<D> = Refresh<D> | Replete<D>;
+
+/**
+ * @since 2.8.0
+ */
+export type NotValued = Initial | Pending;
+
+/**
  * Constructs an initial `Datum` holding no value.
  *
  * @since 2.0.0
