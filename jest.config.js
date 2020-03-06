@@ -4,11 +4,10 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.ts'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.jsx?$': 'babel-jest',
-    '^.+\\.js?$': 'babel-jest'
+    '^.+\\.(ts|tsx)$': ['ts-jest'],
+    '^.+\\.(js|jsx)$': ['babel-jest']
   },
-  transformIgnorePatterns: ['/node_modules/(?!fp-ts).+\\.js$'],
+  transformIgnorePatterns: ['node_modules/(?!(fp-ts)/)'],
   testRegex: 'test',
   moduleFileExtensions: ['ts', 'js'],
   coverageThreshold: {

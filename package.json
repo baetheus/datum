@@ -10,12 +10,12 @@
   "scripts": {
     "build-tsc": "tsc",
     "build-prepare": "ts-node --skip-project prepare.ts",
-    "build": "npm run test && npm run build-tsc && npm run build-prepare",
+    "build": "npm run test && npm run docs && npm run build-tsc && npm run build-prepare",
     "docs": "npx docs-ts",
     "jest-clear-cache": "jest --clearCache",
     "jest": "jest --ci",
     "coveralls": "cat ./coverage/lcov.info | npx coveralls",
-    "release": "npm run build && npm run docs && npx standard-version",
+    "release": "npx standard-version && npm run build",
     "test": "npm run jest-clear-cache && npm run jest"
   },
   "repository": {
@@ -35,6 +35,7 @@
   "homepage": "https://github.com/nullpub/datum#readme",
   "devDependencies": {
     "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
     "@types/jest": "^25.1.1",
     "@types/node": "^13.7.7",
     "babel-jest": "^25.1.0",
