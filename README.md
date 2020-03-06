@@ -30,9 +30,13 @@
 
 ADT for asynchronous data updated to work with [fp-ts@2+](https://github.com/gcanti/fp-ts).
 
-## Usage
+**Version 3+ release only includes an es module build. It also references the fp-ts/es6 build.**
+
+## Documentation
 
 [Full Documentation](https://nullpub.github.io/datum/)
+
+## Usage Example
 
 ```bash
 npm i @nll/datum fp-ts
