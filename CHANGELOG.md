@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-prerelease.0](https://github.com/nullpub/datum/compare/v2.7.2-prerelease.0...v3.0.0-prerelease.0) (2020-03-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* simplified api
+
+### Features
+
+* migrate to es6 only build ([3d65d65](https://github.com/nullpub/datum/commit/3d65d650c81ce718bc7c6ce5669cd99df0adf942))
+
 ### [2.7.2-prerelease.0](https://github.com/nullpub/datum/compare/v2.7.1...v2.7.2-prerelease.0) (2020-03-06)
 
 ### [2.7.1](https://github.com/nullpub/datum/compare/v2.7.0...v2.7.1) (2020-01-29)
