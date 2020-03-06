@@ -28,3 +28,5 @@ jobs:
       - run: npm run coveralls
         env:
           CI: true
+          COVERALLS_REPO_TOKEN: '${{ secrets.COVERALLS_REPO_TOKEN }}'
+          COVERALLS_GIT_BRANCH: '${{ github.ref }}'
