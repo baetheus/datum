@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.2-prerelease.0](https://github.com/nullpub/datum/compare/v2.7.1...v2.7.2-prerelease.0) (2020-03-06)
+
 ### [2.7.1](https://github.com/nullpub/datum/compare/v2.7.0...v2.7.1) (2020-01-29)
 
 
