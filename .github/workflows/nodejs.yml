@@ -1,32 +1,25 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+on: ['push', 'pull_request']
 
-name: Node.js CI
-
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+name: Test Coveralls
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x]
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js 10.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm test
-      - run: npm run coveralls
-        env:
-          CI: true
-          COVERALLS_REPO_TOKEN: '${{ secrets.COVERALLS_REPO_TOKEN }}'
-          COVERALLS_GIT_BRANCH: '${{ github.ref }}'
+          node-version: 10.x
+
+      - name: npm install, make test-coverage
+        run: |
+          npm ci
+          npm test
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
