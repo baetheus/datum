@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/nullpub/datum/compare/v3.0.0-prerelease.0...v3.0.0) (2020-03-06)
+
+
+### Bug Fixes
+
+* fix coveralls command in nodejs workflow ([26d656b](https://github.com/nullpub/datum/commit/26d656b92fe13674405a0f8d52de0ac59c82b817))
+* fix env vars for coveralls ([4beec9c](https://github.com/nullpub/datum/commit/4beec9c4acdf8b91b8465e5ce27c274ce8e4315f))
+* try using the coveralls action ([95a6661](https://github.com/nullpub/datum/commit/95a6661971c6f114f8c5257cde19921731eabff2))
+
 ## [3.0.0-prerelease.0](https://github.com/nullpub/datum/compare/v2.7.2-prerelease.0...v3.0.0-prerelease.0) (2020-03-06)
 
 
