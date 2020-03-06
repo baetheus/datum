@@ -39,8 +39,8 @@ npm i @nll/datum fp-ts
 ```
 
 ```typescript
-import { sequenceT } from 'fp-ts/lib/Apply';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { sequenceT } from 'fp-ts/es6/Apply';
+import { pipe } from 'fp-ts/es6/pipeable';
 
 import {
   DatumEither,
@@ -50,7 +50,7 @@ import {
   map,
   pending,
   success,
-  toRefresh,
+  toRefresh
 } from '../src/DatumEither';
 
 const sequence = sequenceT(datumEither);

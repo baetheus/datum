@@ -1,15 +1,15 @@
 import * as assert from 'assert';
-import { left, right } from 'fp-ts/lib/Either';
-import { eqNumber } from 'fp-ts/lib/Eq';
-import { identity } from 'fp-ts/lib/function';
-import { monoidString, monoidSum } from 'fp-ts/lib/Monoid';
-import { none, some, option } from 'fp-ts/lib/Option';
-import { ordString } from 'fp-ts/lib/Ord';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { semigroupSum } from 'fp-ts/lib/Semigroup';
-import { showString } from 'fp-ts/lib/Show';
-import * as I from 'fp-ts/lib/Identity';
-import { array } from 'fp-ts/lib/Array';
+import { left, right } from 'fp-ts/es6/Either';
+import { eqNumber } from 'fp-ts/es6/Eq';
+import { identity } from 'fp-ts/es6/function';
+import { monoidString, monoidSum } from 'fp-ts/es6/Monoid';
+import { none, some, option } from 'fp-ts/es6/Option';
+import { ordString } from 'fp-ts/es6/Ord';
+import { pipe } from 'fp-ts/es6/pipeable';
+import { semigroupSum } from 'fp-ts/es6/Semigroup';
+import { showString } from 'fp-ts/es6/Show';
+import * as I from 'fp-ts/es6/Identity';
+import { array } from 'fp-ts/es6/Array';
 
 import * as D from '../src/Datum';
 
@@ -17,7 +17,7 @@ const predicate = (n: number): boolean => n > 2;
 
 describe('Datum', () => {
   it('URI', () => {
-    assert.strictEqual(D.URI, '@nll/datum/datum');
+    assert.strictEqual(D.URI, '@nll/datum/Datum');
   });
 
   it('creates', () => {

@@ -10,41 +10,41 @@
  * that data exists but is being refreshed, and `Replete` meands data exists and is not being
  * refreshed.
  */
-import { Alternative1 } from 'fp-ts/lib/Alternative';
-import { Applicative } from 'fp-ts/lib/Applicative';
-import { Compactable1, Separated } from 'fp-ts/lib/Compactable';
-import { Either, isLeft, isRight } from 'fp-ts/lib/Either';
-import { Eq } from 'fp-ts/lib/Eq';
-import { Extend1 } from 'fp-ts/lib/Extend';
-import { Filterable1 } from 'fp-ts/lib/Filterable';
-import { Foldable1 } from 'fp-ts/lib/Foldable';
-import { constFalse, identity, Predicate, constant } from 'fp-ts/lib/function';
-import { HKT } from 'fp-ts/lib/HKT';
-import { Monad1 } from 'fp-ts/lib/Monad';
-import { MonadThrow1 } from 'fp-ts/lib/MonadThrow';
-import { Monoid } from 'fp-ts/lib/Monoid';
-import { isSome, Option } from 'fp-ts/lib/Option';
-import { Ord } from 'fp-ts/lib/Ord';
-import { Ordering } from 'fp-ts/lib/Ordering';
-import { pipeable } from 'fp-ts/lib/pipeable';
-import { Semigroup } from 'fp-ts/lib/Semigroup';
-import { Show } from 'fp-ts/lib/Show';
-import { Traversable1 } from 'fp-ts/lib/Traversable';
-import { Witherable1 } from 'fp-ts/lib/Witherable';
+import { Alternative1 } from 'fp-ts/es6/Alternative';
+import { Applicative } from 'fp-ts/es6/Applicative';
+import { Compactable1, Separated } from 'fp-ts/es6/Compactable';
+import { Either, isLeft, isRight } from 'fp-ts/es6/Either';
+import { Eq } from 'fp-ts/es6/Eq';
+import { Extend1 } from 'fp-ts/es6/Extend';
+import { Filterable1 } from 'fp-ts/es6/Filterable';
+import { Foldable1 } from 'fp-ts/es6/Foldable';
+import { constFalse, identity, Predicate, constant } from 'fp-ts/es6/function';
+import { HKT } from 'fp-ts/es6/HKT';
+import { Monad1 } from 'fp-ts/es6/Monad';
+import { MonadThrow1 } from 'fp-ts/es6/MonadThrow';
+import { Monoid } from 'fp-ts/es6/Monoid';
+import { isSome, Option } from 'fp-ts/es6/Option';
+import { Ord } from 'fp-ts/es6/Ord';
+import { Ordering } from 'fp-ts/es6/Ordering';
+import { pipeable } from 'fp-ts/es6/pipeable';
+import { Semigroup } from 'fp-ts/es6/Semigroup';
+import { Show } from 'fp-ts/es6/Show';
+import { Traversable1 } from 'fp-ts/es6/Traversable';
+import { Witherable1 } from 'fp-ts/es6/Witherable';
 
 /**
  * @since 1.0.0
  */
-declare module 'fp-ts/lib/HKT' {
+declare module 'fp-ts/es6/HKT' {
   interface URItoKind<A> {
-    '@nll/datum/datum': Datum<A>;
+    '@nll/datum/Datum': Datum<A>;
   }
 }
 
 /**
  * @since 2.0.0
  */
-export const URI = '@nll/datum/datum';
+export const URI = '@nll/datum/Datum';
 
 /**
  * @since 2.0.0

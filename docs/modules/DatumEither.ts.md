@@ -119,7 +119,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const URI: "@nll/datum/datum-either" = ...
+export const URI: "@nll/datum/DatumEither" = ...
 ```
 
 Added in v2.0.0

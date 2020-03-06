@@ -152,7 +152,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const URI: "@nll/datum/datum" = ...
+export const URI: "@nll/datum/Datum" = ...
 ```
 
 Added in v2.0.0

@@ -30,10 +30,10 @@ import {
   right,
   fromOption as eitherFromOption,
   fold as eitherFold
-} from 'fp-ts/lib/Either';
-import { EitherM1, getEitherM } from 'fp-ts/lib/EitherT';
-import { Monad2 } from 'fp-ts/lib/Monad';
-import { pipeable } from 'fp-ts/lib/pipeable';
+} from 'fp-ts/es6/Either';
+import { EitherM1, getEitherM } from 'fp-ts/es6/EitherT';
+import { Monad2 } from 'fp-ts/es6/Monad';
+import { pipeable } from 'fp-ts/es6/pipeable';
 
 import {
   datum,
@@ -52,24 +52,24 @@ import {
   isRefresh,
   isReplete
 } from './Datum';
-import { Option } from 'fp-ts/lib/Option';
-import { Lazy, constant, FunctionN } from 'fp-ts/lib/function';
+import { Option } from 'fp-ts/es6/Option';
+import { Lazy, constant, FunctionN } from 'fp-ts/es6/function';
 
 /**
  * A Monad instance for `Datum<Either<E, A>>`
  *
  * @since 2.0.0
  */
-declare module 'fp-ts/lib/HKT' {
+declare module 'fp-ts/es6/HKT' {
   interface URItoKind2<E, A> {
-    '@nll/datum/datum-either': Datum<Either<E, A>>;
+    '@nll/datum/DatumEither': Datum<Either<E, A>>;
   }
 }
 
 /**
  * @since 2.0.0
  */
-export const URI = '@nll/datum/datum-either';
+export const URI = '@nll/datum/DatumEither';
 
 /**
  * @since 2.0.0

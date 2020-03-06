@@ -1,12 +1,12 @@
 import * as assert from 'assert';
 import * as DE from '../src/DatumEither';
 import { refresh, replete } from '../src/Datum';
-import { some, none } from 'fp-ts/lib/Option';
-import { left, right } from 'fp-ts/lib/Either';
+import { some, none } from 'fp-ts/es6/Option';
+import { left, right } from 'fp-ts/es6/Either';
 
 describe('Datum', () => {
   it('URI', () => {
-    assert.strictEqual(DE.URI, '@nll/datum/datum-either');
+    assert.strictEqual(DE.URI, '@nll/datum/DatumEither');
   });
 
   it('isInitial', () => {
@@ -127,8 +127,14 @@ describe('Datum', () => {
   });
 
   it('fromEither', () => {
-    assert.deepStrictEqual(DE.fromEither(() => left(1)), DE.failure(1));
-    assert.deepStrictEqual(DE.fromEither(() => right(1)), DE.success(1));
+    assert.deepStrictEqual(
+      DE.fromEither(() => left(1)),
+      DE.failure(1)
+    );
+    assert.deepStrictEqual(
+      DE.fromEither(() => right(1)),
+      DE.success(1)
+    );
   });
 
   it('fromOption', () => {

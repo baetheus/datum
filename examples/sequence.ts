@@ -1,7 +1,16 @@
-import { sequenceT } from 'fp-ts/lib/Apply';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { sequenceT } from 'fp-ts/es6/Apply';
+import { pipe } from 'fp-ts/es6/pipeable';
 
-import { DatumEither, datumEither, failure, initial, map, pending, success, toRefresh } from '../src/DatumEither';
+import {
+  DatumEither,
+  datumEither,
+  failure,
+  initial,
+  map,
+  pending,
+  success,
+  toRefresh
+} from '../src/DatumEither';
 
 const sequence = sequenceT(datumEither);
 

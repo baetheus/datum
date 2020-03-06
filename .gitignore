@@ -2,8 +2,7 @@
 node_modules
 
 # build
-lib
-es6
+dist
 
 # test
 coverage

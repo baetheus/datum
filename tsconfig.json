@@ -1,23 +1,27 @@
 {
   "compilerOptions": {
+    "allowUnreachableCode": true,
+    "alwaysStrict": true,
     "strict": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "allowUnreachableCode": true,
-    "noImplicitAny": true,
     "noErrorTruncation": true,
-    "alwaysStrict": true,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "skipLibCheck": true,
+
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationDir": "./es6",
-    "outDir": "./es6",
     "lib": ["es2015"],
-    "target": "es6",
-    "moduleResolution": "node"
+
+    "declaration": true,
+    "declarationDir": "./dist",
+    "outDir": "./dist",
+    "module": "ES6",
+    "sourceMap": true,
+    "target": "es6"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
