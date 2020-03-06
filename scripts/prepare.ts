@@ -1,7 +1,7 @@
-///<reference path="./node_modules/@types/node/index.d.ts" />
+///<reference path="../node_modules/@types/node/index.d.ts" />
 import * as fs from 'fs';
 
-const pkg = require('./package.json');
+const pkg = require('../package.json');
 
 const publishPackage = {
   name: pkg.name,
