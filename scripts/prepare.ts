@@ -1,6 +1,12 @@
 ///<reference path="../node_modules/@types/node/index.d.ts" />
 import * as fs from 'fs';
 
+/**
+ * Treat package.json root as root.
+ */
+const buildDir = './dist';
+const copyFiles = ['README.md'];
+
 const pkg = require('../package.json');
 
 const publishPackage = {
@@ -18,14 +24,15 @@ const publishPackage = {
   dependencies: pkg.dependencies
 };
 
-if (!fs.existsSync('./dist')) {
-  fs.mkdirSync('./dist');
+if (!fs.existsSync(buildDir)) {
+  fs.mkdirSync(buildDir);
 }
 
 fs.writeFileSync(
-  './dist/package.json',
+  [buildDir, 'package.json'].join('/'),
   JSON.stringify(publishPackage, null, 2),
   {
     encoding: 'utf-8'
   }
 );
+copyFiles.forEach(file => fs.copyFileSync(file, [buildDir, file].join('/')));
