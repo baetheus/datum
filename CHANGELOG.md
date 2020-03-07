@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/nullpub/datum/compare/v3.0.0...v3.0.1) (2020-03-07)
+
+
+### Bug Fixes
+
+* cleaned up testing config ([a8f48fc](https://github.com/nullpub/datum/commit/a8f48fcf347202d09d8ec402e57aaf07af25d183))
+* moved prepare script and update build ([6f2bbcd](https://github.com/nullpub/datum/commit/6f2bbcd2e8ba05c871391da90fe7acc07af0f9bf))
+
 ## [3.0.0](https://github.com/nullpub/datum/compare/v3.0.0-prerelease.0...v3.0.0) (2020-03-06)
 
 
