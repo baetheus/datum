@@ -27,53 +27,53 @@ refreshed.
 - [Replete (interface)](#replete-interface)
 - [Datum (type alias)](#datum-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [constInitial (constant)](#constinitial-constant)
-- [constPending (constant)](#constpending-constant)
-- [datum (constant)](#datum-constant)
-- [initial (constant)](#initial-constant)
-- [pending (constant)](#pending-constant)
-- [elem (function)](#elem-function)
-- [exists (function)](#exists-function)
-- [fold (function)](#fold-function)
-- [fromNullable (function)](#fromnullable-function)
-- [getApplyMonoid (function)](#getapplymonoid-function)
-- [getApplySemigroup (function)](#getapplysemigroup-function)
-- [getEq (function)](#geteq-function)
-- [getOrElse (function)](#getorelse-function)
-- [getOrd (function)](#getord-function)
-- [getSemigroup (function)](#getsemigroup-function)
-- [getShow (function)](#getshow-function)
-- [isInitial (function)](#isinitial-function)
-- [isPending (function)](#ispending-function)
-- [isRefresh (function)](#isrefresh-function)
-- [isReplete (function)](#isreplete-function)
-- [isValued (function)](#isvalued-function)
-- [refresh (function)](#refresh-function)
-- [replete (function)](#replete-function)
-- [alt (export)](#alt-export)
-- [ap (export)](#ap-export)
-- [apFirst (export)](#apfirst-export)
-- [apSecond (export)](#apsecond-export)
-- [chain (export)](#chain-export)
-- [chainFirst (export)](#chainfirst-export)
-- [compact (export)](#compact-export)
-- [duplicate (export)](#duplicate-export)
-- [extend (export)](#extend-export)
-- [filter (export)](#filter-export)
-- [filterMap (export)](#filtermap-export)
-- [filterOrElse (export)](#filterorelse-export)
-- [flatten (export)](#flatten-export)
-- [foldMap (export)](#foldmap-export)
-- [fromEither (export)](#fromeither-export)
-- [fromOption (export)](#fromoption-export)
-- [fromPredicate (export)](#frompredicate-export)
-- [map (export)](#map-export)
-- [partition (export)](#partition-export)
-- [partitionMap (export)](#partitionmap-export)
-- [reduce (export)](#reduce-export)
-- [reduceRight (export)](#reduceright-export)
-- [separate (export)](#separate-export)
+- [URI](#uri)
+- [alt](#alt)
+- [ap](#ap)
+- [apFirst](#apfirst)
+- [apSecond](#apsecond)
+- [chain](#chain)
+- [chainFirst](#chainfirst)
+- [compact](#compact)
+- [constInitial](#constinitial)
+- [constPending](#constpending)
+- [datum](#datum)
+- [duplicate](#duplicate)
+- [elem](#elem)
+- [exists](#exists)
+- [extend](#extend)
+- [filter](#filter)
+- [filterMap](#filtermap)
+- [filterOrElse](#filterorelse)
+- [flatten](#flatten)
+- [fold](#fold)
+- [foldMap](#foldmap)
+- [fromEither](#fromeither)
+- [fromNullable](#fromnullable)
+- [fromOption](#fromoption)
+- [fromPredicate](#frompredicate)
+- [getApplyMonoid](#getapplymonoid)
+- [getApplySemigroup](#getapplysemigroup)
+- [getEq](#geteq)
+- [getOrElse](#getorelse)
+- [getOrd](#getord)
+- [getSemigroup](#getsemigroup)
+- [getShow](#getshow)
+- [initial](#initial)
+- [isInitial](#isinitial)
+- [isPending](#ispending)
+- [isRefresh](#isrefresh)
+- [isReplete](#isreplete)
+- [isValued](#isvalued)
+- [map](#map)
+- [partition](#partition)
+- [partitionMap](#partitionmap)
+- [pending](#pending)
+- [reduce](#reduce)
+- [reduceRight](#reduceright)
+- [refresh](#refresh)
+- [replete](#replete)
+- [separate](#separate)
 
 ---
 
@@ -147,7 +147,7 @@ export type URI = typeof URI
 
 Added in v2.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -157,7 +157,77 @@ export const URI: "@nll/datum/Datum" = ...
 
 Added in v2.0.0
 
-# constInitial (constant)
+# alt
+
+**Signature**
+
+```ts
+<A>(that: () => Datum<A>) => (fa: Datum<A>) => Datum<A>
+```
+
+Added in v2.0.0
+
+# ap
+
+**Signature**
+
+```ts
+<A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
+```
+
+Added in v2.0.0
+
+# apFirst
+
+**Signature**
+
+```ts
+<B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<A>
+```
+
+Added in v2.0.0
+
+# apSecond
+
+**Signature**
+
+```ts
+<B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<B>
+```
+
+Added in v2.0.0
+
+# chain
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<B>
+```
+
+Added in v2.0.0
+
+# chainFirst
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<A>
+```
+
+Added in v2.0.0
+
+# compact
+
+**Signature**
+
+```ts
+<A>(fa: Datum<Option<A>>) => Datum<A>
+```
+
+Added in v2.0.0
+
+# constInitial
 
 **Signature**
 
@@ -167,7 +237,7 @@ export const constInitial: Lazy<Initial> = ...
 
 Added in v2.0.0
 
-# constPending (constant)
+# constPending
 
 **Signature**
 
@@ -177,7 +247,7 @@ export const constPending: Lazy<Pending> = ...
 
 Added in v2.0.0
 
-# datum (constant)
+# datum
 
 **Signature**
 
@@ -195,31 +265,17 @@ export const datum: Monad1<URI> &
 
 Added in v2.0.0
 
-# initial (constant)
-
-Constructs an initial `Datum` holding no value.
+# duplicate
 
 **Signature**
 
 ```ts
-export const initial: Datum<never> = ...
+<A>(ma: Datum<A>) => Datum<Datum<A>>
 ```
 
 Added in v2.0.0
 
-# pending (constant)
-
-Constructs a pending `Datum` holding no value.
-
-**Signature**
-
-```ts
-export const pending: Datum<never> = ...
-```
-
-Added in v2.0.0
-
-# elem (function)
+# elem
 
 **Signature**
 
@@ -234,7 +290,7 @@ export const elem = <A>(E: Eq<A>) => <E>(a: A, ma: Datum<A>): boolean =>
 
 Added in v2.0.0
 
-# exists (function)
+# exists
 
 Returns `false` if `Refresh` or returns the result of the application of the given predicate to the `Replete` value.
 
@@ -248,7 +304,57 @@ export const exists = <A>(predicate: Predicate<A>) => <E>(
 
 Added in v2.0.0
 
-# fold (function)
+# extend
+
+**Signature**
+
+```ts
+<A, B>(f: (fa: Datum<A>) => B) => (ma: Datum<A>) => Datum<B>
+```
+
+Added in v2.0.0
+
+# filter
+
+**Signature**
+
+```ts
+{ <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Datum<B>; <A>(predicate: Predicate<A>): (fa: Datum<A>) => Datum<A>; }
+```
+
+Added in v2.0.0
+
+# filterMap
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => Option<B>) => (fa: Datum<A>) => Datum<B>
+```
+
+Added in v2.0.0
+
+# filterOrElse
+
+**Signature**
+
+```ts
+{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<A>; }
+```
+
+Added in v2.6.0
+
+# flatten
+
+**Signature**
+
+```ts
+<A>(mma: Datum<Datum<A>>) => Datum<A>
+```
+
+Added in v2.0.0
+
+# fold
 
 **Signature**
 
@@ -263,7 +369,27 @@ export const fold = <A, B>(
 
 Added in v2.0.0
 
-# fromNullable (function)
+# foldMap
+
+**Signature**
+
+```ts
+;<M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Datum<A>) => M
+```
+
+Added in v2.0.0
+
+# fromEither
+
+**Signature**
+
+```ts
+<E, A>(ma: Either<E, A>) => Datum<A>
+```
+
+Added in v2.0.0
+
+# fromNullable
 
 Takes a nullable value, if the value is not nully, turn it into a `Replete`, otherwise `Initial`.
 
@@ -275,7 +401,27 @@ export const fromNullable = <A>(a: A | null | undefined): Datum<A> => ...
 
 Added in v2.0.0
 
-# getApplyMonoid (function)
+# fromOption
+
+**Signature**
+
+```ts
+<E>(onNone: () => E) => <A>(ma: Option<A>) => Datum<A>
+```
+
+Added in v2.6.0
+
+# fromPredicate
+
+**Signature**
+
+```ts
+{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Datum<A>; }
+```
+
+Added in v2.6.0
+
+# getApplyMonoid
 
 **Signature**
 
@@ -285,7 +431,7 @@ export const getApplyMonoid = <A>(M: Monoid<A>): Monoid<Datum<A>> => ...
 
 Added in v2.0.0
 
-# getApplySemigroup (function)
+# getApplySemigroup
 
 `Apply` semigroup
 
@@ -297,7 +443,7 @@ export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ..
 
 Added in v2.0.0
 
-# getEq (function)
+# getEq
 
 **Signature**
 
@@ -308,7 +454,7 @@ export const getEq = <A>(E: Eq<A>): Eq<Datum<A>> => ({
 
 Added in v2.0.0
 
-# getOrElse (function)
+# getOrElse
 
 **Signature**
 
@@ -320,7 +466,7 @@ export const getOrElse = <A>(onInitial: () => A, onPending: () => A) => (
 
 Added in v2.0.0
 
-# getOrd (function)
+# getOrd
 
 The `Ord` instance allows `Datum` values to be compared with
 `compare`, whenever there is an `Ord` instance for
@@ -336,7 +482,7 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> { ... }
 
 Added in v2.0.0
 
-# getSemigroup (function)
+# getSemigroup
 
 Semigroup returning the left-most non-`Initial` and non-`Pending` value. If both operands
 are `Replete`s or `Refresh`s then the inner values are appended using the provided
@@ -374,7 +520,7 @@ export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
 
 Added in v2.0.0
 
-# getShow (function)
+# getShow
 
 **Signature**
 
@@ -389,7 +535,19 @@ export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
 
 Added in v2.0.0
 
-# isInitial (function)
+# initial
+
+Constructs an initial `Datum` holding no value.
+
+**Signature**
+
+```ts
+export const initial: Datum<never> = ...
+```
+
+Added in v2.0.0
+
+# isInitial
 
 Returns `true` if the Async is an instance of `Initial`, `false` otherwise
 
@@ -401,7 +559,7 @@ export const isInitial = <A>(ma: Datum<A>): ma is Initial => ...
 
 Added in v2.0.0
 
-# isPending (function)
+# isPending
 
 Returns `true` if the Async is an instance of `Pending`, `false` otherwise
 
@@ -413,7 +571,7 @@ export const isPending = <A>(ma: Datum<A>): ma is Pending => ...
 
 Added in v2.0.0
 
-# isRefresh (function)
+# isRefresh
 
 Returns `true` if the Async is an instance of `Refresh`, `false` otherwise
 
@@ -425,7 +583,7 @@ export const isRefresh = <A>(ma: Datum<A>): ma is Refresh<A> => ...
 
 Added in v2.0.0
 
-# isReplete (function)
+# isReplete
 
 Returns `true` if the Async is an instance of `Replete`, `false` otherwise
 
@@ -437,7 +595,7 @@ export const isReplete = <A>(ma: Datum<A>): ma is Replete<A> => ...
 
 Added in v2.0.0
 
-# isValued (function)
+# isValued
 
 **Signature**
 
@@ -447,7 +605,69 @@ export const isValued = <A>(ma: Datum<A>): ma is Replete<A> | Refresh<A> => ...
 
 Added in v2.0.0
 
-# refresh (function)
+# map
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => B) => (fa: Datum<A>) => Datum<B>
+```
+
+Added in v2.0.0
+
+# partition
+
+**Signature**
+
+```ts
+{ <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Separated<Datum<A>, Datum<B>>; <A>(predicate: Predicate<A>): (fa: Datum<A>) => Separated<Datum<A>, Datum<A>>; }
+```
+
+Added in v2.0.0
+
+# partitionMap
+
+**Signature**
+
+```ts
+<A, B, C>(f: (a: A) => Either<B, C>) => (fa: Datum<A>) => Separated<Datum<B>, Datum<C>>
+```
+
+Added in v2.0.0
+
+# pending
+
+Constructs a pending `Datum` holding no value.
+
+**Signature**
+
+```ts
+export const pending: Datum<never> = ...
+```
+
+Added in v2.0.0
+
+# reduce
+
+**Signature**
+
+```ts
+;<A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>) => B
+```
+
+Added in v2.0.0
+
+# reduceRight
+
+**Signature**
+
+```ts
+;<A, B>(b: B, f: (a: A, b: B) => B) => (fa: Datum<A>) => B
+```
+
+Added in v2.0.0
+
+# refresh
 
 Constructs a new refresh `Datum` holding a value.
 
@@ -459,7 +679,7 @@ export const refresh = <A = never>(value: A): Datum<A> => ...
 
 Added in v2.0.0
 
-# replete (function)
+# replete
 
 Constructs a new replete `Datum` holding a value.
 
@@ -471,227 +691,7 @@ export const replete = <A = never>(value: A): Datum<A> => ...
 
 Added in v2.0.0
 
-# alt (export)
-
-**Signature**
-
-```ts
-<A>(that: () => Datum<A>) => (fa: Datum<A>) => Datum<A>
-```
-
-Added in v2.0.0
-
-# ap (export)
-
-**Signature**
-
-```ts
-<A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
-```
-
-Added in v2.0.0
-
-# apFirst (export)
-
-**Signature**
-
-```ts
-<B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<A>
-```
-
-Added in v2.0.0
-
-# apSecond (export)
-
-**Signature**
-
-```ts
-<B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<B>
-```
-
-Added in v2.0.0
-
-# chain (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<B>
-```
-
-Added in v2.0.0
-
-# chainFirst (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<A>
-```
-
-Added in v2.0.0
-
-# compact (export)
-
-**Signature**
-
-```ts
-<A>(fa: Datum<Option<A>>) => Datum<A>
-```
-
-Added in v2.0.0
-
-# duplicate (export)
-
-**Signature**
-
-```ts
-<A>(ma: Datum<A>) => Datum<Datum<A>>
-```
-
-Added in v2.0.0
-
-# extend (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (fa: Datum<A>) => B) => (ma: Datum<A>) => Datum<B>
-```
-
-Added in v2.0.0
-
-# filter (export)
-
-**Signature**
-
-```ts
-{ <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Datum<B>; <A>(predicate: Predicate<A>): (fa: Datum<A>) => Datum<A>; }
-```
-
-Added in v2.0.0
-
-# filterMap (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (a: A) => Option<B>) => (fa: Datum<A>) => Datum<B>
-```
-
-Added in v2.0.0
-
-# filterOrElse (export)
-
-**Signature**
-
-```ts
-{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<A>; }
-```
-
-Added in v2.6.0
-
-# flatten (export)
-
-**Signature**
-
-```ts
-<A>(mma: Datum<Datum<A>>) => Datum<A>
-```
-
-Added in v2.0.0
-
-# foldMap (export)
-
-**Signature**
-
-```ts
-;<M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Datum<A>) => M
-```
-
-Added in v2.0.0
-
-# fromEither (export)
-
-**Signature**
-
-```ts
-<E, A>(ma: Either<E, A>) => Datum<A>
-```
-
-Added in v2.0.0
-
-# fromOption (export)
-
-**Signature**
-
-```ts
-<E>(onNone: () => E) => <A>(ma: Option<A>) => Datum<A>
-```
-
-Added in v2.6.0
-
-# fromPredicate (export)
-
-**Signature**
-
-```ts
-{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Datum<A>; }
-```
-
-Added in v2.6.0
-
-# map (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (a: A) => B) => (fa: Datum<A>) => Datum<B>
-```
-
-Added in v2.0.0
-
-# partition (export)
-
-**Signature**
-
-```ts
-{ <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Separated<Datum<A>, Datum<B>>; <A>(predicate: Predicate<A>): (fa: Datum<A>) => Separated<Datum<A>, Datum<A>>; }
-```
-
-Added in v2.0.0
-
-# partitionMap (export)
-
-**Signature**
-
-```ts
-<A, B, C>(f: (a: A) => Either<B, C>) => (fa: Datum<A>) => Separated<Datum<B>, Datum<C>>
-```
-
-Added in v2.0.0
-
-# reduce (export)
-
-**Signature**
-
-```ts
-;<A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>) => B
-```
-
-Added in v2.0.0
-
-# reduceRight (export)
-
-**Signature**
-
-```ts
-;<A, B>(b: B, f: (a: A, b: B) => B) => (fa: Datum<A>) => B
-```
-
-Added in v2.0.0
-
-# separate (export)
+# separate
 
 **Signature**
 
