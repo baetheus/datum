@@ -34,43 +34,43 @@ There are additional helper methods for going from refresh to replete and back.
 - [Failure (type alias)](#failure-type-alias)
 - [Success (type alias)](#success-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [datumEither (constant)](#datumeither-constant)
-- [initial (constant)](#initial-constant)
-- [pending (constant)](#pending-constant)
-- [constInitial (function)](#constinitial-function)
-- [constPending (function)](#constpending-function)
-- [failure (function)](#failure-function)
-- [fold (function)](#fold-function)
-- [fromEither (function)](#fromeither-function)
-- [fromNullable (function)](#fromnullable-function)
-- [fromOption (function)](#fromoption-function)
-- [isFailure (function)](#isfailure-function)
-- [isRefreshLeft (function)](#isrefreshleft-function)
-- [isRefreshRight (function)](#isrefreshright-function)
-- [isRepleteLeft (function)](#isrepleteleft-function)
-- [isRepleteRight (function)](#isrepleteright-function)
-- [isSuccess (function)](#issuccess-function)
-- [refreshFold (function)](#refreshfold-function)
-- [squash (function)](#squash-function)
-- [success (function)](#success-function)
-- [toRefresh (function)](#torefresh-function)
-- [toReplete (function)](#toreplete-function)
-- [alt (export)](#alt-export)
-- [ap (export)](#ap-export)
-- [apFirst (export)](#apfirst-export)
-- [apSecond (export)](#apsecond-export)
-- [bimap (export)](#bimap-export)
-- [chain (export)](#chain-export)
-- [chainFirst (export)](#chainfirst-export)
-- [flatten (export)](#flatten-export)
-- [isInitial (export)](#isinitial-export)
-- [isPending (export)](#ispending-export)
-- [isRefresh (export)](#isrefresh-export)
-- [isReplete (export)](#isreplete-export)
-- [isValued (export)](#isvalued-export)
-- [map (export)](#map-export)
-- [mapLeft (export)](#mapleft-export)
+- [URI](#uri)
+- [alt](#alt)
+- [ap](#ap)
+- [apFirst](#apfirst)
+- [apSecond](#apsecond)
+- [bimap](#bimap)
+- [chain](#chain)
+- [chainFirst](#chainfirst)
+- [constInitial](#constinitial)
+- [constPending](#constpending)
+- [datumEither](#datumeither)
+- [failure](#failure)
+- [flatten](#flatten)
+- [fold](#fold)
+- [fromEither](#fromeither)
+- [fromNullable](#fromnullable)
+- [fromOption](#fromoption)
+- [initial](#initial)
+- [isFailure](#isfailure)
+- [isInitial](#isinitial)
+- [isPending](#ispending)
+- [isRefresh](#isrefresh)
+- [isRefreshLeft](#isrefreshleft)
+- [isRefreshRight](#isrefreshright)
+- [isReplete](#isreplete)
+- [isRepleteLeft](#isrepleteleft)
+- [isRepleteRight](#isrepleteright)
+- [isSuccess](#issuccess)
+- [isValued](#isvalued)
+- [map](#map)
+- [mapLeft](#mapleft)
+- [pending](#pending)
+- [refreshFold](#refreshfold)
+- [squash](#squash)
+- [success](#success)
+- [toRefresh](#torefresh)
+- [toReplete](#toreplete)
 
 ---
 
@@ -114,7 +114,7 @@ export type URI = typeof URI
 
 Added in v2.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -124,37 +124,77 @@ export const URI: "@nll/datum/DatumEither" = ...
 
 Added in v2.0.0
 
-# datumEither (constant)
+# alt
 
 **Signature**
 
 ```ts
-export const datumEither: Monad2<URI> & EitherM1<DatumURI> = ...
+<E, A>(that: () => Datum<Either<E, A>>) => (fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
 
-# initial (constant)
+# ap
 
 **Signature**
 
 ```ts
-export const initial: DatumEither<never, never> = ...
+<E, A>(fa: Datum<Either<E, A>>) => <B>(fab: Datum<Either<E, (a: A) => B>>) => Datum<Either<E, B>>
 ```
 
-Added in v2.4.1
+Added in v2.0.0
 
-# pending (constant)
+# apFirst
 
 **Signature**
 
 ```ts
-export const pending: DatumEither<never, never> = ...
+<E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
-Added in v2.4.1
+Added in v2.0.0
 
-# constInitial (function)
+# apSecond
+
+**Signature**
+
+```ts
+<E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
+```
+
+Added in v2.0.0
+
+# bimap
+
+**Signature**
+
+```ts
+<E, G, A, B>(f: (e: E) => G, g: (a: A) => B) => (fa: Datum<Either<E, A>>) => Datum<Either<G, B>>
+```
+
+Added in v2.0.0
+
+# chain
+
+**Signature**
+
+```ts
+<E, A, B>(f: (a: A) => Datum<Either<E, B>>) => (ma: Datum<Either<E, A>>) => Datum<Either<E, B>>
+```
+
+Added in v2.0.0
+
+# chainFirst
+
+**Signature**
+
+```ts
+<E, A, B>(f: (a: A) => Datum<Either<E, B>>) => (ma: Datum<Either<E, A>>) => Datum<Either<E, A>>
+```
+
+Added in v2.0.0
+
+# constInitial
 
 **Signature**
 
@@ -164,7 +204,7 @@ export const constInitial = <E, D>(): DatumEither<E, D> => ...
 
 Added in v2.4.1
 
-# constPending (function)
+# constPending
 
 **Signature**
 
@@ -174,7 +214,17 @@ export const constPending = <E, D>(): DatumEither<E, D> => ...
 
 Added in v2.4.1
 
-# failure (function)
+# datumEither
+
+**Signature**
+
+```ts
+export const datumEither: Monad2<URI> & EitherM1<DatumURI> = ...
+```
+
+Added in v2.0.0
+
+# failure
 
 **Signature**
 
@@ -184,7 +234,17 @@ export const failure = <E>(e: E) => ...
 
 Added in v2.1.0
 
-# fold (function)
+# flatten
+
+**Signature**
+
+```ts
+<E, A>(mma: Datum<Either<E, Datum<Either<E, A>>>>) => Datum<Either<E, A>>
+```
+
+Added in v2.0.0
+
+# fold
 
 **Signature**
 
@@ -201,7 +261,7 @@ export const fold = <E, A, B>(
 
 Added in v2.7.0
 
-# fromEither (function)
+# fromEither
 
 **Signature**
 
@@ -211,7 +271,7 @@ export const fromEither = <E, A>(e: Lazy<Either<E, A>>): DatumEither<E, A> => ..
 
 Added in v2.2.0
 
-# fromNullable (function)
+# fromNullable
 
 Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.
 
@@ -225,7 +285,7 @@ export const fromNullable = <E, A>(
 
 Added in v2.4.0
 
-# fromOption (function)
+# fromOption
 
 **Signature**
 
@@ -237,7 +297,17 @@ export const fromOption = <E, A>(onNone: Lazy<E>) => (
 
 Added in v2.2.0
 
-# isFailure (function)
+# initial
+
+**Signature**
+
+```ts
+export const initial: DatumEither<never, never> = ...
+```
+
+Added in v2.4.1
+
+# isFailure
 
 **Signature**
 
@@ -247,7 +317,37 @@ export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> => ..
 
 Added in v2.1.0
 
-# isRefreshLeft (function)
+# isInitial
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Initial
+```
+
+Added in v2.7.0
+
+# isPending
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Pending
+```
+
+Added in v2.7.0
+
+# isRefresh
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Refresh<A>
+```
+
+Added in v2.7.0
+
+# isRefreshLeft
 
 **Signature**
 
@@ -259,7 +359,7 @@ export const isRefreshLeft = <E, A>(
 
 Added in v2.7.0
 
-# isRefreshRight (function)
+# isRefreshRight
 
 **Signature**
 
@@ -271,7 +371,17 @@ export const isRefreshRight = <E, A>(
 
 Added in v2.7.0
 
-# isRepleteLeft (function)
+# isReplete
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Replete<A>
+```
+
+Added in v2.7.0
+
+# isRepleteLeft
 
 **Signature**
 
@@ -283,7 +393,7 @@ export const isRepleteLeft = <E, A>(
 
 Added in v2.7.0
 
-# isRepleteRight (function)
+# isRepleteRight
 
 **Signature**
 
@@ -295,7 +405,7 @@ export const isRepleteRight = <E, A>(
 
 Added in v2.7.0
 
-# isSuccess (function)
+# isSuccess
 
 **Signature**
 
@@ -305,7 +415,47 @@ export const isSuccess = <E, A>(fea: DatumEither<E, A>): fea is Success<A> => ..
 
 Added in v2.1.0
 
-# refreshFold (function)
+# isValued
+
+**Signature**
+
+```ts
+<A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
+```
+
+Added in v2.7.0
+
+# map
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => B) => <E>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
+```
+
+Added in v2.0.0
+
+# mapLeft
+
+**Signature**
+
+```ts
+<E, G>(f: (e: E) => G) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<G, A>>
+```
+
+Added in v2.0.0
+
+# pending
+
+**Signature**
+
+```ts
+export const pending: DatumEither<never, never> = ...
+```
+
+Added in v2.4.1
+
+# refreshFold
 
 **Signature**
 
@@ -325,7 +475,7 @@ export const refreshFold = <E, A, B>(
 
 Added in v2.1.0
 
-# squash (function)
+# squash
 
 **Signature**
 
@@ -344,7 +494,7 @@ export const squash = <E, A, B>(
 
 Added in v2.3.0
 
-# success (function)
+# success
 
 **Signature**
 
@@ -354,7 +504,7 @@ export const success = <A>(a: A) => ...
 
 Added in v2.1.0
 
-# toRefresh (function)
+# toRefresh
 
 **Signature**
 
@@ -364,7 +514,7 @@ export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> => ..
 
 Added in v2.1.0
 
-# toReplete (function)
+# toReplete
 
 **Signature**
 
@@ -373,153 +523,3 @@ export const toReplete = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> => ..
 ```
 
 Added in v2.7.0
-
-# alt (export)
-
-**Signature**
-
-```ts
-<E, A>(that: () => Datum<Either<E, A>>) => (fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
-```
-
-Added in v2.0.0
-
-# ap (export)
-
-**Signature**
-
-```ts
-<E, A>(fa: Datum<Either<E, A>>) => <B>(fab: Datum<Either<E, (a: A) => B>>) => Datum<Either<E, B>>
-```
-
-Added in v2.0.0
-
-# apFirst (export)
-
-**Signature**
-
-```ts
-<E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
-```
-
-Added in v2.0.0
-
-# apSecond (export)
-
-**Signature**
-
-```ts
-<E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
-```
-
-Added in v2.0.0
-
-# bimap (export)
-
-**Signature**
-
-```ts
-<E, G, A, B>(f: (e: E) => G, g: (a: A) => B) => (fa: Datum<Either<E, A>>) => Datum<Either<G, B>>
-```
-
-Added in v2.0.0
-
-# chain (export)
-
-**Signature**
-
-```ts
-<E, A, B>(f: (a: A) => Datum<Either<E, B>>) => (ma: Datum<Either<E, A>>) => Datum<Either<E, B>>
-```
-
-Added in v2.0.0
-
-# chainFirst (export)
-
-**Signature**
-
-```ts
-<E, A, B>(f: (a: A) => Datum<Either<E, B>>) => (ma: Datum<Either<E, A>>) => Datum<Either<E, A>>
-```
-
-Added in v2.0.0
-
-# flatten (export)
-
-**Signature**
-
-```ts
-<E, A>(mma: Datum<Either<E, Datum<Either<E, A>>>>) => Datum<Either<E, A>>
-```
-
-Added in v2.0.0
-
-# isInitial (export)
-
-**Signature**
-
-```ts
-<A>(ma: Datum<A>) => ma is Initial
-```
-
-Added in v2.7.0
-
-# isPending (export)
-
-**Signature**
-
-```ts
-<A>(ma: Datum<A>) => ma is Pending
-```
-
-Added in v2.7.0
-
-# isRefresh (export)
-
-**Signature**
-
-```ts
-<A>(ma: Datum<A>) => ma is Refresh<A>
-```
-
-Added in v2.7.0
-
-# isReplete (export)
-
-**Signature**
-
-```ts
-<A>(ma: Datum<A>) => ma is Replete<A>
-```
-
-Added in v2.7.0
-
-# isValued (export)
-
-**Signature**
-
-```ts
-<A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
-```
-
-Added in v2.7.0
-
-# map (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (a: A) => B) => <E>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
-```
-
-Added in v2.0.0
-
-# mapLeft (export)
-
-**Signature**
-
-```ts
-<E, G>(f: (e: E) => G) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<G, A>>
-```
-
-Added in v2.0.0
