@@ -1,6 +1,6 @@
 {
   "name": "@nll/datum",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "ADT for handling fetchable and refreshable data",
   "files": [
     "*"
