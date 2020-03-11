@@ -16,7 +16,7 @@
     "jest-clear-cache": "jest --clearCache",
     "jest": "jest --ci",
     "coveralls": "cat ./coverage/lcov.info | npx coveralls",
-    "release": "npx standard-version && npm run build",
+    "release": "npx standard-version",
     "test": "npm run jest-clear-cache && npm run jest"
   },
   "repository": {
@@ -50,7 +50,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "fp-ts": "^2"
+    "fp-ts": "^2.0.0"
   },
   "prettier": {
     "singleQuote": true
