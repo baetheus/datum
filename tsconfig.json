@@ -20,8 +20,8 @@
     "declarationDir": "./dist",
     "outDir": "./dist",
     "module": "ES6",
-    "sourceMap": true,
-    "target": "es6"
+    "target": "es6",
+    "sourceMap": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
