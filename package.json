@@ -2,6 +2,7 @@
   "name": "@nll/datum",
   "version": "3.0.3",
   "description": "ADT for handling fetchable and refreshable data",
+  "main": "index.js",
   "files": [
     "*"
   ],
