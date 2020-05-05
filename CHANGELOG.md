@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/nullpub/datum/compare/v3.0.1...v3.1.0) (2020-05-05)
+
+
+### Features
+
+* Re-export modules from a main index file ([263644f](https://github.com/nullpub/datum/commit/263644f1f9284e5f9712409a38afe66c0f419e73))
+
 ### [3.0.3](https://github.com/nullpub/datum/compare/v3.0.1...v3.0.3) (2020-03-11)
 
 ### [3.0.2](https://github.com/nullpub/datum/compare/v3.0.1...v3.0.2) (2020-03-11)
