@@ -152,7 +152,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const URI: "@nll/datum/Datum" = ...
+export declare const URI: '@nll/datum/Datum'
 ```
 
 Added in v2.0.0
@@ -162,7 +162,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A>(that: () => Datum<A>) => (fa: Datum<A>) => Datum<A>
+export declare const alt: <A>(that: () => Datum<A>) => (fa: Datum<A>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -172,7 +172,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
+export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -182,7 +182,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<A>
+export declare const apFirst: <B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -192,7 +192,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<B>
+export declare const apSecond: <B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -202,7 +202,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<B>
+export declare const chain: <A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -212,7 +212,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<A>
+export declare const chainFirst: <A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -222,7 +222,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A>(fa: Datum<Option<A>>) => Datum<A>
+export declare const compact: <A>(fa: Datum<Option<A>>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -232,7 +232,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const constInitial: Lazy<Initial> = ...
+export declare const constInitial: Lazy<Initial>
 ```
 
 Added in v2.0.0
@@ -242,7 +242,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const constPending: Lazy<Pending> = ...
+export declare const constPending: Lazy<Pending>
 ```
 
 Added in v2.0.0
@@ -252,15 +252,15 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const datum: Monad1<URI> &
-  Foldable1<URI> &
-  Traversable1<URI> &
-  Alternative1<URI> &
-  Extend1<URI> &
-  Compactable1<URI> &
-  Filterable1<URI> &
-  Witherable1<URI> &
-  MonadThrow1<URI> = ...
+export declare const datum: Monad1<'@nll/datum/Datum'> &
+  Foldable1<'@nll/datum/Datum'> &
+  Traversable1<'@nll/datum/Datum'> &
+  Alternative1<'@nll/datum/Datum'> &
+  Extend1<'@nll/datum/Datum'> &
+  Compactable1<'@nll/datum/Datum'> &
+  Filterable1<'@nll/datum/Datum'> &
+  Witherable1<'@nll/datum/Datum'> &
+  MonadThrow1<'@nll/datum/Datum'>
 ```
 
 Added in v2.0.0
@@ -270,7 +270,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => Datum<Datum<A>>
+export declare const duplicate: <A>(ma: Datum<A>) => Datum<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -280,12 +280,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const elem = <A>(E: Eq<A>) => <E>(a: A, ma: Datum<A>): boolean =>
-  fold<A, boolean>(
-    constFalse,
-    constFalse,
-    b => E.equals(a, b),
-    b => ...
+export declare const elem: <A>(E: Eq<A>) => <E>(a: A, ma: Datum<A>) => boolean
 ```
 
 Added in v2.0.0
@@ -297,9 +292,7 @@ Returns `false` if `Refresh` or returns the result of the application of the giv
 **Signature**
 
 ```ts
-export const exists = <A>(predicate: Predicate<A>) => <E>(
-  ma: Datum<A>
-): boolean => ...
+export declare const exists: <A>(predicate: Predicate<A>) => <E>(ma: Datum<A>) => boolean
 ```
 
 Added in v2.0.0
@@ -309,7 +302,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(f: (fa: Datum<A>) => B) => (ma: Datum<A>) => Datum<B>
+export declare const extend: <A, B>(f: (fa: Datum<A>) => B) => (ma: Datum<A>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -319,7 +312,10 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-{ <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Datum<B>; <A>(predicate: Predicate<A>): (fa: Datum<A>) => Datum<A>; }
+export declare const filter: {
+  <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Datum<B>
+  <A>(predicate: Predicate<A>): (fa: Datum<A>) => Datum<A>
+}
 ```
 
 Added in v2.0.0
@@ -329,7 +325,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(f: (a: A) => Option<B>) => (fa: Datum<A>) => Datum<B>
+export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Datum<A>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -339,7 +335,10 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<A>; }
+export declare const filterOrElse: {
+  <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<B>
+  <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Datum<A>) => Datum<A>
+}
 ```
 
 Added in v2.6.0
@@ -349,7 +348,7 @@ Added in v2.6.0
 **Signature**
 
 ```ts
-<A>(mma: Datum<Datum<A>>) => Datum<A>
+export declare const flatten: <A>(mma: Datum<Datum<A>>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -359,12 +358,12 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const fold = <A, B>(
+export declare const fold: <A, B>(
   onInitial: () => B,
   onPending: () => B,
   onRefresh: (v: A) => B,
   onReplete: (a: A) => B
-) => (ma: Datum<A>): B => ...
+) => (ma: Datum<A>) => B
 ```
 
 Added in v2.0.0
@@ -374,7 +373,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-;<M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Datum<A>) => M
+export declare const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Datum<A>) => M
 ```
 
 Added in v2.0.0
@@ -384,7 +383,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, A>(ma: Either<E, A>) => Datum<A>
+export declare const fromEither: <E, A>(ma: Either<E, A>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -396,7 +395,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Replete`, oth
 **Signature**
 
 ```ts
-export const fromNullable = <A>(a: A | null | undefined): Datum<A> => ...
+export declare const fromNullable: <A>(a: A) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -406,7 +405,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E>(onNone: () => E) => <A>(ma: Option<A>) => Datum<A>
+export declare const fromOption: <E>(onNone: () => E) => <A>(ma: Option<A>) => Datum<A>
 ```
 
 Added in v2.6.0
@@ -416,7 +415,10 @@ Added in v2.6.0
 **Signature**
 
 ```ts
-{ <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Datum<B>; <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Datum<A>; }
+export declare const fromPredicate: {
+  <E, A, B>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Datum<B>
+  <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Datum<A>
+}
 ```
 
 Added in v2.6.0
@@ -426,7 +428,7 @@ Added in v2.6.0
 **Signature**
 
 ```ts
-export const getApplyMonoid = <A>(M: Monoid<A>): Monoid<Datum<A>> => ...
+export declare const getApplyMonoid: <A>(M: Monoid<A>) => Monoid<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -438,7 +440,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ...
+export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -448,8 +450,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const getEq = <A>(E: Eq<A>): Eq<Datum<A>> => ({
-  equals: (x, y) => ...
+export declare const getEq: <A>(E: Eq<A>) => Eq<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -459,9 +460,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const getOrElse = <A>(onInitial: () => A, onPending: () => A) => (
-  ma: Datum<A>
-): A => ...
+export declare const getOrElse: <A>(onInitial: () => A, onPending: () => A) => (ma: Datum<A>) => A
 ```
 
 Added in v2.0.0
@@ -477,7 +476,7 @@ the type the `Datum` contains.
 **Signature**
 
 ```ts
-export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> { ... }
+export declare function getOrd<A>(O: Ord<A>): Ord<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -491,31 +490,7 @@ are `Replete`s or `Refresh`s then the inner values are appended using the provid
 **Signature**
 
 ```ts
-export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
-  concat: (fx, fy): Datum<A> =>
-    fold<A, Datum<A>>(
-      constInitial,
-      constant(
-        fold<A, Datum<A>>(
-          constInitial,
-          constPending,
-          constPending,
-          constPending
-        )(fy)
-      ),
-      x =>
-        fold<A, Datum<A>>(
-          constInitial,
-          constPending,
-          y => refresh(S.concat(x, y)),
-          y => refresh(S.concat(x, y))
-        )(fy),
-      x =>
-        fold<A, Datum<A>>(
-          constInitial,
-          constPending,
-          y => refresh(S.concat(x, y)),
-          y => ...
+export declare const getSemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -525,12 +500,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const getShow = <A>(S: Show<A>): Show<Datum<A>> => ({
-  show: fold(
-    constant('initial'),
-    constant('pending'),
-    v => `refresh(${S.show(v)})`,
-    v => ...
+export declare const getShow: <A>(S: Show<A>) => Show<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -542,7 +512,7 @@ Constructs an initial `Datum` holding no value.
 **Signature**
 
 ```ts
-export const initial: Datum<never> = ...
+export declare const initial: Datum<never>
 ```
 
 Added in v2.0.0
@@ -554,7 +524,7 @@ Returns `true` if the Async is an instance of `Initial`, `false` otherwise
 **Signature**
 
 ```ts
-export const isInitial = <A>(ma: Datum<A>): ma is Initial => ...
+export declare const isInitial: <A>(ma: Datum<A>) => ma is Initial
 ```
 
 Added in v2.0.0
@@ -566,7 +536,7 @@ Returns `true` if the Async is an instance of `Pending`, `false` otherwise
 **Signature**
 
 ```ts
-export const isPending = <A>(ma: Datum<A>): ma is Pending => ...
+export declare const isPending: <A>(ma: Datum<A>) => ma is Pending
 ```
 
 Added in v2.0.0
@@ -578,7 +548,7 @@ Returns `true` if the Async is an instance of `Refresh`, `false` otherwise
 **Signature**
 
 ```ts
-export const isRefresh = <A>(ma: Datum<A>): ma is Refresh<A> => ...
+export declare const isRefresh: <A>(ma: Datum<A>) => ma is Refresh<A>
 ```
 
 Added in v2.0.0
@@ -590,7 +560,7 @@ Returns `true` if the Async is an instance of `Replete`, `false` otherwise
 **Signature**
 
 ```ts
-export const isReplete = <A>(ma: Datum<A>): ma is Replete<A> => ...
+export declare const isReplete: <A>(ma: Datum<A>) => ma is Replete<A>
 ```
 
 Added in v2.0.0
@@ -600,7 +570,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const isValued = <A>(ma: Datum<A>): ma is Replete<A> | Refresh<A> => ...
+export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
 ```
 
 Added in v2.0.0
@@ -610,7 +580,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(f: (a: A) => B) => (fa: Datum<A>) => Datum<B>
+export declare const map: <A, B>(f: (a: A) => B) => (fa: Datum<A>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -620,7 +590,10 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-{ <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Separated<Datum<A>, Datum<B>>; <A>(predicate: Predicate<A>): (fa: Datum<A>) => Separated<Datum<A>, Datum<A>>; }
+export declare const partition: {
+  <A, B>(refinement: Refinement<A, B>): (fa: Datum<A>) => Separated<Datum<A>, Datum<B>>
+  <A>(predicate: Predicate<A>): (fa: Datum<A>) => Separated<Datum<A>, Datum<A>>
+}
 ```
 
 Added in v2.0.0
@@ -630,7 +603,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B, C>(f: (a: A) => Either<B, C>) => (fa: Datum<A>) => Separated<Datum<B>, Datum<C>>
+export declare const partitionMap: <A, B, C>(
+  f: (a: A) => Either<B, C>
+) => (fa: Datum<A>) => Separated<Datum<B>, Datum<C>>
 ```
 
 Added in v2.0.0
@@ -642,7 +617,7 @@ Constructs a pending `Datum` holding no value.
 **Signature**
 
 ```ts
-export const pending: Datum<never> = ...
+export declare const pending: Datum<never>
 ```
 
 Added in v2.0.0
@@ -652,7 +627,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-;<A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>) => B
+export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>) => B
 ```
 
 Added in v2.0.0
@@ -662,7 +637,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-;<A, B>(b: B, f: (a: A, b: B) => B) => (fa: Datum<A>) => B
+export declare const reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Datum<A>) => B
 ```
 
 Added in v2.0.0
@@ -674,7 +649,7 @@ Constructs a new refresh `Datum` holding a value.
 **Signature**
 
 ```ts
-export const refresh = <A = never>(value: A): Datum<A> => ...
+export declare const refresh: <A = never>(value: A) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -686,7 +661,7 @@ Constructs a new replete `Datum` holding a value.
 **Signature**
 
 ```ts
-export const replete = <A = never>(value: A): Datum<A> => ...
+export declare const replete: <A = never>(value: A) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -696,7 +671,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<A, B>(fa: Datum<Either<A, B>>) => Separated<Datum<A>, Datum<B>>
+export declare const separate: <A, B>(fa: Datum<Either<A, B>>) => Separated<Datum<A>, Datum<B>>
 ```
 
 Added in v2.0.0

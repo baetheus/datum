@@ -22,7 +22,7 @@ Added in v3.1.0
 **Signature**
 
 ```ts
-typeof datum
+export declare const datum: typeof datum
 ```
 
 Added in v3.1.0
@@ -32,7 +32,7 @@ Added in v3.1.0
 **Signature**
 
 ```ts
-typeof datumEither
+export declare const datumEither: typeof datumEither
 ```
 
 Added in v3.1.0

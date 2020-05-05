@@ -119,7 +119,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const URI: "@nll/datum/DatumEither" = ...
+export declare const URI: '@nll/datum/DatumEither'
 ```
 
 Added in v2.0.0
@@ -129,7 +129,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, A>(that: () => Datum<Either<E, A>>) => (fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
+export declare const alt: <E, A>(that: () => Datum<Either<E, A>>) => (fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -139,7 +139,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, A>(fa: Datum<Either<E, A>>) => <B>(fab: Datum<Either<E, (a: A) => B>>) => Datum<Either<E, B>>
+export declare const ap: <E, A>(
+  fa: Datum<Either<E, A>>
+) => <B>(fab: Datum<Either<E, (a: A) => B>>) => Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -149,7 +151,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
+export declare const apFirst: <E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -159,7 +161,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
+export declare const apSecond: <E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -169,7 +171,10 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, G, A, B>(f: (e: E) => G, g: (a: A) => B) => (fa: Datum<Either<E, A>>) => Datum<Either<G, B>>
+export declare const bimap: <E, G, A, B>(
+  f: (e: E) => G,
+  g: (a: A) => B
+) => (fa: Datum<Either<E, A>>) => Datum<Either<G, B>>
 ```
 
 Added in v2.0.0
@@ -179,7 +184,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, A, B>(f: (a: A) => Datum<Either<E, B>>) => (ma: Datum<Either<E, A>>) => Datum<Either<E, B>>
+export declare const chain: <E, A, B>(
+  f: (a: A) => Datum<Either<E, B>>
+) => (ma: Datum<Either<E, A>>) => Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -189,7 +196,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, A, B>(f: (a: A) => Datum<Either<E, B>>) => (ma: Datum<Either<E, A>>) => Datum<Either<E, A>>
+export declare const chainFirst: <E, A, B>(
+  f: (a: A) => Datum<Either<E, B>>
+) => (ma: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -199,7 +208,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const constInitial = <E, D>(): DatumEither<E, D> => ...
+export declare const constInitial: <E, D>() => Datum<Either<E, D>>
 ```
 
 Added in v2.4.1
@@ -209,7 +218,7 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export const constPending = <E, D>(): DatumEither<E, D> => ...
+export declare const constPending: <E, D>() => Datum<Either<E, D>>
 ```
 
 Added in v2.4.1
@@ -219,7 +228,7 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export const datumEither: Monad2<URI> & EitherM1<DatumURI> = ...
+export declare const datumEither: Monad2<'@nll/datum/DatumEither'> & EitherM1<'@nll/datum/Datum'>
 ```
 
 Added in v2.0.0
@@ -229,7 +238,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const failure = <E>(e: E) => ...
+export declare const failure: <E>(e: E) => Datum<Either<E, never>>
 ```
 
 Added in v2.1.0
@@ -239,7 +248,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-<E, A>(mma: Datum<Either<E, Datum<Either<E, A>>>>) => Datum<Either<E, A>>
+export declare const flatten: <E, A>(mma: Datum<Either<E, Datum<Either<E, A>>>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -249,14 +258,14 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const fold = <E, A, B>(
+export declare const fold: <E, A, B>(
   onInitial: Lazy<B>,
   onPending: Lazy<B>,
   onRefreshLeft: FunctionN<[E], B>,
   onRefreshRight: FunctionN<[A], B>,
   onRepleteLeft: FunctionN<[E], B>,
   onRepleteRight: FunctionN<[A], B>
-) => (fea: DatumEither<E, A>): B => ...
+) => (fea: Datum<Either<E, A>>) => B
 ```
 
 Added in v2.7.0
@@ -266,7 +275,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export const fromEither = <E, A>(e: Lazy<Either<E, A>>): DatumEither<E, A> => ...
+export declare const fromEither: <E, A>(e: Lazy<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.2.0
@@ -278,9 +287,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, 
 **Signature**
 
 ```ts
-export const fromNullable = <E, A>(
-  a: A | null | undefined
-): DatumEither<E, A> => ...
+export declare const fromNullable: <E, A>(a: A) => Datum<Either<E, A>>
 ```
 
 Added in v2.4.0
@@ -290,9 +297,7 @@ Added in v2.4.0
 **Signature**
 
 ```ts
-export const fromOption = <E, A>(onNone: Lazy<E>) => (
-  o: Option<A>
-): DatumEither<unknown, A> => ...
+export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => Datum<Either<unknown, A>>
 ```
 
 Added in v2.2.0
@@ -302,7 +307,7 @@ Added in v2.2.0
 **Signature**
 
 ```ts
-export const initial: DatumEither<never, never> = ...
+export declare const initial: Datum<Either<never, never>>
 ```
 
 Added in v2.4.1
@@ -312,7 +317,7 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> => ...
+export declare const isFailure: <E, A>(fea: Datum<Either<E, A>>) => fea is Failure<E>
 ```
 
 Added in v2.1.0
@@ -322,7 +327,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => ma is Initial
+export declare const isInitial: <A>(ma: Datum<A>) => ma is Initial
 ```
 
 Added in v2.7.0
@@ -332,7 +337,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => ma is Pending
+export declare const isPending: <A>(ma: Datum<A>) => ma is Pending
 ```
 
 Added in v2.7.0
@@ -342,7 +347,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => ma is Refresh<A>
+export declare const isRefresh: <A>(ma: Datum<A>) => ma is Refresh<A>
 ```
 
 Added in v2.7.0
@@ -352,9 +357,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export const isRefreshLeft = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Refresh<Left<E>> => ...
+export declare const isRefreshLeft: <E, A>(fea: Datum<Either<E, A>>) => fea is Refresh<Left<E>>
 ```
 
 Added in v2.7.0
@@ -364,9 +367,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export const isRefreshRight = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Refresh<Right<A>> => ...
+export declare const isRefreshRight: <E, A>(fea: Datum<Either<E, A>>) => fea is Refresh<Right<A>>
 ```
 
 Added in v2.7.0
@@ -376,7 +377,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => ma is Replete<A>
+export declare const isReplete: <A>(ma: Datum<A>) => ma is Replete<A>
 ```
 
 Added in v2.7.0
@@ -386,9 +387,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export const isRepleteLeft = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Replete<Left<E>> => ...
+export declare const isRepleteLeft: <E, A>(fea: Datum<Either<E, A>>) => fea is Replete<Left<E>>
 ```
 
 Added in v2.7.0
@@ -398,9 +397,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export const isRepleteRight = <E, A>(
-  fea: DatumEither<E, A>
-): fea is Replete<Right<A>> => ...
+export declare const isRepleteRight: <E, A>(fea: Datum<Either<E, A>>) => fea is Replete<Right<A>>
 ```
 
 Added in v2.7.0
@@ -410,7 +407,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export const isSuccess = <E, A>(fea: DatumEither<E, A>): fea is Success<A> => ...
+export declare const isSuccess: <E, A>(fea: Datum<Either<E, A>>) => fea is Success<A>
 ```
 
 Added in v2.1.0
@@ -420,7 +417,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-<A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
+export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
 ```
 
 Added in v2.7.0
@@ -430,7 +427,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-<A, B>(f: (a: A) => B) => <E>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
+export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: Datum<Either<E, A>>) => Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -440,7 +437,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-<E, G>(f: (e: E) => G) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<G, A>>
+export declare const mapLeft: <E, G>(f: (e: E) => G) => <A>(fa: Datum<Either<E, A>>) => Datum<Either<G, A>>
 ```
 
 Added in v2.0.0
@@ -450,7 +447,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const pending: DatumEither<never, never> = ...
+export declare const pending: Datum<Either<never, never>>
 ```
 
 Added in v2.4.1
@@ -460,17 +457,12 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export const refreshFold = <E, A, B>(
+export declare const refreshFold: <E, A, B>(
   onInitial: () => B,
   onPending: () => B,
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
-) => (fea: DatumEither<E, A>): B =>
-  datumFold<Either<E, A>, B>(
-    onInitial,
-    onPending,
-    e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
-    e => ...
+) => (fea: Datum<Either<E, A>>) => B
 ```
 
 Added in v2.1.0
@@ -480,16 +472,11 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export const squash = <E, A, B>(
+export declare const squash: <E, A, B>(
   onNone: (r?: boolean) => B,
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
-) => (fea: DatumEither<E, A>) =>
-  datumFold<Either<E, A>, B>(
-    () => onNone(false),
-    () => onNone(true),
-    e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
-    e => ...
+) => (fea: Datum<Either<E, A>>) => B
 ```
 
 Added in v2.3.0
@@ -499,7 +486,7 @@ Added in v2.3.0
 **Signature**
 
 ```ts
-export const success = <A>(a: A) => ...
+export declare const success: <A>(a: A) => Datum<Either<never, A>>
 ```
 
 Added in v2.1.0
@@ -509,7 +496,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> => ...
+export declare const toRefresh: <E, A>(fea: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
@@ -519,7 +506,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export const toReplete = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> => ...
+export declare const toReplete: <E, A>(fea: Datum<Either<E, A>>) => Datum<Either<E, A>>
 ```
 
 Added in v2.7.0

@@ -22,16 +22,16 @@ const publishPackage = {
   license: pkg.license,
   bugs: pkg.bugs,
   homepage: pkg.homepage,
-  dependencies: pkg.dependencies
+  dependencies: pkg.dependencies,
 };
 
 const copyRecursiveSync = (src: string, dest: string): void => {
   const srcIsDirectory = fs.statSync(src).isDirectory();
   if (srcIsDirectory) {
-    if (!fs.statSync(dest).isDirectory()) {
+    if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest);
     }
-    fs.readdirSync(src).forEach(function(childItemName) {
+    fs.readdirSync(src).forEach(function (childItemName) {
       copyRecursiveSync(
         path.join(src, childItemName),
         path.join(dest, childItemName)
@@ -43,12 +43,12 @@ const copyRecursiveSync = (src: string, dest: string): void => {
 };
 
 const remapSources = (map: { sources: string[] }) => {
-  const sources = map.sources.map(source =>
+  const sources = map.sources.map((source) =>
     source.replace(/\.\.\/src/, './src')
   );
   return {
     ...map,
-    sources
+    sources,
   };
 };
 
@@ -61,20 +61,20 @@ fs.writeFileSync(
   [outDir, 'package.json'].join('/'),
   JSON.stringify(publishPackage, null, 2),
   {
-    encoding: 'utf-8'
+    encoding: 'utf-8',
   }
 );
 
 // Copy additional items
-copyItems.forEach(src => copyRecursiveSync(src, [outDir, src].join('/')));
+copyItems.forEach((src) => copyRecursiveSync(src, [outDir, src].join('/')));
 
 // Modify sourcemaps
 const sourceMaps = fs
   .readdirSync(outDir)
-  .filter(file => file.endsWith('js.map'))
-  .map(file => [outDir, file].join('/'));
+  .filter((file) => file.endsWith('js.map'))
+  .map((file) => [outDir, file].join('/'));
 
-sourceMaps.forEach(map => {
+sourceMaps.forEach((map) => {
   const file = JSON.parse(fs.readFileSync(map, { encoding: 'utf-8' }));
   const newFile = remapSources(file);
   fs.writeFileSync(map, JSON.stringify(newFile), { encoding: 'utf-8' });
