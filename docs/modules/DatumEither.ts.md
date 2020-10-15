@@ -4,7 +4,7 @@ nav_order: 2
 parent: Modules
 ---
 
-# DatumEither overview
+## DatumEither overview
 
 Added in v2.0.0
 
@@ -30,51 +30,58 @@ There are additional helper methods for going from refresh to replete and back.
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [DatumEither (type alias)](#datumeither-type-alias)
-- [Failure (type alias)](#failure-type-alias)
-- [Success (type alias)](#success-type-alias)
-- [URI (type alias)](#uri-type-alias)
-- [URI](#uri)
-- [alt](#alt)
-- [ap](#ap)
-- [apFirst](#apfirst)
-- [apSecond](#apsecond)
-- [bimap](#bimap)
-- [chain](#chain)
-- [chainFirst](#chainfirst)
-- [constInitial](#constinitial)
-- [constPending](#constpending)
-- [datumEither](#datumeither)
-- [failure](#failure)
-- [flatten](#flatten)
-- [fold](#fold)
-- [fromEither](#fromeither)
-- [fromNullable](#fromnullable)
-- [fromOption](#fromoption)
-- [initial](#initial)
-- [isFailure](#isfailure)
-- [isInitial](#isinitial)
-- [isPending](#ispending)
-- [isRefresh](#isrefresh)
-- [isRefreshLeft](#isrefreshleft)
-- [isRefreshRight](#isrefreshright)
-- [isReplete](#isreplete)
-- [isRepleteLeft](#isrepleteleft)
-- [isRepleteRight](#isrepleteright)
-- [isSuccess](#issuccess)
-- [isValued](#isvalued)
-- [map](#map)
-- [mapLeft](#mapleft)
-- [pending](#pending)
-- [refreshFold](#refreshfold)
-- [squash](#squash)
-- [success](#success)
-- [toRefresh](#torefresh)
-- [toReplete](#toreplete)
+- [utils](#utils)
+  - [DatumEither (type alias)](#datumeither-type-alias)
+  - [Failure (type alias)](#failure-type-alias)
+  - [Success (type alias)](#success-type-alias)
+  - [ToLeft (type alias)](#toleft-type-alias)
+  - [ToRight (type alias)](#toright-type-alias)
+  - [URI](#uri)
+  - [URI (type alias)](#uri-type-alias)
+  - [alt](#alt)
+  - [ap](#ap)
+  - [apFirst](#apfirst)
+  - [apSecond](#apsecond)
+  - [bimap](#bimap)
+  - [chain](#chain)
+  - [chainFirst](#chainfirst)
+  - [constInitial](#constinitial)
+  - [constPending](#constpending)
+  - [datumEither](#datumeither)
+  - [failure](#failure)
+  - [flatten](#flatten)
+  - [fold](#fold)
+  - [fromEither](#fromeither)
+  - [fromNullable](#fromnullable)
+  - [fromOption](#fromoption)
+  - [initial](#initial)
+  - [isFailure](#isfailure)
+  - [isInitial](#isinitial)
+  - [isPending](#ispending)
+  - [isRefresh](#isrefresh)
+  - [isRefreshLeft](#isrefreshleft)
+  - [isRefreshRight](#isrefreshright)
+  - [isReplete](#isreplete)
+  - [isRepleteLeft](#isrepleteleft)
+  - [isRepleteRight](#isrepleteright)
+  - [isSuccess](#issuccess)
+  - [isValued](#isvalued)
+  - [map](#map)
+  - [mapLeft](#mapleft)
+  - [pending](#pending)
+  - [refreshFold](#refreshfold)
+  - [sequenceStruct](#sequencestruct)
+  - [sequenceTuple](#sequencetuple)
+  - [squash](#squash)
+  - [success](#success)
+  - [toRefresh](#torefresh)
+  - [toReplete](#toreplete)
 
 ---
 
-# DatumEither (type alias)
+# utils
+
+## DatumEither (type alias)
 
 **Signature**
 
@@ -84,7 +91,7 @@ export type DatumEither<E, A> = Datum<Either<E, A>>
 
 Added in v2.1.0
 
-# Failure (type alias)
+## Failure (type alias)
 
 **Signature**
 
@@ -94,7 +101,7 @@ export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>
 
 Added in v2.3.0
 
-# Success (type alias)
+## Success (type alias)
 
 **Signature**
 
@@ -104,17 +111,27 @@ export type Success<A> = Replete<Right<A>> | Refresh<Right<A>>
 
 Added in v2.3.0
 
-# URI (type alias)
+## ToLeft (type alias)
 
 **Signature**
 
 ```ts
-export type URI = typeof URI
+export type ToLeft<T> = T extends DatumEither<infer L, any> ? L : never
 ```
 
-Added in v2.0.0
+Added in v3.2.0
 
-# URI
+## ToRight (type alias)
+
+**Signature**
+
+```ts
+export type ToRight<T> = T extends DatumEither<any, infer R> ? R : never
+```
+
+Added in v3.2.0
+
+## URI
 
 **Signature**
 
@@ -124,7 +141,17 @@ export declare const URI: '@nll/datum/DatumEither'
 
 Added in v2.0.0
 
-# alt
+## URI (type alias)
+
+**Signature**
+
+```ts
+export type URI = typeof URI
+```
+
+Added in v2.0.0
+
+## alt
 
 **Signature**
 
@@ -134,7 +161,7 @@ export declare const alt: <E, A>(that: () => Datum<Either<E, A>>) => (fa: Datum<
 
 Added in v2.0.0
 
-# ap
+## ap
 
 **Signature**
 
@@ -146,7 +173,7 @@ export declare const ap: <E, A>(
 
 Added in v2.0.0
 
-# apFirst
+## apFirst
 
 **Signature**
 
@@ -156,7 +183,7 @@ export declare const apFirst: <E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<E
 
 Added in v2.0.0
 
-# apSecond
+## apSecond
 
 **Signature**
 
@@ -166,7 +193,7 @@ export declare const apSecond: <E, B>(fb: Datum<Either<E, B>>) => <A>(fa: Datum<
 
 Added in v2.0.0
 
-# bimap
+## bimap
 
 **Signature**
 
@@ -179,7 +206,7 @@ export declare const bimap: <E, G, A, B>(
 
 Added in v2.0.0
 
-# chain
+## chain
 
 **Signature**
 
@@ -191,7 +218,7 @@ export declare const chain: <E, A, B>(
 
 Added in v2.0.0
 
-# chainFirst
+## chainFirst
 
 **Signature**
 
@@ -203,7 +230,7 @@ export declare const chainFirst: <E, A, B>(
 
 Added in v2.0.0
 
-# constInitial
+## constInitial
 
 **Signature**
 
@@ -213,7 +240,7 @@ export declare const constInitial: <E, D>() => Datum<Either<E, D>>
 
 Added in v2.4.1
 
-# constPending
+## constPending
 
 **Signature**
 
@@ -223,7 +250,7 @@ export declare const constPending: <E, D>() => Datum<Either<E, D>>
 
 Added in v2.4.1
 
-# datumEither
+## datumEither
 
 **Signature**
 
@@ -233,7 +260,7 @@ export declare const datumEither: Monad2<'@nll/datum/DatumEither'> & EitherM1<'@
 
 Added in v2.0.0
 
-# failure
+## failure
 
 **Signature**
 
@@ -243,7 +270,7 @@ export declare const failure: <E>(e: E) => Datum<Either<E, never>>
 
 Added in v2.1.0
 
-# flatten
+## flatten
 
 **Signature**
 
@@ -253,7 +280,7 @@ export declare const flatten: <E, A>(mma: Datum<Either<E, Datum<Either<E, A>>>>)
 
 Added in v2.0.0
 
-# fold
+## fold
 
 **Signature**
 
@@ -270,7 +297,7 @@ export declare const fold: <E, A, B>(
 
 Added in v2.7.0
 
-# fromEither
+## fromEither
 
 **Signature**
 
@@ -280,7 +307,7 @@ export declare const fromEither: <E, A>(e: Lazy<Either<E, A>>) => Datum<Either<E
 
 Added in v2.2.0
 
-# fromNullable
+## fromNullable
 
 Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.
 
@@ -292,7 +319,7 @@ export declare const fromNullable: <E, A>(a: A) => Datum<Either<E, A>>
 
 Added in v2.4.0
 
-# fromOption
+## fromOption
 
 **Signature**
 
@@ -302,7 +329,7 @@ export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => Da
 
 Added in v2.2.0
 
-# initial
+## initial
 
 **Signature**
 
@@ -312,7 +339,7 @@ export declare const initial: Datum<Either<never, never>>
 
 Added in v2.4.1
 
-# isFailure
+## isFailure
 
 **Signature**
 
@@ -322,7 +349,7 @@ export declare const isFailure: <E, A>(fea: Datum<Either<E, A>>) => fea is Failu
 
 Added in v2.1.0
 
-# isInitial
+## isInitial
 
 **Signature**
 
@@ -332,7 +359,7 @@ export declare const isInitial: <A>(ma: Datum<A>) => ma is Initial
 
 Added in v2.7.0
 
-# isPending
+## isPending
 
 **Signature**
 
@@ -342,7 +369,7 @@ export declare const isPending: <A>(ma: Datum<A>) => ma is Pending
 
 Added in v2.7.0
 
-# isRefresh
+## isRefresh
 
 **Signature**
 
@@ -352,7 +379,7 @@ export declare const isRefresh: <A>(ma: Datum<A>) => ma is Refresh<A>
 
 Added in v2.7.0
 
-# isRefreshLeft
+## isRefreshLeft
 
 **Signature**
 
@@ -362,7 +389,7 @@ export declare const isRefreshLeft: <E, A>(fea: Datum<Either<E, A>>) => fea is R
 
 Added in v2.7.0
 
-# isRefreshRight
+## isRefreshRight
 
 **Signature**
 
@@ -372,7 +399,7 @@ export declare const isRefreshRight: <E, A>(fea: Datum<Either<E, A>>) => fea is 
 
 Added in v2.7.0
 
-# isReplete
+## isReplete
 
 **Signature**
 
@@ -382,7 +409,7 @@ export declare const isReplete: <A>(ma: Datum<A>) => ma is Replete<A>
 
 Added in v2.7.0
 
-# isRepleteLeft
+## isRepleteLeft
 
 **Signature**
 
@@ -392,7 +419,7 @@ export declare const isRepleteLeft: <E, A>(fea: Datum<Either<E, A>>) => fea is R
 
 Added in v2.7.0
 
-# isRepleteRight
+## isRepleteRight
 
 **Signature**
 
@@ -402,7 +429,7 @@ export declare const isRepleteRight: <E, A>(fea: Datum<Either<E, A>>) => fea is 
 
 Added in v2.7.0
 
-# isSuccess
+## isSuccess
 
 **Signature**
 
@@ -412,7 +439,7 @@ export declare const isSuccess: <E, A>(fea: Datum<Either<E, A>>) => fea is Succe
 
 Added in v2.1.0
 
-# isValued
+## isValued
 
 **Signature**
 
@@ -422,7 +449,7 @@ export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A
 
 Added in v2.7.0
 
-# map
+## map
 
 **Signature**
 
@@ -432,7 +459,7 @@ export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: Datum<Either<E, A>>)
 
 Added in v2.0.0
 
-# mapLeft
+## mapLeft
 
 **Signature**
 
@@ -442,7 +469,7 @@ export declare const mapLeft: <E, G>(f: (e: E) => G) => <A>(fa: Datum<Either<E, 
 
 Added in v2.0.0
 
-# pending
+## pending
 
 **Signature**
 
@@ -452,7 +479,7 @@ export declare const pending: Datum<Either<never, never>>
 
 Added in v2.4.1
 
-# refreshFold
+## refreshFold
 
 **Signature**
 
@@ -467,7 +494,31 @@ export declare const refreshFold: <E, A, B>(
 
 Added in v2.1.0
 
-# squash
+## sequenceStruct
+
+**Signature**
+
+```ts
+export declare const sequenceStruct: <E, NER>(
+  r: (keyof NER extends never ? never : NER) & Record<string, Datum<Either<E, any>>>
+) => Datum<Either<E, { [K in keyof NER]: [NER[K]] extends [Datum<Either<any, infer A>>] ? A : never }>>
+```
+
+Added in v3.2.0
+
+## sequenceTuple
+
+**Signature**
+
+```ts
+export declare const sequenceTuple: <E, T>(
+  ...t: T & { readonly 0: Datum<Either<E, any>> }
+) => Datum<Either<E, { [K in keyof T]: [T[K]] extends [Datum<Either<E, infer A>>] ? A : never }>>
+```
+
+Added in v3.2.0
+
+## squash
 
 **Signature**
 
@@ -481,7 +532,7 @@ export declare const squash: <E, A, B>(
 
 Added in v2.3.0
 
-# success
+## success
 
 **Signature**
 
@@ -491,7 +542,7 @@ export declare const success: <A>(a: A) => Datum<Either<never, A>>
 
 Added in v2.1.0
 
-# toRefresh
+## toRefresh
 
 **Signature**
 
@@ -501,7 +552,7 @@ export declare const toRefresh: <E, A>(fea: Datum<Either<E, A>>) => Datum<Either
 
 Added in v2.1.0
 
-# toReplete
+## toReplete
 
 **Signature**
 

@@ -29,7 +29,7 @@ import {
   Left,
   right,
   fromOption as eitherFromOption,
-  fold as eitherFold
+  fold as eitherFold,
 } from 'fp-ts/es6/Either';
 import { EitherM1, getEitherM } from 'fp-ts/es6/EitherT';
 import { Monad2 } from 'fp-ts/es6/Monad';
@@ -50,10 +50,11 @@ import {
   isInitial,
   isPending,
   isRefresh,
-  isReplete
+  isReplete,
 } from './Datum';
 import { Option } from 'fp-ts/es6/Option';
 import { Lazy, constant, FunctionN } from 'fp-ts/es6/function';
+import { sequenceS, sequenceT } from 'fp-ts/es6/Apply';
 
 /**
  * A Monad instance for `Datum<Either<E, A>>`
@@ -92,11 +93,21 @@ export type Success<A> = Replete<Right<A>> | Refresh<Right<A>>;
 export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>;
 
 /**
+ * @since 3.2.0
+ */
+export type ToLeft<T> = T extends DatumEither<infer L, any> ? L : never;
+
+/**
+ * @since 3.2.0
+ */
+export type ToRight<T> = T extends DatumEither<any, infer R> ? R : never;
+
+/**
  * @since 2.0.0
  */
 export const datumEither: Monad2<URI> & EitherM1<DatumURI> = {
   ...getEitherM(datum),
-  URI
+  URI,
 };
 
 /**
@@ -149,7 +160,7 @@ export {
   /**
    * @since 2.7.0
    */
-  isValued
+  isValued,
 };
 
 /**
@@ -271,8 +282,8 @@ export const refreshFold = <E, A, B>(
   datumFold<Either<E, A>, B>(
     onInitial,
     onPending,
-    e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
-    e => (isRight(e) ? onSuccess(e.right, false) : onFailure(e.left, false))
+    (e) => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
+    (e) => (isRight(e) ? onSuccess(e.right, false) : onFailure(e.left, false))
   )(fea);
 
 /**
@@ -286,9 +297,23 @@ export const squash = <E, A, B>(
   datumFold<Either<E, A>, B>(
     () => onNone(false),
     () => onNone(true),
-    e => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
-    e => (isRight(e) ? onSuccess(e.right, false) : onFailure(e.left, false))
+    (e) => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
+    (e) => (isRight(e) ? onSuccess(e.right, false) : onFailure(e.left, false))
   )(fea);
+
+/**
+ * @since 3.2.0
+ */
+export const sequenceTuple = sequenceT(datumEither);
+
+/**
+ * @since 3.2.0
+ */
+export const sequenceStruct = sequenceS(datumEither);
+
+/**
+ * @since 3.2.0
+ */
 
 const {
   alt,
@@ -300,7 +325,7 @@ const {
   chainFirst,
   flatten,
   map,
-  mapLeft
+  mapLeft,
 } = pipeable(datumEither);
 
 export {
@@ -343,5 +368,5 @@ export {
   /**
    * @since 2.0.0
    */
-  mapLeft
+  mapLeft,
 };

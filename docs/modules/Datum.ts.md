@@ -4,7 +4,7 @@ nav_order: 1
 parent: Modules
 ---
 
-# Datum overview
+## Datum overview
 
 Added in v2.0.0
 
@@ -21,63 +21,76 @@ refreshed.
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [Initial (interface)](#initial-interface)
-- [Pending (interface)](#pending-interface)
-- [Refresh (interface)](#refresh-interface)
-- [Replete (interface)](#replete-interface)
-- [Datum (type alias)](#datum-type-alias)
-- [URI (type alias)](#uri-type-alias)
-- [URI](#uri)
-- [alt](#alt)
-- [ap](#ap)
-- [apFirst](#apfirst)
-- [apSecond](#apsecond)
-- [chain](#chain)
-- [chainFirst](#chainfirst)
-- [compact](#compact)
-- [constInitial](#constinitial)
-- [constPending](#constpending)
-- [datum](#datum)
-- [duplicate](#duplicate)
-- [elem](#elem)
-- [exists](#exists)
-- [extend](#extend)
-- [filter](#filter)
-- [filterMap](#filtermap)
-- [filterOrElse](#filterorelse)
-- [flatten](#flatten)
-- [fold](#fold)
-- [foldMap](#foldmap)
-- [fromEither](#fromeither)
-- [fromNullable](#fromnullable)
-- [fromOption](#fromoption)
-- [fromPredicate](#frompredicate)
-- [getApplyMonoid](#getapplymonoid)
-- [getApplySemigroup](#getapplysemigroup)
-- [getEq](#geteq)
-- [getOrElse](#getorelse)
-- [getOrd](#getord)
-- [getSemigroup](#getsemigroup)
-- [getShow](#getshow)
-- [initial](#initial)
-- [isInitial](#isinitial)
-- [isPending](#ispending)
-- [isRefresh](#isrefresh)
-- [isReplete](#isreplete)
-- [isValued](#isvalued)
-- [map](#map)
-- [partition](#partition)
-- [partitionMap](#partitionmap)
-- [pending](#pending)
-- [reduce](#reduce)
-- [reduceRight](#reduceright)
-- [refresh](#refresh)
-- [replete](#replete)
-- [separate](#separate)
+- [utils](#utils)
+  - [Datum (type alias)](#datum-type-alias)
+  - [Initial (interface)](#initial-interface)
+  - [Pending (interface)](#pending-interface)
+  - [Refresh (interface)](#refresh-interface)
+  - [Replete (interface)](#replete-interface)
+  - [URI](#uri)
+  - [URI (type alias)](#uri-type-alias)
+  - [alt](#alt)
+  - [ap](#ap)
+  - [apFirst](#apfirst)
+  - [apSecond](#apsecond)
+  - [chain](#chain)
+  - [chainFirst](#chainfirst)
+  - [compact](#compact)
+  - [constInitial](#constinitial)
+  - [constPending](#constpending)
+  - [datum](#datum)
+  - [duplicate](#duplicate)
+  - [elem](#elem)
+  - [exists](#exists)
+  - [extend](#extend)
+  - [filter](#filter)
+  - [filterMap](#filtermap)
+  - [filterOrElse](#filterorelse)
+  - [flatten](#flatten)
+  - [fold](#fold)
+  - [foldMap](#foldmap)
+  - [fromEither](#fromeither)
+  - [fromNullable](#fromnullable)
+  - [fromOption](#fromoption)
+  - [fromPredicate](#frompredicate)
+  - [getApplyMonoid](#getapplymonoid)
+  - [getApplySemigroup](#getapplysemigroup)
+  - [getEq](#geteq)
+  - [getOrElse](#getorelse)
+  - [getOrd](#getord)
+  - [getSemigroup](#getsemigroup)
+  - [getShow](#getshow)
+  - [initial](#initial)
+  - [isInitial](#isinitial)
+  - [isPending](#ispending)
+  - [isRefresh](#isrefresh)
+  - [isReplete](#isreplete)
+  - [isValued](#isvalued)
+  - [map](#map)
+  - [partition](#partition)
+  - [partitionMap](#partitionmap)
+  - [pending](#pending)
+  - [reduce](#reduce)
+  - [reduceRight](#reduceright)
+  - [refresh](#refresh)
+  - [replete](#replete)
+  - [separate](#separate)
 
 ---
 
-# Initial (interface)
+# utils
+
+## Datum (type alias)
+
+**Signature**
+
+```ts
+export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>
+```
+
+Added in v2.0.0
+
+## Initial (interface)
 
 **Signature**
 
@@ -89,7 +102,7 @@ export interface Initial {
 
 Added in v2.0.0
 
-# Pending (interface)
+## Pending (interface)
 
 **Signature**
 
@@ -101,7 +114,7 @@ export interface Pending {
 
 Added in v2.0.0
 
-# Refresh (interface)
+## Refresh (interface)
 
 **Signature**
 
@@ -114,7 +127,7 @@ export interface Refresh<D> {
 
 Added in v2.0.0
 
-# Replete (interface)
+## Replete (interface)
 
 **Signature**
 
@@ -127,27 +140,7 @@ export interface Replete<D> {
 
 Added in v2.0.0
 
-# Datum (type alias)
-
-**Signature**
-
-```ts
-export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>
-```
-
-Added in v2.0.0
-
-# URI (type alias)
-
-**Signature**
-
-```ts
-export type URI = typeof URI
-```
-
-Added in v2.0.0
-
-# URI
+## URI
 
 **Signature**
 
@@ -157,7 +150,17 @@ export declare const URI: '@nll/datum/Datum'
 
 Added in v2.0.0
 
-# alt
+## URI (type alias)
+
+**Signature**
+
+```ts
+export type URI = typeof URI
+```
+
+Added in v2.0.0
+
+## alt
 
 **Signature**
 
@@ -167,7 +170,7 @@ export declare const alt: <A>(that: () => Datum<A>) => (fa: Datum<A>) => Datum<A
 
 Added in v2.0.0
 
-# ap
+## ap
 
 **Signature**
 
@@ -177,7 +180,7 @@ export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Da
 
 Added in v2.0.0
 
-# apFirst
+## apFirst
 
 **Signature**
 
@@ -187,7 +190,7 @@ export declare const apFirst: <B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<A>
 
 Added in v2.0.0
 
-# apSecond
+## apSecond
 
 **Signature**
 
@@ -197,7 +200,7 @@ export declare const apSecond: <B>(fb: Datum<B>) => <A>(fa: Datum<A>) => Datum<B
 
 Added in v2.0.0
 
-# chain
+## chain
 
 **Signature**
 
@@ -207,7 +210,7 @@ export declare const chain: <A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>) => D
 
 Added in v2.0.0
 
-# chainFirst
+## chainFirst
 
 **Signature**
 
@@ -217,7 +220,7 @@ export declare const chainFirst: <A, B>(f: (a: A) => Datum<B>) => (ma: Datum<A>)
 
 Added in v2.0.0
 
-# compact
+## compact
 
 **Signature**
 
@@ -227,7 +230,7 @@ export declare const compact: <A>(fa: Datum<Option<A>>) => Datum<A>
 
 Added in v2.0.0
 
-# constInitial
+## constInitial
 
 **Signature**
 
@@ -237,7 +240,7 @@ export declare const constInitial: Lazy<Initial>
 
 Added in v2.0.0
 
-# constPending
+## constPending
 
 **Signature**
 
@@ -247,7 +250,7 @@ export declare const constPending: Lazy<Pending>
 
 Added in v2.0.0
 
-# datum
+## datum
 
 **Signature**
 
@@ -265,7 +268,7 @@ export declare const datum: Monad1<'@nll/datum/Datum'> &
 
 Added in v2.0.0
 
-# duplicate
+## duplicate
 
 **Signature**
 
@@ -275,7 +278,7 @@ export declare const duplicate: <A>(ma: Datum<A>) => Datum<Datum<A>>
 
 Added in v2.0.0
 
-# elem
+## elem
 
 **Signature**
 
@@ -285,7 +288,7 @@ export declare const elem: <A>(E: Eq<A>) => <E>(a: A, ma: Datum<A>) => boolean
 
 Added in v2.0.0
 
-# exists
+## exists
 
 Returns `false` if `Refresh` or returns the result of the application of the given predicate to the `Replete` value.
 
@@ -297,7 +300,7 @@ export declare const exists: <A>(predicate: Predicate<A>) => <E>(ma: Datum<A>) =
 
 Added in v2.0.0
 
-# extend
+## extend
 
 **Signature**
 
@@ -307,7 +310,7 @@ export declare const extend: <A, B>(f: (fa: Datum<A>) => B) => (ma: Datum<A>) =>
 
 Added in v2.0.0
 
-# filter
+## filter
 
 **Signature**
 
@@ -320,7 +323,7 @@ export declare const filter: {
 
 Added in v2.0.0
 
-# filterMap
+## filterMap
 
 **Signature**
 
@@ -330,7 +333,7 @@ export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Datum<A>)
 
 Added in v2.0.0
 
-# filterOrElse
+## filterOrElse
 
 **Signature**
 
@@ -343,7 +346,7 @@ export declare const filterOrElse: {
 
 Added in v2.6.0
 
-# flatten
+## flatten
 
 **Signature**
 
@@ -353,7 +356,7 @@ export declare const flatten: <A>(mma: Datum<Datum<A>>) => Datum<A>
 
 Added in v2.0.0
 
-# fold
+## fold
 
 **Signature**
 
@@ -368,7 +371,7 @@ export declare const fold: <A, B>(
 
 Added in v2.0.0
 
-# foldMap
+## foldMap
 
 **Signature**
 
@@ -378,7 +381,7 @@ export declare const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: D
 
 Added in v2.0.0
 
-# fromEither
+## fromEither
 
 **Signature**
 
@@ -388,7 +391,7 @@ export declare const fromEither: <E, A>(ma: Either<E, A>) => Datum<A>
 
 Added in v2.0.0
 
-# fromNullable
+## fromNullable
 
 Takes a nullable value, if the value is not nully, turn it into a `Replete`, otherwise `Initial`.
 
@@ -400,7 +403,7 @@ export declare const fromNullable: <A>(a: A) => Datum<A>
 
 Added in v2.0.0
 
-# fromOption
+## fromOption
 
 **Signature**
 
@@ -410,7 +413,7 @@ export declare const fromOption: <E>(onNone: () => E) => <A>(ma: Option<A>) => D
 
 Added in v2.6.0
 
-# fromPredicate
+## fromPredicate
 
 **Signature**
 
@@ -423,7 +426,7 @@ export declare const fromPredicate: {
 
 Added in v2.6.0
 
-# getApplyMonoid
+## getApplyMonoid
 
 **Signature**
 
@@ -433,7 +436,7 @@ export declare const getApplyMonoid: <A>(M: Monoid<A>) => Monoid<Datum<A>>
 
 Added in v2.0.0
 
-# getApplySemigroup
+## getApplySemigroup
 
 `Apply` semigroup
 
@@ -445,7 +448,7 @@ export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<
 
 Added in v2.0.0
 
-# getEq
+## getEq
 
 **Signature**
 
@@ -455,7 +458,7 @@ export declare const getEq: <A>(E: Eq<A>) => Eq<Datum<A>>
 
 Added in v2.0.0
 
-# getOrElse
+## getOrElse
 
 **Signature**
 
@@ -465,7 +468,7 @@ export declare const getOrElse: <A>(onInitial: () => A, onPending: () => A) => (
 
 Added in v2.0.0
 
-# getOrd
+## getOrd
 
 The `Ord` instance allows `Datum` values to be compared with
 `compare`, whenever there is an `Ord` instance for
@@ -481,7 +484,7 @@ export declare function getOrd<A>(O: Ord<A>): Ord<Datum<A>>
 
 Added in v2.0.0
 
-# getSemigroup
+## getSemigroup
 
 Semigroup returning the left-most non-`Initial` and non-`Pending` value. If both operands
 are `Replete`s or `Refresh`s then the inner values are appended using the provided
@@ -495,7 +498,7 @@ export declare const getSemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 
 Added in v2.0.0
 
-# getShow
+## getShow
 
 **Signature**
 
@@ -505,7 +508,7 @@ export declare const getShow: <A>(S: Show<A>) => Show<Datum<A>>
 
 Added in v2.0.0
 
-# initial
+## initial
 
 Constructs an initial `Datum` holding no value.
 
@@ -517,7 +520,7 @@ export declare const initial: Datum<never>
 
 Added in v2.0.0
 
-# isInitial
+## isInitial
 
 Returns `true` if the Async is an instance of `Initial`, `false` otherwise
 
@@ -529,7 +532,7 @@ export declare const isInitial: <A>(ma: Datum<A>) => ma is Initial
 
 Added in v2.0.0
 
-# isPending
+## isPending
 
 Returns `true` if the Async is an instance of `Pending`, `false` otherwise
 
@@ -541,7 +544,7 @@ export declare const isPending: <A>(ma: Datum<A>) => ma is Pending
 
 Added in v2.0.0
 
-# isRefresh
+## isRefresh
 
 Returns `true` if the Async is an instance of `Refresh`, `false` otherwise
 
@@ -553,7 +556,7 @@ export declare const isRefresh: <A>(ma: Datum<A>) => ma is Refresh<A>
 
 Added in v2.0.0
 
-# isReplete
+## isReplete
 
 Returns `true` if the Async is an instance of `Replete`, `false` otherwise
 
@@ -565,7 +568,7 @@ export declare const isReplete: <A>(ma: Datum<A>) => ma is Replete<A>
 
 Added in v2.0.0
 
-# isValued
+## isValued
 
 **Signature**
 
@@ -575,7 +578,7 @@ export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A
 
 Added in v2.0.0
 
-# map
+## map
 
 **Signature**
 
@@ -585,7 +588,7 @@ export declare const map: <A, B>(f: (a: A) => B) => (fa: Datum<A>) => Datum<B>
 
 Added in v2.0.0
 
-# partition
+## partition
 
 **Signature**
 
@@ -598,7 +601,7 @@ export declare const partition: {
 
 Added in v2.0.0
 
-# partitionMap
+## partitionMap
 
 **Signature**
 
@@ -610,7 +613,7 @@ export declare const partitionMap: <A, B, C>(
 
 Added in v2.0.0
 
-# pending
+## pending
 
 Constructs a pending `Datum` holding no value.
 
@@ -622,7 +625,7 @@ export declare const pending: Datum<never>
 
 Added in v2.0.0
 
-# reduce
+## reduce
 
 **Signature**
 
@@ -632,7 +635,7 @@ export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Datum<A>
 
 Added in v2.0.0
 
-# reduceRight
+## reduceRight
 
 **Signature**
 
@@ -642,7 +645,7 @@ export declare const reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Dat
 
 Added in v2.0.0
 
-# refresh
+## refresh
 
 Constructs a new refresh `Datum` holding a value.
 
@@ -654,7 +657,7 @@ export declare const refresh: <A = never>(value: A) => Datum<A>
 
 Added in v2.0.0
 
-# replete
+## replete
 
 Constructs a new replete `Datum` holding a value.
 
@@ -666,7 +669,7 @@ export declare const replete: <A = never>(value: A) => Datum<A>
 
 Added in v2.0.0
 
-# separate
+## separate
 
 **Signature**
 
