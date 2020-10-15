@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/nullpub/datum/compare/v3.1.0...v3.2.0) (2020-10-15)
+
+
+### Features
+
+* export sequenceTuple and sequenceStruct ([968aa84](https://github.com/nullpub/datum/commit/968aa84e7d2aebfe526db2f23e96b03fc96628c3))
+
 ## [3.1.0](https://github.com/nullpub/datum/compare/v3.0.1...v3.1.0) (2020-05-05)
 
 
