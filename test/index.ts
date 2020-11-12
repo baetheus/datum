@@ -1,7 +1,8 @@
 import * as assert from 'assert';
-import { datum, datumEither } from '../src';
+import { datum, datumEither, oneShot } from '../src';
 import * as Datum from '../src/Datum';
 import * as DatumEither from '../src/DatumEither';
+import * as OneShot from '../src/OneShot';
 
 describe('Index', () => {
   it('Re-exports the Datum module', () => {
@@ -10,5 +11,9 @@ describe('Index', () => {
 
   it('Re-exports the DatumEither module', () => {
     assert.strictEqual(datumEither, DatumEither);
+  });
+
+  it('Re-exports the OneShot module', () => {
+    assert.strictEqual(oneShot, OneShot);
   });
 });

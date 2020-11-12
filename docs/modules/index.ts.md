@@ -15,6 +15,7 @@ Added in v3.1.0
 - [utils](#utils)
   - [datum](#datum)
   - [datumEither](#datumeither)
+  - [oneShot](#oneshot)
 
 ---
 
@@ -39,3 +40,13 @@ export declare const datumEither: typeof datumEither
 ```
 
 Added in v3.1.0
+
+## oneShot
+
+**Signature**
+
+```ts
+export declare const oneShot: typeof oneShot
+```
+
+Added in v3.3.0
