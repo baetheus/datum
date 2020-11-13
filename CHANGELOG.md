@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/nullpub/datum/compare/v3.2.0...v3.3.0) (2020-11-13)
+
+
+### Features
+
+* implement experimental OneShot adt based on Datum ([6c47f40](https://github.com/nullpub/datum/commit/6c47f400e0153698aeccaf7a4ceca5caee7f2a86))
+
 ## [3.2.0](https://github.com/nullpub/datum/compare/v3.1.0...v3.2.0) (2020-10-15)
 
 
