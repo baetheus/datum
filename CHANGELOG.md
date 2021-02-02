@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.1](https://github.com/nullpub/datum/compare/v3.3.0...v3.3.1) (2021-02-02)
+
+
+### Bug Fixes
+
+* correct type for fromOption ([b10a388](https://github.com/nullpub/datum/commit/b10a3881d4c61002fadf5c0a40bb87e96eb20f4b)), closes [#11](https://github.com/nullpub/datum/issues/11)
+
 ## [3.3.0](https://github.com/nullpub/datum/compare/v3.2.0...v3.3.0) (2020-11-13)
 
 
