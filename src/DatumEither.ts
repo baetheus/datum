@@ -236,7 +236,7 @@ export const fromEither = <E, A>(e: Lazy<Either<E, A>>): DatumEither<E, A> =>
  */
 export const fromOption = <E, A>(onNone: Lazy<E>) => (
   o: Option<A>
-): DatumEither<unknown, A> => replete(eitherFromOption(onNone)(o));
+): DatumEither<E, A> => replete(eitherFromOption(onNone)(o));
 
 /**
  * Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.

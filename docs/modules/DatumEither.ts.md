@@ -324,7 +324,7 @@ Added in v2.4.0
 **Signature**
 
 ```ts
-export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => Datum<Either<unknown, A>>
+export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => Datum<Either<E, A>>
 ```
 
 Added in v2.2.0
