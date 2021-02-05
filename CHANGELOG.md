@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.2](https://github.com/nullpub/datum/compare/v3.3.1...v3.3.2) (2021-02-05)
+
+
+### Bug Fixes
+
+* expand types on DatumEither constructors ([472c7ae](https://github.com/nullpub/datum/commit/472c7aebf53379f648040df0f95ec7d42d276b88)), closes [#12](https://github.com/nullpub/datum/issues/12)
+
 ### [3.3.1](https://github.com/nullpub/datum/compare/v3.3.0...v3.3.1) (2021-02-02)
 
 
