@@ -1,12 +1,21 @@
 import * as assert from 'assert';
 import * as DE from '../src/DatumEither';
 import { refresh, replete } from '../src/Datum';
-import { some, none } from 'fp-ts/es6/Option';
+import { some, none, option } from 'fp-ts/es6/Option';
 import { left, right } from 'fp-ts/es6/Either';
+import { monoidSum } from 'fp-ts/es6/Monoid';
 
 describe('Datum', () => {
   it('URI', () => {
     assert.strictEqual(DE.URI, '@nll/datum/DatumEither');
+  });
+
+  it('successR', () => {
+    assert.deepEqual(DE.successR(1), DE.toRefresh(DE.success(1)));
+  });
+
+  it('failureR', () => {
+    assert.deepEqual(DE.failureR(1), DE.toRefresh(DE.failure(1)));
   });
 
   it('isInitial', () => {
@@ -137,6 +146,11 @@ describe('Datum', () => {
     );
   });
 
+  it('fromEither2', () => {
+    assert.deepStrictEqual(DE.fromEither2(left(1)), DE.failure(1));
+    assert.deepStrictEqual(DE.fromEither2(right(1)), DE.success(1));
+  });
+
   it('fromOption', () => {
     assert.deepStrictEqual(DE.fromOption(() => 1)(some(0)), DE.success(0));
     assert.deepStrictEqual(DE.fromOption(() => 1)(none), DE.failure(1));
@@ -213,5 +227,93 @@ describe('Datum', () => {
     assert.strictEqual(squash(DE.toRefresh(DE.success('abc'))), 'success3true');
     assert.strictEqual(squash(DE.failure('abc')), 'failure3false');
     assert.strictEqual(squash(DE.success('abc')), 'success3false');
+  });
+
+  it('fromEither2', () => {
+    assert.deepStrictEqual(DE.fromEither2(left(1)), DE.failure(1));
+    assert.deepStrictEqual(DE.fromEither2(right(1)), DE.success(1));
+  });
+
+  it('traverse', () => {
+    const traverse = DE.datumEither.traverse(option);
+    const fab = (n: number) => (n < 0 ? none : some(n));
+
+    assert.deepEqual(traverse(DE.initial, fab), some(DE.initial));
+    assert.deepEqual(traverse(DE.pending, fab), some(DE.pending));
+    assert.deepEqual(
+      traverse(DE.toRefresh(DE.success(0)), fab),
+      some(DE.toRefresh(DE.success(0)))
+    );
+    assert.deepEqual(
+      traverse(DE.toRefresh(DE.failure(0)), fab),
+      some(DE.toRefresh(DE.failure(0)))
+    );
+    assert.deepEqual(traverse(DE.toRefresh(DE.success(-1)), fab), none);
+    assert.deepEqual(
+      traverse(DE.toRefresh(DE.failure(-1)), fab),
+      some(DE.toRefresh(DE.failure(-1)))
+    );
+    assert.deepEqual(traverse(DE.success(0), fab), some(DE.success(0)));
+    assert.deepEqual(traverse(DE.failure(0), fab), some(DE.failure(0)));
+    assert.deepEqual(traverse(DE.success(-1), fab), none);
+    assert.deepEqual(traverse(DE.failure(-1), fab), some(DE.failure(-1)));
+  });
+
+  it('sequence', () => {
+    const sequence = DE.datumEither.sequence(option);
+
+    assert.deepEqual(sequence(DE.initial), some(DE.initial));
+    assert.deepEqual(sequence(DE.pending), some(DE.pending));
+    assert.deepEqual(sequence(DE.failure(0)), some(DE.failure(0)));
+    assert.deepEqual(
+      sequence(DE.toRefresh(DE.failure(0))),
+      some(DE.toRefresh(DE.failure(0)))
+    );
+    assert.deepEqual(sequence(DE.success(none)), none);
+    assert.deepEqual(sequence(DE.success(some(0))), some(DE.success(0)));
+    assert.deepEqual(sequence(DE.toRefresh(DE.success(none))), none);
+    assert.deepEqual(
+      sequence(DE.toRefresh(DE.success(some(0)))),
+      some(DE.toRefresh(DE.success(0)))
+    );
+  });
+
+  it('reduce', () => {
+    const reduce = DE.datumEither.reduce;
+    const add = (acc: number, cur: number): number => acc + cur;
+
+    assert.deepEqual(reduce(DE.initial, 0, add), 0);
+    assert.deepEqual(reduce(DE.pending, 0, add), 0);
+    assert.deepEqual(reduce(DE.success(1), 0, add), 1);
+    assert.deepEqual(reduce(DE.failure(1), 0, add), 0);
+    assert.deepEqual(reduce(DE.toRefresh(DE.success(1)), 0, add), 1);
+    assert.deepEqual(reduce(DE.toRefresh(DE.failure(1)), 0, add), 0);
+  });
+
+  it('foldMap', () => {
+    const fab = (s: string): number => s.length;
+    const foldMap = DE.foldMap(monoidSum)(fab);
+
+    assert.deepEqual(foldMap(DE.initial), monoidSum.empty);
+    assert.deepEqual(foldMap(DE.pending), monoidSum.empty);
+    assert.deepEqual(foldMap(DE.success('Hello')), 5);
+    assert.deepEqual(foldMap(DE.failure('Hello')), monoidSum.empty);
+    assert.deepEqual(foldMap(DE.toRefresh(DE.success('Hello'))), 5);
+    assert.deepEqual(
+      foldMap(DE.toRefresh(DE.failure('Hello'))),
+      monoidSum.empty
+    );
+  });
+
+  it('reduceRight', () => {
+    const reduce = DE.datumEither.reduceRight;
+    const add = (acc: number, cur: number): number => acc + cur;
+
+    assert.deepEqual(reduce(DE.initial, 0, add), 0);
+    assert.deepEqual(reduce(DE.pending, 0, add), 0);
+    assert.deepEqual(reduce(DE.success(1), 0, add), 1);
+    assert.deepEqual(reduce(DE.failure(1), 0, add), 0);
+    assert.deepEqual(reduce(DE.toRefresh(DE.success(1)), 0, add), 1);
+    assert.deepEqual(reduce(DE.toRefresh(DE.failure(1)), 0, add), 0);
   });
 });

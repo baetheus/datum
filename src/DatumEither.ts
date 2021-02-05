@@ -33,28 +33,17 @@ import {
 } from 'fp-ts/es6/Either';
 import { EitherM1, getEitherM } from 'fp-ts/es6/EitherT';
 import { Monad2 } from 'fp-ts/es6/Monad';
-import { pipeable } from 'fp-ts/es6/pipeable';
+import { pipe, pipeable } from 'fp-ts/es6/pipeable';
 
-import {
-  datum,
-  Datum,
-  fold as datumFold,
-  URI as DatumURI,
-  initial as initialD,
-  pending as pendingD,
-  refresh,
-  replete,
-  isValued,
-  Replete,
-  Refresh,
-  isInitial,
-  isPending,
-  isRefresh,
-  isReplete,
-} from './Datum';
+import type { Datum, Replete, Refresh } from './Datum';
+import * as D from './Datum';
 import { Option } from 'fp-ts/es6/Option';
-import { Lazy, constant, FunctionN } from 'fp-ts/es6/function';
+import { Lazy, constant, FunctionN, flow } from 'fp-ts/es6/function';
 import { sequenceS, sequenceT } from 'fp-ts/es6/Apply';
+import { Applicative } from 'fp-ts/es6/Applicative';
+import { HKT } from 'fp-ts/es6/HKT';
+import { Traversable2 } from 'fp-ts/es6/Traversable';
+import { Monoid } from 'fp-ts/es6/Monoid';
 
 /**
  * A Monad instance for `Datum<Either<E, A>>`
@@ -103,65 +92,75 @@ export type ToLeft<T> = T extends DatumEither<infer L, any> ? L : never;
 export type ToRight<T> = T extends DatumEither<any, infer R> ? R : never;
 
 /**
- * @since 2.0.0
+ * @since 2.4.1
  */
-export const datumEither: Monad2<URI> & EitherM1<DatumURI> = {
-  ...getEitherM(datum),
-  URI,
-};
+export const initial: DatumEither<never, never> = D.initial;
+
+/**
+ * @since 2.4.1
+ */
+export const pending: DatumEither<never, never> = D.pending;
 
 /**
  * @since 2.1.0
  */
-export const success = <A>(a: A) => replete(right(a));
+export const success = <E = never, A = never>(a: A): DatumEither<E, A> =>
+  D.replete(right(a));
 
 /**
  * @since 2.1.0
  */
-export const failure = <E>(e: E) => replete(left(e));
+export const failure = <E = never, A = never>(e: E): DatumEither<E, A> =>
+  D.replete(left(e));
+
+/**
+ * @since 3.4.0
+ */
+export const successR = <E = never, A = never>(a: A): DatumEither<E, A> =>
+  toRefresh(D.replete(right(a)));
+
+/**
+ * @since 3.4.0
+ */
+export const failureR = <E = never, A = never>(e: E): DatumEither<E, A> =>
+  toRefresh(D.replete(left(e)));
 
 /**
  * @since 2.4.1
  */
-export const initial: DatumEither<never, never> = initialD;
+export const constInitial = <E = never, D = never>(): DatumEither<E, D> =>
+  initial;
 
 /**
  * @since 2.4.1
  */
-export const pending: DatumEither<never, never> = pendingD;
+export const constPending = <E = never, D = never>(): DatumEither<E, D> =>
+  pending;
 
 /**
- * @since 2.4.1
+ * @since 2.7.0
  */
-export const constInitial = <E, D>(): DatumEither<E, D> => initial;
+export const isInitial = D.isInitial;
 
 /**
- * @since 2.4.1
+ * @since 2.7.0
  */
-export const constPending = <E, D>(): DatumEither<E, D> => pending;
+export const isPending = D.isPending;
 
-export {
-  /**
-   * @since 2.7.0
-   */
-  isInitial,
-  /**
-   * @since 2.7.0
-   */
-  isPending,
-  /**
-   * @since 2.7.0
-   */
-  isRefresh,
-  /**
-   * @since 2.7.0
-   */
-  isReplete,
-  /**
-   * @since 2.7.0
-   */
-  isValued,
-};
+/**
+ * @since 2.7.0
+ */
+export const isRefresh = D.isRefresh;
+
+/**
+ * @since 2.7.0
+ */
+export const isReplete = D.isReplete;
+
+/**
+ * @since 2.7.0
+ */
+export const isValued = D.isValued;
 
 /**
  * @since 2.7.0
@@ -207,36 +206,50 @@ export const isFailure = <E, A>(fea: DatumEither<E, A>): fea is Failure<E> =>
  * @since 2.1.0
  */
 export const toRefresh = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
-  datumFold<Either<E, A>, DatumEither<E, A>>(
+  D.fold<Either<E, A>, DatumEither<E, A>>(
     constPending,
     constPending,
     constant(fea),
-    refresh
+    D.refresh
   )(fea);
 
 /**
  * @since 2.7.0
  */
 export const toReplete = <E, A>(fea: DatumEither<E, A>): DatumEither<E, A> =>
-  datumFold<Either<E, A>, DatumEither<E, A>>(
+  D.fold<Either<E, A>, DatumEither<E, A>>(
     constInitial,
     constInitial,
-    replete,
+    D.replete,
     constant(fea)
   )(fea);
 
 /**
+ * fromEither will remove the Lazy input in the next major release
+ *
  * @since 2.2.0
+ *
+ * @deprecated
  */
 export const fromEither = <E, A>(e: Lazy<Either<E, A>>): DatumEither<E, A> =>
-  replete(e());
+  D.replete(e());
+
+/**
+ * fromEither2 will replace fromEither in the next major release
+ *
+ * @since 3.4.0
+ *
+ * @deprecated
+ */
+export const fromEither2 = <E, A>(e: Either<E, A>): DatumEither<E, A> =>
+  D.replete(e);
 
 /**
  * @since 2.2.0
  */
 export const fromOption = <E, A>(onNone: Lazy<E>) => (
   o: Option<A>
-): DatumEither<E, A> => replete(eitherFromOption(onNone)(o));
+): DatumEither<E, A> => D.replete(eitherFromOption(onNone)(o));
 
 /**
  * Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.
@@ -257,18 +270,16 @@ export const fold = <E, A, B>(
   onRefreshRight: FunctionN<[A], B>,
   onRepleteLeft: FunctionN<[E], B>,
   onRepleteRight: FunctionN<[A], B>
-) => (fea: DatumEither<E, A>): B => {
-  switch (fea._tag) {
-    case 'Initial':
-      return onInitial();
-    case 'Pending':
-      return onPending();
-    case 'Refresh':
-      return eitherFold(onRefreshLeft, onRefreshRight)(fea.value);
-    case 'Replete':
-      return eitherFold(onRepleteLeft, onRepleteRight)(fea.value);
-  }
-};
+) => (fea: DatumEither<E, A>): B =>
+  pipe(
+    fea,
+    D.fold(
+      onInitial,
+      onPending,
+      eitherFold(onRefreshLeft, onRefreshRight),
+      eitherFold(onRepleteLeft, onRepleteRight)
+    )
+  );
 
 /**
  * @since 2.1.0
@@ -279,7 +290,7 @@ export const refreshFold = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ) => (fea: DatumEither<E, A>): B =>
-  datumFold<Either<E, A>, B>(
+  D.fold<Either<E, A>, B>(
     onInitial,
     onPending,
     (e) => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
@@ -294,12 +305,109 @@ export const squash = <E, A, B>(
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
 ) => (fea: DatumEither<E, A>) =>
-  datumFold<Either<E, A>, B>(
+  D.fold<Either<E, A>, B>(
     () => onNone(false),
     () => onNone(true),
     (e) => (isRight(e) ? onSuccess(e.right, true) : onFailure(e.left, true)),
     (e) => (isRight(e) ? onSuccess(e.right, false) : onFailure(e.left, false))
   )(fea);
+
+/**
+ * @since 3.4.0
+ */
+const traverseC = <F>(F: Applicative<F>) => <E, A, B>(
+  ta: DatumEither<E, A>,
+  f: (a: A) => HKT<F, B>
+): HKT<F, DatumEither<E, B>> =>
+  fold<E, A, HKT<F, DatumEither<E, B>>>(
+    () => F.of(initial),
+    () => F.of(pending),
+    (e) => F.of(D.refresh(left(e))),
+    (a) => F.map(f(a), flow(right, D.refresh)),
+    (e) => F.of(D.replete(left(e))),
+    (a) => F.map(f(a), flow(right, D.replete))
+  )(ta);
+
+/**
+ * @since 3.4.0
+ */
+const sequenceC = <F>(F: Applicative<F>) => <E, A>(
+  ta: DatumEither<E, HKT<F, A>>
+): HKT<F, DatumEither<E, A>> =>
+  fold<E, HKT<F, A>, HKT<F, DatumEither<E, A>>>(
+    () => F.of(initial),
+    () => F.of(pending),
+    (e) => F.of(D.refresh(left(e))),
+    (a) => F.map(a, flow(right, D.refresh)),
+    (e) => F.of(D.replete(left(e))),
+    (a) => F.map(a, flow(right, D.replete))
+  )(ta);
+
+/**
+ * @since 3.4.0
+ */
+const reduceC = <E, A, B>(
+  fa: DatumEither<E, A>,
+  b: B,
+  f: (b: B, a: A) => B
+): B =>
+  pipe(
+    fa,
+    fold(
+      () => b,
+      () => b,
+      () => b,
+      (a) => f(b, a),
+      () => b,
+      (a) => f(b, a)
+    )
+  );
+
+/**
+ * @since 3.4.0
+ */
+const foldMapC = <M>(M: Monoid<M>) => <E, A>(
+  fa: DatumEither<E, A>,
+  f: (a: A) => M
+): M =>
+  fold<E, A, M>(
+    () => M.empty,
+    () => M.empty,
+    () => M.empty,
+    f,
+    () => M.empty,
+    f
+  )(fa);
+
+/**
+ * @since 3.4.0
+ */
+const reduceRightC = <E, A, B>(
+  fa: DatumEither<E, A>,
+  b: B,
+  f: (a: A, b: B) => B
+): B =>
+  fold<E, A, B>(
+    () => b,
+    () => b,
+    () => b,
+    (a) => f(a, b),
+    () => b,
+    (a) => f(a, b)
+  )(fa);
+
+/**
+ * @since 2.0.0
+ */
+export const datumEither: Monad2<URI> & Traversable2<URI> & EitherM1<D.URI> = {
+  URI,
+  ...getEitherM(D.datum),
+  traverse: traverseC,
+  sequence: sequenceC,
+  reduce: reduceC,
+  foldMap: foldMapC,
+  reduceRight: reduceRightC,
+};
 
 /**
  * @since 3.2.0
@@ -314,7 +422,6 @@ export const sequenceStruct = sequenceS(datumEither);
 /**
  * @since 3.2.0
  */
-
 const {
   alt,
   ap,
@@ -326,6 +433,9 @@ const {
   flatten,
   map,
   mapLeft,
+  reduce,
+  foldMap,
+  reduceRight,
 } = pipeable(datumEither);
 
 export {
@@ -369,4 +479,16 @@ export {
    * @since 2.0.0
    */
   mapLeft,
+  /**
+   * @since 3.4.0
+   */
+  reduce,
+  /**
+   * @since 3.4.0
+   */
+  foldMap,
+  /**
+   * @since 3.4.0
+   */
+  reduceRight,
 };
