@@ -165,7 +165,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const alt: <A>(that: () => Datum<A>) => (fa: Datum<A>) => Datum<A>
+export declare const alt: <A>(that: Lazy<Datum<A>>) => (fa: Datum<A>) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -273,7 +273,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const duplicate: <A>(ma: Datum<A>) => Datum<Datum<A>>
+export declare const duplicate: <A>(wa: Datum<A>) => Datum<Datum<A>>
 ```
 
 Added in v2.0.0
@@ -305,7 +305,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const extend: <A, B>(f: (fa: Datum<A>) => B) => (ma: Datum<A>) => Datum<B>
+export declare const extend: <A, B>(f: (wa: Datum<A>) => B) => (wa: Datum<A>) => Datum<B>
 ```
 
 Added in v2.0.0
@@ -408,7 +408,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const fromOption: <E>(onNone: () => E) => <A>(ma: Option<A>) => Datum<A>
+export declare const fromOption: <E>(onNone: Lazy<E>) => <A>(ma: Option<A>) => Datum<A>
 ```
 
 Added in v2.6.0

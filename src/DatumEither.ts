@@ -35,7 +35,6 @@ import { EitherM1, getEitherM } from 'fp-ts/es6/EitherT';
 import { Monad2 } from 'fp-ts/es6/Monad';
 import { pipe, pipeable } from 'fp-ts/es6/pipeable';
 
-import type { Datum, Replete, Refresh } from './Datum';
 import * as D from './Datum';
 import { Option } from 'fp-ts/es6/Option';
 import { Lazy, constant, FunctionN, flow } from 'fp-ts/es6/function';
@@ -52,7 +51,7 @@ import { Monoid } from 'fp-ts/es6/Monoid';
  */
 declare module 'fp-ts/es6/HKT' {
   interface URItoKind2<E, A> {
-    '@nll/datum/DatumEither': Datum<Either<E, A>>;
+    '@nll/datum/DatumEither': D.Datum<Either<E, A>>;
   }
 }
 
@@ -69,27 +68,32 @@ export type URI = typeof URI;
 /**
  * @since 2.1.0
  */
-export type DatumEither<E, A> = Datum<Either<E, A>>;
+export type DatumEither<E, A> = D.Datum<Either<E, A>>;
+
+/**
+ * @since 3.4.0
+ */
+export type Valued<A> = D.Refresh<A> | D.Replete<A>;
 
 /**
  * @since 2.3.0
  */
-export type Success<A> = Replete<Right<A>> | Refresh<Right<A>>;
+export type Success<A> = Valued<Right<A>>;
 
 /**
  * @since 2.3.0
  */
-export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>;
+export type Failure<E> = Valued<Left<E>>;
 
 /**
  * @since 3.2.0
  */
-export type ToLeft<T> = T extends DatumEither<infer L, any> ? L : never;
+export type ToLeft<T> = T extends DatumEither<infer L, infer _> ? L : never;
 
 /**
  * @since 3.2.0
  */
-export type ToRight<T> = T extends DatumEither<any, infer R> ? R : never;
+export type ToRight<T> = T extends DatumEither<infer _, infer R> ? R : never;
 
 /**
  * @since 2.4.1
@@ -128,8 +132,9 @@ export const failureR = <E = never, A = never>(e: E): DatumEither<E, A> =>
 /**
  * @since 2.4.1
  */
-export const constInitial = <E = never, D = never>(): DatumEither<E, D> =>
-  initial;
+export function constInitial<E = never, D = never>(): DatumEither<E, D> {
+  return initial;
+}
 
 /**
  * @since 2.4.1
@@ -167,28 +172,28 @@ export const isValued = D.isValued;
  */
 export const isRefreshLeft = <E, A>(
   fea: DatumEither<E, A>
-): fea is Refresh<Left<E>> => isRefresh(fea) && isLeft(fea.value);
+): fea is D.Refresh<Left<E>> => isRefresh(fea) && isLeft(fea.value);
 
 /**
  * @since 2.7.0
  */
 export const isRefreshRight = <E, A>(
   fea: DatumEither<E, A>
-): fea is Refresh<Right<A>> => isRefresh(fea) && isRight(fea.value);
+): fea is D.Refresh<Right<A>> => isRefresh(fea) && isRight(fea.value);
 
 /**
  * @since 2.7.0
  */
 export const isRepleteLeft = <E, A>(
   fea: DatumEither<E, A>
-): fea is Replete<Left<E>> => isReplete(fea) && isLeft(fea.value);
+): fea is D.Replete<Left<E>> => isReplete(fea) && isLeft(fea.value);
 
 /**
  * @since 2.7.0
  */
 export const isRepleteRight = <E, A>(
   fea: DatumEither<E, A>
-): fea is Replete<Right<A>> => isReplete(fea) && isRight(fea.value);
+): fea is D.Replete<Right<A>> => isReplete(fea) && isRight(fea.value);
 
 /**
  * @since 2.1.0
@@ -431,10 +436,10 @@ const {
   chain,
   chainFirst,
   flatten,
+  foldMap,
   map,
   mapLeft,
   reduce,
-  foldMap,
   reduceRight,
 } = pipeable(datumEither);
 

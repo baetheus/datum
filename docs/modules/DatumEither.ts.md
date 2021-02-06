@@ -38,6 +38,7 @@ There are additional helper methods for going from refresh to replete and back.
   - [ToRight (type alias)](#toright-type-alias)
   - [URI](#uri)
   - [URI (type alias)](#uri-type-alias)
+  - [Valued (type alias)](#valued-type-alias)
   - [alt](#alt)
   - [ap](#ap)
   - [apFirst](#apfirst)
@@ -92,7 +93,7 @@ There are additional helper methods for going from refresh to replete and back.
 **Signature**
 
 ```ts
-export type DatumEither<E, A> = Datum<Either<E, A>>
+export type DatumEither<E, A> = D.Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
@@ -102,7 +103,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export type Failure<E> = Replete<Left<E>> | Refresh<Left<E>>
+export type Failure<E> = Valued<Left<E>>
 ```
 
 Added in v2.3.0
@@ -112,7 +113,7 @@ Added in v2.3.0
 **Signature**
 
 ```ts
-export type Success<A> = Replete<Right<A>> | Refresh<Right<A>>
+export type Success<A> = Valued<Right<A>>
 ```
 
 Added in v2.3.0
@@ -122,7 +123,7 @@ Added in v2.3.0
 **Signature**
 
 ```ts
-export type ToLeft<T> = T extends DatumEither<infer L, any> ? L : never
+export type ToLeft<T> = T extends DatumEither<infer L, infer _> ? L : never
 ```
 
 Added in v3.2.0
@@ -132,7 +133,7 @@ Added in v3.2.0
 **Signature**
 
 ```ts
-export type ToRight<T> = T extends DatumEither<any, infer R> ? R : never
+export type ToRight<T> = T extends DatumEither<infer _, infer R> ? R : never
 ```
 
 Added in v3.2.0
@@ -157,12 +158,24 @@ export type URI = typeof URI
 
 Added in v2.0.0
 
+## Valued (type alias)
+
+**Signature**
+
+```ts
+export type Valued<A> = D.Refresh<A> | D.Replete<A>
+```
+
+Added in v3.4.0
+
 ## alt
 
 **Signature**
 
 ```ts
-export declare const alt: <E, A>(that: () => any) => (fa: any) => any
+export declare const alt: <E, A>(
+  that: Lazy<D.Datum<Either<E, A>>>
+) => (fa: D.Datum<Either<E, A>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -172,7 +185,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const ap: <E, A>(fa: any) => <B>(fab: any) => any
+export declare const ap: <E, A>(
+  fa: D.Datum<Either<E, A>>
+) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -182,7 +197,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const apFirst: <E, B>(fb: any) => <A>(fa: any) => any
+export declare const apFirst: <E, B>(
+  fb: D.Datum<Either<E, B>>
+) => <A>(fa: D.Datum<Either<E, A>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -192,7 +209,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const apSecond: <E, B>(fb: any) => <A>(fa: any) => any
+export declare const apSecond: <E, B>(
+  fb: D.Datum<Either<E, B>>
+) => <A>(fa: D.Datum<Either<E, A>>) => D.Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -202,7 +221,10 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const bimap: <E, G, A, B>(f: (e: E) => G, g: (a: A) => B) => (fa: any) => any
+export declare const bimap: <E, G, A, B>(
+  f: (e: E) => G,
+  g: (a: A) => B
+) => (fa: D.Datum<Either<E, A>>) => D.Datum<Either<G, B>>
 ```
 
 Added in v2.0.0
@@ -212,7 +234,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const chain: <E, A, B>(f: (a: A) => any) => (ma: any) => any
+export declare const chain: <E, A, B>(
+  f: (a: A) => D.Datum<Either<E, B>>
+) => (ma: D.Datum<Either<E, A>>) => D.Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -222,7 +246,9 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const chainFirst: <E, A, B>(f: (a: A) => any) => (ma: any) => any
+export declare const chainFirst: <E, A, B>(
+  f: (a: A) => D.Datum<Either<E, B>>
+) => (ma: D.Datum<Either<E, A>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -232,7 +258,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const constInitial: <E = never, D = never>() => any
+export declare function constInitial<E = never, D = never>(): DatumEither<E, D>
 ```
 
 Added in v2.4.1
@@ -242,7 +268,7 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export declare const constPending: <E = never, D = never>() => any
+export declare const constPending: <E = never, D = never>() => D.Datum<Either<E, D>>
 ```
 
 Added in v2.4.1
@@ -264,7 +290,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const failure: <E = never, A = never>(e: E) => any
+export declare const failure: <E = never, A = never>(e: E) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
@@ -274,7 +300,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const failureR: <E = never, A = never>(e: E) => any
+export declare const failureR: <E = never, A = never>(e: E) => D.Datum<Either<E, A>>
 ```
 
 Added in v3.4.0
@@ -284,7 +310,7 @@ Added in v3.4.0
 **Signature**
 
 ```ts
-export declare const flatten: <E, A>(mma: any) => any
+export declare const flatten: <E, A>(mma: D.Datum<Either<E, D.Datum<Either<E, A>>>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.0.0
@@ -301,7 +327,7 @@ export declare const fold: <E, A, B>(
   onRefreshRight: FunctionN<[A], B>,
   onRepleteLeft: FunctionN<[E], B>,
   onRepleteRight: FunctionN<[A], B>
-) => (fea: any) => B
+) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
 Added in v2.7.0
@@ -311,7 +337,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => <E>(fa: any) => M
+export declare const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => <E>(fa: D.Datum<Either<E, A>>) => M
 ```
 
 Added in v3.4.0
@@ -323,7 +349,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, 
 **Signature**
 
 ```ts
-export declare const fromNullable: <E, A>(a: A) => any
+export declare const fromNullable: <E, A>(a: A) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.4.0
@@ -333,7 +359,7 @@ Added in v2.4.0
 **Signature**
 
 ```ts
-export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => any
+export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.2.0
@@ -343,7 +369,7 @@ Added in v2.2.0
 **Signature**
 
 ```ts
-export declare const initial: any
+export declare const initial: D.Datum<Either<never, never>>
 ```
 
 Added in v2.4.1
@@ -353,7 +379,7 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export declare const isFailure: <E, A>(fea: any) => fea is any
+export declare const isFailure: <E, A>(fea: D.Datum<Either<E, A>>) => fea is Valued<Left<E>>
 ```
 
 Added in v2.1.0
@@ -393,7 +419,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const isRefreshLeft: <E, A>(fea: any) => fea is any
+export declare const isRefreshLeft: <E, A>(fea: D.Datum<Either<E, A>>) => fea is D.Refresh<Left<E>>
 ```
 
 Added in v2.7.0
@@ -403,7 +429,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const isRefreshRight: <E, A>(fea: any) => fea is any
+export declare const isRefreshRight: <E, A>(fea: D.Datum<Either<E, A>>) => fea is D.Refresh<Right<A>>
 ```
 
 Added in v2.7.0
@@ -423,7 +449,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const isRepleteLeft: <E, A>(fea: any) => fea is any
+export declare const isRepleteLeft: <E, A>(fea: D.Datum<Either<E, A>>) => fea is D.Replete<Left<E>>
 ```
 
 Added in v2.7.0
@@ -433,7 +459,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const isRepleteRight: <E, A>(fea: any) => fea is any
+export declare const isRepleteRight: <E, A>(fea: D.Datum<Either<E, A>>) => fea is D.Replete<Right<A>>
 ```
 
 Added in v2.7.0
@@ -443,7 +469,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const isSuccess: <E, A>(fea: any) => fea is any
+export declare const isSuccess: <E, A>(fea: D.Datum<Either<E, A>>) => fea is Valued<Right<A>>
 ```
 
 Added in v2.1.0
@@ -463,7 +489,7 @@ Added in v2.7.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: any) => any
+export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: D.Datum<Either<E, A>>) => D.Datum<Either<E, B>>
 ```
 
 Added in v2.0.0
@@ -473,7 +499,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const mapLeft: <E, G>(f: (e: E) => G) => <A>(fa: any) => any
+export declare const mapLeft: <E, G>(f: (e: E) => G) => <A>(fa: D.Datum<Either<E, A>>) => D.Datum<Either<G, A>>
 ```
 
 Added in v2.0.0
@@ -483,7 +509,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const pending: any
+export declare const pending: D.Datum<Either<never, never>>
 ```
 
 Added in v2.4.1
@@ -493,7 +519,7 @@ Added in v2.4.1
 **Signature**
 
 ```ts
-export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => <E>(fa: any) => B
+export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => <E>(fa: D.Datum<Either<E, A>>) => B
 ```
 
 Added in v3.4.0
@@ -503,7 +529,7 @@ Added in v3.4.0
 **Signature**
 
 ```ts
-export declare const reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => <E>(fa: any) => B
+export declare const reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => <E>(fa: D.Datum<Either<E, A>>) => B
 ```
 
 Added in v3.4.0
@@ -518,7 +544,7 @@ export declare const refreshFold: <E, A, B>(
   onPending: () => B,
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
-) => (fea: any) => B
+) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
 Added in v2.1.0
@@ -528,7 +554,9 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const sequenceStruct: <E, NER>(r: (keyof NER extends never ? never : NER) & Record<string, any>) => any
+export declare const sequenceStruct: <E, NER>(
+  r: (keyof NER extends never ? never : NER) & Record<string, D.Datum<Either<E, any>>>
+) => D.Datum<Either<E, { [K in keyof NER]: [NER[K]] extends [D.Datum<Either<any, infer A>>] ? A : never }>>
 ```
 
 Added in v3.2.0
@@ -538,7 +566,9 @@ Added in v3.2.0
 **Signature**
 
 ```ts
-export declare const sequenceTuple: <E, T>(...t: T & { readonly 0: any }) => any
+export declare const sequenceTuple: <E, T>(
+  ...t: T & { readonly 0: D.Datum<Either<E, any>> }
+) => D.Datum<Either<E, { [K in keyof T]: [T[K]] extends [D.Datum<Either<E, infer A>>] ? A : never }>>
 ```
 
 Added in v3.2.0
@@ -552,7 +582,7 @@ export declare const squash: <E, A, B>(
   onNone: (r?: boolean) => B,
   onFailure: (e: E, r?: boolean) => B,
   onSuccess: (a: A, r?: boolean) => B
-) => (fea: any) => B
+) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
 Added in v2.3.0
@@ -562,7 +592,7 @@ Added in v2.3.0
 **Signature**
 
 ```ts
-export declare const success: <E = never, A = never>(a: A) => any
+export declare const success: <E = never, A = never>(a: A) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
@@ -572,7 +602,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const successR: <E = never, A = never>(a: A) => any
+export declare const successR: <E = never, A = never>(a: A) => D.Datum<Either<E, A>>
 ```
 
 Added in v3.4.0
@@ -582,7 +612,7 @@ Added in v3.4.0
 **Signature**
 
 ```ts
-export declare const toRefresh: <E, A>(fea: any) => any
+export declare const toRefresh: <E, A>(fea: D.Datum<Either<E, A>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.1.0
@@ -592,7 +622,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const toReplete: <E, A>(fea: any) => any
+export declare const toReplete: <E, A>(fea: D.Datum<Either<E, A>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.7.0
@@ -604,7 +634,7 @@ fromEither2 will replace fromEither in the next major release
 **Signature**
 
 ```ts
-export declare const fromEither2: <E, A>(e: Either<E, A>) => any
+export declare const fromEither2: <E, A>(e: Either<E, A>) => D.Datum<Either<E, A>>
 ```
 
 Added in v3.4.0
@@ -616,7 +646,7 @@ fromEither will remove the Lazy input in the next major release
 **Signature**
 
 ```ts
-export declare const fromEither: <E, A>(e: Lazy<Either<E, A>>) => any
+export declare const fromEither: <E, A>(e: Lazy<Either<E, A>>) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.2.0

@@ -162,7 +162,7 @@ Added in v3.3.0
 **Signature**
 
 ```ts
-export declare const alt: <A>(that: () => OneShot<A>) => (fa: OneShot<A>) => OneShot<A>
+export declare const alt: <A>(that: Lazy<OneShot<A>>) => (fa: OneShot<A>) => OneShot<A>
 ```
 
 Added in v3.3.0
@@ -264,7 +264,7 @@ Added in v3.3.0
 **Signature**
 
 ```ts
-export declare const duplicate: <A>(ma: OneShot<A>) => OneShot<OneShot<A>>
+export declare const duplicate: <A>(wa: OneShot<A>) => OneShot<OneShot<A>>
 ```
 
 Added in v3.3.0
@@ -296,7 +296,7 @@ Added in v3.3.0
 **Signature**
 
 ```ts
-export declare const extend: <A, B>(f: (fa: OneShot<A>) => B) => (ma: OneShot<A>) => OneShot<B>
+export declare const extend: <A, B>(f: (wa: OneShot<A>) => B) => (wa: OneShot<A>) => OneShot<B>
 ```
 
 Added in v3.3.0
@@ -398,7 +398,7 @@ Added in v3.3.0
 **Signature**
 
 ```ts
-export declare const fromOption: <E>(onNone: () => E) => <A>(ma: Option<A>) => OneShot<A>
+export declare const fromOption: <E>(onNone: Lazy<E>) => <A>(ma: Option<A>) => OneShot<A>
 ```
 
 Added in v3.3.0

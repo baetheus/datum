@@ -14,7 +14,7 @@
     "build-prepare": "ts-node --skip-project ./scripts/prepare.ts",
     "build-notify": "echo 'To publish run: cd dist; npm publish'",
     "build": "npm run build-clean && npm run test && npm run docs && npm run build-tsc && npm run build-prepare && npm run build-notify",
-    "docs": "npx docs-ts",
+    "docs": "npx docs-ts@0.5.3",
     "jest-clear-cache": "jest --clearCache",
     "jest": "jest --ci",
     "coveralls": "cat ./coverage/lcov.info | npx coveralls",
@@ -43,13 +43,13 @@
     "@types/node": "^13.7.7",
     "babel-jest": "^26.5.2",
     "coveralls": "^3.1.0",
-    "docs-ts": "^0.5.2",
+    "docs-ts": "^0.5.3",
     "jest": "^26.5.3",
     "prettier": "^2.0.5",
     "standard-version": "^9.0.0",
     "ts-jest": "^26.4.1",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "typescript": "^4.1.3"
   },
   "dependencies": {
     "fp-ts": "^2.0.0"
