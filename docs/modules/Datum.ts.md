@@ -14,7 +14,7 @@ An instance of `Datum` is either an instance of `Initial`, `Pending`, `Refresh` 
 
 A common use of `Datum` is as a container for dealing with refreshable data values. In this usage,
 the initial value is `Initial`. `Pending` represents in flight activity. `Refresh` indicates
-that data exists but is being refreshed, and `Replete` meands data exists and is not being
+that data exists but is being refreshed, and `Replete` means data exists and is not being
 refreshed.
 
 ---
