@@ -1,5 +1,5 @@
 /**
- * @since TODO
+ * @since 4.0.0
  * 
  * Represents a value of one of eight possible types (a disjoint union).
  *
@@ -37,24 +37,37 @@ import {
     both,
     isBoth,
     fold as theseFold,
-    Both
+    Both,
+    getShow as theseGetShow,
+    getEq as theseGetEq,
+    getSemigroup as theseGetSemigroup,
 } from 'fp-ts/es6/These'
 
 
 import * as D from './Datum';
 import { Option, fold as optionFold } from 'fp-ts/es6/Option';
 import { constant, flow, FunctionN, Lazy, pipe } from 'fp-ts/es6/function'
-import { Applicative } from 'fp-ts/es6/Applicative';
+import { Applicative, Applicative2C } from 'fp-ts/es6/Applicative';
 import { HKT } from 'fp-ts/es6/HKT';
+import { Semigroup } from 'fp-ts/es6/Semigroup';
 import { Monoid } from 'fp-ts/es6/Monoid';
 import { Traversable2 } from 'fp-ts/es6/Traversable';
 import { getTheseM, TheseM1 } from 'fp-ts/lib/TheseT';
 import { pipeable } from 'fp-ts/es6/pipeable';
+import { Functor2 } from 'fp-ts/es6/Functor';
+import { Apply2C } from 'fp-ts/es6/Apply';
+import { Monad2C } from 'fp-ts/es6/Monad';
+import { Chain2C } from 'fp-ts/es6/Chain';
+import { Bifunctor2 } from 'fp-ts/es6/Bifunctor';
+import { Foldable2 } from 'fp-ts/es6/Foldable';
+import { MonadThrow2C } from 'fp-ts/es6/MonadThrow';
+import { Show } from 'fp-ts/es6/Show';
+import { Eq } from 'fp-ts/es6/Eq';
 
 /**
  * A Monad instance for `Datum<These<E, A>>`
  *
- * @since TODO
+ * @since 4.0.0
  */
  declare module 'fp-ts/es6/HKT' {
     interface URItoKind2<E, A> {
@@ -63,171 +76,171 @@ import { pipeable } from 'fp-ts/es6/pipeable';
   }
 
   /**
- * @since TODO
+ * @since 4.0.0
  */
 export const URI = '@nll/datum/DatumThese';
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export type URI = typeof URI;
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  export type DatumThese<E, A> = D.Datum<These<E, A>>;
 
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export type Valued<A> = D.Refresh<A> | D.Replete<A>;
  
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export type Success<A> = Valued<Right<A>>;
  
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export type Failure<E> = Valued<Left<E>>;
 
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export type PartialSuccess<E, A> = Valued<Both<E, A>>
  
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export type ToLeft<T> = T extends DatumThese<infer L, infer _> ? L : never;
  
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export type ToRight<T> = T extends DatumThese<infer _, infer R> ? R : never;
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  export const initial: DatumThese<never, never> = D.initial;
 
  /**
-  * @since TODO
+  * @since 4.0.0
   */
  export const pending: DatumThese<never, never> = D.pending;
  
  /**
- * @since TODO
+ * @since 4.0.0
  */
 export const success = <E = never, A = never>(a: A): DatumThese<E, A> =>
     D.replete(right(a));
 
 /**
-* @since TODO
+* @since 4.0.0
 */
 export const failure = <E = never, A = never>(e: E): DatumThese<E, A> =>
     D.replete(left(e));
 
 /**
-* @since TODO
+* @since 4.0.0
 */
 export const partialSuccess = <E = never, A = never>(e: E, a: A): DatumThese<E, A> => 
     D.replete(both(e, a))
 
 /**
-* @since TODO
+* @since 4.0.0
 */
 export const successR = <E = never, A = never>(a: A): DatumThese<E, A> =>
     D.refresh(right(a));
 
 /**
-* @since TODO
+* @since 4.0.0
 */
 export const failureR = <E = never, A = never>(e: E): DatumThese<E, A> =>
     D.refresh(left(e));
 
 /**
-* @since TODO
+* @since 4.0.0
 */
 export const partialSuccessR = <E = never, A = never>(e: E, a: A): DatumThese<E, A> => 
     D.refresh(both(e, a))
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export function constInitial<E = never, D = never>(): DatumThese<E, D> {
     return initial;
 }
   
   /**
-   * @since TODO
+   * @since 4.0.0
    */
 export const constPending = <E = never, D = never>(): DatumThese<E, D> =>
     pending;
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isInitial = D.isInitial;
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isPending = D.isPending;
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRefresh = D.isRefresh;
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isReplete = D.isReplete;
  
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isValued = D.isValued;
  
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRefreshLeft = <E, A>(
     fea: DatumThese<E, A>
 ): fea is D.Refresh<Left<E>> => isRefresh(fea) && isLeft(fea.value);
   
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRefreshRight = <E, A>(
     fea: DatumThese<E, A>
 ): fea is D.Refresh<Right<A>> => isRefresh(fea) && isRight(fea.value);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRefreshBoth = <E, A>(
     fea: DatumThese<E, A>
 ): fea is D.Refresh<Both<E, A>> => isRefresh(fea) && isBoth(fea.value)
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRepleteLeft = <E, A>(
     fea: DatumThese<E, A>
 ): fea is D.Replete<Left<E>> => isReplete(fea) && isLeft(fea.value);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRepleteRight = <E, A>(
     fea: DatumThese<E, A>
 ): fea is D.Replete<Right<A>> => isReplete(fea) && isRight(fea.value);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isRepleteBoth = <E, A>(
     fea: DatumThese<E, A>
@@ -235,25 +248,25 @@ export const isRepleteBoth = <E, A>(
 
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isSuccess = <E, A>(fea: DatumThese<E, A>): fea is Success<A> =>
     isValued(fea) && isRight(fea.value);
 
 /**
-* @since TODO
+* @since 4.0.0
 */
 export const isFailure = <E, A>(fea: DatumThese<E, A>): fea is Failure<E> =>
     isValued(fea) && isLeft(fea.value);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const isPartialSuccess = <E, A>(fea: DatumThese<E, A>): fea is PartialSuccess<E, A> =>
     isValued(fea) && isBoth(fea.value);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const toRefresh = <E, A>(fea: DatumThese<E, A>): DatumThese<E, A> =>
     D.fold<These<E, A>, DatumThese<E, A>>(
@@ -264,7 +277,7 @@ export const toRefresh = <E, A>(fea: DatumThese<E, A>): DatumThese<E, A> =>
     )(fea);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const toReplete = <E, A>(fea: DatumThese<E, A>): DatumThese<E, A> =>
     D.fold<These<E, A>, DatumThese<E, A>>(
@@ -278,7 +291,7 @@ export const toReplete = <E, A>(fea: DatumThese<E, A>): DatumThese<E, A> =>
 
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
 export const fromOption = <E, A>(onNone: Lazy<E>) => (
     o: Option<A>
@@ -287,14 +300,14 @@ export const fromOption = <E, A>(onNone: Lazy<E>) => (
 /**
  * Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, otherwise `Initial`.
  *
- * @since TODO
+ * @since 4.0.0
  */
 export const fromNullable = <E, A>(
     a: A | null | undefined
 ): DatumThese<E, A> => (a === null || a === undefined ? initial : success(a));
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  export const fold = <E, A, B>(
     onInitial: Lazy<B>,
@@ -317,7 +330,7 @@ export const fromNullable = <E, A>(
     );
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  export const refreshFold = <E, A, B>(
     onInitial: () => B,
@@ -334,7 +347,7 @@ export const fromNullable = <E, A>(
 )(fea);
   
 /**
- * @since TODO
+ * @since 4.0.0
  */
  export const squash = <E, A, B>(
     onNone: (r?: boolean) => B,
@@ -350,7 +363,7 @@ export const fromNullable = <E, A>(
     )(fea);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  const traverseC = <F>(F: Applicative<F>) => <E, A, B>(
     ta: DatumThese<E, A>,
@@ -368,7 +381,7 @@ export const fromNullable = <E, A>(
     )(ta);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  const sequenceC = <F>(F: Applicative<F>) => <E, A>(
     ta: DatumThese<E, HKT<F, A>>
@@ -385,7 +398,7 @@ export const fromNullable = <E, A>(
     )(ta);
 
 /**
- * @since TODO
+ * @since 4.0.0
  */
  const reduceC = <E, A, B>(
     fa: DatumThese<E, A>,
@@ -407,7 +420,7 @@ export const fromNullable = <E, A>(
     );
   
 /**
- * @since TODO
+ * @since 4.0.0
  */
  const foldMapC = <M>(M: Monoid<M>) => <E, A>(
     fa: DatumThese<E, A>,
@@ -425,7 +438,7 @@ export const fromNullable = <E, A>(
     )(fa);
   
 /**
- * @since 3.4.0
+ * @since 4.0.0
  */
  const reduceRightC = <E, A, B>(
     fa: DatumThese<E, A>,
@@ -443,10 +456,9 @@ export const fromNullable = <E, A>(
       (e, a) => f(a, b)
     )(fa);
   
-/**
- * @since TODO
- */
- export const datumThese: Traversable2<URI> & TheseM1<D.URI> = {
+// TODO: After we bump the min bound to >= 2.10, replace this with individual helper fns
+// Also, fix the instance factories below to not re-use getMonad for better tree-shaking.
+const theseTDatum: Traversable2<URI> & TheseM1<D.URI> = {
     URI,
     ...getTheseM(D.datum),
     traverse: traverseC,
@@ -457,40 +469,152 @@ export const fromNullable = <E, A>(
   };
 
 /**
- * @since 3.2.0
+ * @since 4.0.0
  */
- const {
-    bimap,
-    foldMap,
-    map,
-    mapLeft,
-    reduce,
-    reduceRight,
-  } = pipeable(datumThese);
+export const Functor: Functor2<URI> = {
+  URI,
+  map: theseTDatum.map
+};
+
+const {
+  map
+} = pipeable(Functor);
+
+/**
+ * @since 4.0.0
+ */
+export const Bifunctor: Bifunctor2<URI> = {
+  URI,
+  mapLeft: theseTDatum.mapLeft,
+  bimap: theseTDatum.bimap
+}
+
+const {
+  mapLeft,
+  bimap
+} = pipeable(Bifunctor);
+
+/**
+ * @since 4.0.0
+ */
+export const getMonad = <E>(S: Semigroup<E>): Monad2C<URI, E> => ({
+  ...theseTDatum.getMonad(S),
+  URI
+});
+
+/**
+ * @since 4.0.0
+ */
+export const getMonadThrow = <E>(S: Semigroup<E>): MonadThrow2C<URI, E> => ({
+  ...theseTDatum.getMonad(S),
+  URI,
+  throwError: failure
+})
+
+/**
+ * @since 4.0.0
+ */
+ export const getChain = <E>(S: Semigroup<E>): Chain2C<URI, E> => ({
+  ...theseTDatum.getMonad(S),
+  URI
+});
+
+/**
+ * @since 4.0.0
+ */
+export const getApplicative = <E>(S: Semigroup<E>): Applicative2C<URI, E> => ({
+  ...theseTDatum.getMonad(S),
+  URI
+});
+
+/**
+ * @since 4.0.0
+ */
+ export const getApply = <E>(S: Semigroup<E>): Apply2C<URI, E> => ({
+  ...theseTDatum.getMonad(S),
+  URI
+});
+
+/**
+ * @since 4.0.0
+ */
+export const Foldable: Foldable2<URI> = {
+  URI,
+  reduce: reduceC,
+  reduceRight: reduceRightC,
+  foldMap: foldMapC
+};
+
+const {
+  reduce,
+  reduceRight,
+  foldMap
+} = pipeable(Foldable);
+
+/**
+ * @since 4.0.0
+ */
+export const Traversable: Traversable2<URI> = {
+  ...Functor,
+  ...Foldable,
+  sequence: sequenceC,
+  traverse: traverseC
+}
+
+/**
+ * @since 4.0.0
+ */
+export const getShow = <E, A>(SE: Show<E>, SA: Show<A>): Show<DatumThese<E, A>> => 
+  D.getShow(theseGetShow(SE, SA));
+
+/**
+ * @since 4.0.0
+ */
+export const getEq = <E, A>(EE: Eq<E>, EA: Eq<A>): Eq<DatumThese<E, A>> => 
+  D.getEq(theseGetEq(EE, EA))
+
+/**
+ * @since 4.0.0
+ */
+export const getApplySemigroup = <E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigroup<DatumThese<E, A>> =>
+  D.getApplySemigroup(theseGetSemigroup(SE, SA))
+
+/**
+ * @since 4.0.0
+ */
+ export const getProgressSemigroup = <E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigroup<DatumThese<E, A>> =>
+   D.getProgressSemigroup(theseGetSemigroup(SE, SA))
+
+/**
+ * @since 4.0.0
+ */
+ export const getProgressMonoid = <E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Monoid<DatumThese<E, A>> =>
+   D.getProgressMonoid(theseGetSemigroup(SE, SA))
+
 
 export {
     /**
-     * @since TODO
+     * @since 4.0.0
      */
     bimap,
     /**
-     * @since TODO
+     * @since 4.0.0
      */
     map,
     /**
-     * @since TODO
+     * @since 4.0.0
      */
     mapLeft,
     /**
-     * @since TODO
+     * @since 4.0.0
      */
     reduce,
     /**
-     * @since TODO
+     * @since 4.0.0
      */
     foldMap,
     /**
-     * @since TODO
+     * @since 4.0.0
      */
     reduceRight,
 };

@@ -294,7 +294,7 @@ describe('DatumThese', () => {
     });
 
     it('traverse', () => {
-        const traverse = DT.datumThese.traverse(option);
+        const traverse = DT.Traversable.traverse(option);
         const fab = (n: number) => (n < 0 ? none : some(n));
     
         assert.deepStrictEqual(traverse(DT.initial, fab), some(DT.initial));
@@ -329,7 +329,7 @@ describe('DatumThese', () => {
     });
 
     it('sequence', () => {
-        const sequence = DT.datumThese.sequence(option);
+        const sequence = DT.Traversable.sequence(option);
     
         assert.deepStrictEqual(sequence(DT.initial), some(DT.initial));
         assert.deepStrictEqual(sequence(DT.pending), some(DT.pending));
@@ -356,7 +356,7 @@ describe('DatumThese', () => {
     });
 
     it('reduce', () => {
-        const reduce = DT.datumThese.reduce;
+        const reduce = DT.Traversable.reduce;
         const add = (acc: number, cur: number): number => acc + cur;
     
         assert.deepStrictEqual(reduce(DT.initial, 0, add), 0);
@@ -390,7 +390,7 @@ describe('DatumThese', () => {
     });
 
     it('reduceRight', () => {
-        const reduce = DT.datumThese.reduceRight;
+        const reduce = DT.Traversable.reduceRight;
         const add = (acc: number, cur: number): number => acc + cur;
     
         assert.deepStrictEqual(reduce(DT.initial, 0, add), 0);

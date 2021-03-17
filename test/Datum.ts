@@ -409,7 +409,7 @@ describe('Datum', () => {
     assert.deepStrictEqual(S.concat(D.replete(1), D.initial), D.initial);
     assert.deepStrictEqual(S.concat(D.initial, D.replete(1)), D.initial);
     assert.deepStrictEqual(S.concat(D.replete(1), D.refresh(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.replete(3));
     assert.deepStrictEqual(S.concat(D.replete(1), D.replete(2)), D.replete(3));
   });
 
