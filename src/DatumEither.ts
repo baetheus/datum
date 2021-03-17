@@ -543,10 +543,11 @@ export const getProgressMonoid = <E, A>(S: Semigroup<Either<E, A>>): Monoid<Datu
   D.getApplySemigroup(S)
 
 /**
-* @since 4.0.0
-*/
-export const getApplyMonoid = <E, A>(M: Monoid<Either<E, A>>): Semigroup<DatumEither<E, A>> => 
-  D.getApplyMonoid(M)
+ * @since 4.0.0
+ */
+export const getSemigroup = <E, A>(S: Semigroup<Either<E, A>>): Semigroup<DatumEither<E, A>> =>
+  D.getSemigroup(S)
+
 
 /**
  * @since 3.2.0
