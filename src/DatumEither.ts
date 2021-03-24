@@ -38,11 +38,19 @@ import { pipe, pipeable } from 'fp-ts/es6/pipeable';
 import * as D from './Datum';
 import { Option } from 'fp-ts/es6/Option';
 import { Lazy, constant, FunctionN, flow } from 'fp-ts/es6/function';
-import { sequenceS, sequenceT } from 'fp-ts/es6/Apply';
-import { Applicative } from 'fp-ts/es6/Applicative';
+import { Apply2, sequenceS, sequenceT } from 'fp-ts/es6/Apply';
+import { Applicative as ApplicativeHKT, Applicative2 } from 'fp-ts/es6/Applicative';
 import { HKT } from 'fp-ts/es6/HKT';
 import { Traversable2 } from 'fp-ts/es6/Traversable';
 import { Monoid } from 'fp-ts/es6/Monoid';
+import { Functor2 } from 'fp-ts/es6/Functor';
+import { Chain2 } from 'fp-ts/es6/Chain';
+import { Alt2 } from 'fp-ts/es6/Alt';
+import { Alternative2 } from 'fp-ts/es6/Alternative';
+import { MonadThrow2 } from 'fp-ts/es6/MonadThrow';
+import { Foldable2 } from 'fp-ts/es6/Foldable';
+import { Bifunctor2 } from 'fp-ts/es6/Bifunctor';
+
 
 /**
  * A Monad instance for `Datum<Either<E, A>>`
@@ -320,7 +328,7 @@ export const squash = <E, A, B>(
 /**
  * @since 3.4.0
  */
-const traverseC = <F>(F: Applicative<F>) => <E, A, B>(
+const traverseC = <F>(F: ApplicativeHKT<F>) => <E, A, B>(
   ta: DatumEither<E, A>,
   f: (a: A) => HKT<F, B>
 ): HKT<F, DatumEither<E, B>> =>
@@ -336,7 +344,7 @@ const traverseC = <F>(F: Applicative<F>) => <E, A, B>(
 /**
  * @since 3.4.0
  */
-const sequenceC = <F>(F: Applicative<F>) => <E, A>(
+const sequenceC = <F>(F: ApplicativeHKT<F>) => <E, A>(
   ta: DatumEither<E, HKT<F, A>>
 ): HKT<F, DatumEither<E, A>> =>
   fold<E, HKT<F, A>, HKT<F, DatumEither<E, A>>>(
@@ -403,6 +411,8 @@ const reduceRightC = <E, A, B>(
 
 /**
  * @since 2.0.0
+ * 
+ * @deprecated Use standalone instances and instance factories
  */
 export const datumEither: Monad2<URI> & Traversable2<URI> & EitherM1<D.URI> = {
   URI,
@@ -414,15 +424,115 @@ export const datumEither: Monad2<URI> & Traversable2<URI> & EitherM1<D.URI> = {
   reduceRight: reduceRightC,
 };
 
+// TODO: After we bump the min bound to >= 2.10, replace this with individual helper fns
+const eitherTDatum = getEitherM(D.Monad)
+
 /**
- * @since 3.2.0
+ * @since 3.5.0
  */
-export const sequenceTuple = sequenceT(datumEither);
+export const Functor: Functor2<URI> = {
+  URI,
+  map: eitherTDatum.map
+}
+
+
+/**
+ * @since 3.5.0
+ */
+export const Bifunctor: Bifunctor2<URI> = {
+  URI,
+  mapLeft: eitherTDatum.mapLeft,
+  bimap: eitherTDatum.bimap
+}
+
+/**
+ * @since 3.5.0
+ * 
+ * Note: This instance agrees with the standalone Applicative/Chain/Monad instances but _disagrees_ with the deprecated `datum` mega-instance.
+ */
+export const Apply: Apply2<URI> = {
+  ...Functor,
+  ap: eitherTDatum.ap
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Chain: Chain2<URI> = {
+  ...Apply,
+  chain: eitherTDatum.chain
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Applicative: Applicative2<URI> = {
+  ...Apply,
+  of: eitherTDatum.of
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Alt: Alt2<URI> = {
+  ...Functor,
+  alt: eitherTDatum.alt
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Alternative: Alternative2<URI> = {
+  ...Alt,
+  ...Applicative,
+  zero: constInitial
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Monad: Monad2<URI> = {
+  ...Chain,
+  of: eitherTDatum.of
+}
+
+/**
+ * @since 3.5.0
+ */
+export const MonadThrow: MonadThrow2<URI> = {
+  ...Monad,
+  throwError: failure
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Foldable: Foldable2<URI> = {
+  URI,
+  reduce: reduceC,
+  reduceRight: reduceRightC,
+  foldMap: foldMapC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Traversable: Traversable2<URI> = {
+  ...Functor,
+  ...Foldable,
+  sequence: sequenceC,
+  traverse: traverseC
+}
 
 /**
  * @since 3.2.0
  */
-export const sequenceStruct = sequenceS(datumEither);
+export const sequenceTuple = sequenceT(Apply);
+
+/**
+ * @since 3.2.0
+ */
+export const sequenceStruct = sequenceS(Apply);
 
 /**
  * @since 3.2.0
@@ -443,6 +553,10 @@ const {
   reduceRight,
 } = pipeable(datumEither);
 
+const {
+  ap: ap2
+} = pipeable(Apply);
+
 export {
   /**
    * @since 2.0.0
@@ -450,8 +564,15 @@ export {
   alt,
   /**
    * @since 2.0.0
+   * 
+   * @deprecated Does not agree with chain. This will be replaced in the next major release with the behavior of `ap2`
    */
   ap,
+  /**
+   * @since 3.5.0
+   * 
+   */
+  ap2,
   /**
    * @since 2.0.0
    */

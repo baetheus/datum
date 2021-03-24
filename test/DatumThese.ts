@@ -2,8 +2,16 @@ import * as assert from 'assert';
 import * as DT from '../src/DatumThese';
 import { refresh, replete } from '../src/Datum';
 import { some, none, option } from 'fp-ts/es6/Option';
-import { left, right, both } from 'fp-ts/es6/These'
+import { left, right, both, getSemigroup as theseGetSemigroup } from 'fp-ts/es6/These'
 import { monoidSum } from 'fp-ts/es6/Monoid';
+import { showNumber, showString } from 'fp-ts/es6/Show';
+import { eqNumber, eqString } from 'fp-ts/es6/Eq';
+import { semigroupString, semigroupSum } from 'fp-ts/es6/Semigroup';
+import { identity } from 'fp-ts/es6/function';
+import { DatumThese } from '../src/DatumThese';
+import { Apply2C } from 'fp-ts/es6/Apply';
+import { Applicative2C } from 'fp-ts/es6/Applicative';
+import { Chain2C } from 'fp-ts/es6/Chain';
 
 describe('DatumThese', () => {
     it('URI', () => {
@@ -294,7 +302,7 @@ describe('DatumThese', () => {
     });
 
     it('traverse', () => {
-        const traverse = DT.datumThese.traverse(option);
+        const traverse = DT.Traversable.traverse(option);
         const fab = (n: number) => (n < 0 ? none : some(n));
     
         assert.deepStrictEqual(traverse(DT.initial, fab), some(DT.initial));
@@ -329,7 +337,7 @@ describe('DatumThese', () => {
     });
 
     it('sequence', () => {
-        const sequence = DT.datumThese.sequence(option);
+        const sequence = DT.Traversable.sequence(option);
     
         assert.deepStrictEqual(sequence(DT.initial), some(DT.initial));
         assert.deepStrictEqual(sequence(DT.pending), some(DT.pending));
@@ -356,7 +364,7 @@ describe('DatumThese', () => {
     });
 
     it('reduce', () => {
-        const reduce = DT.datumThese.reduce;
+        const reduce = DT.Traversable.reduce;
         const add = (acc: number, cur: number): number => acc + cur;
     
         assert.deepStrictEqual(reduce(DT.initial, 0, add), 0);
@@ -390,7 +398,7 @@ describe('DatumThese', () => {
     });
 
     it('reduceRight', () => {
-        const reduce = DT.datumThese.reduceRight;
+        const reduce = DT.Traversable.reduceRight;
         const add = (acc: number, cur: number): number => acc + cur;
     
         assert.deepStrictEqual(reduce(DT.initial, 0, add), 0);
@@ -401,5 +409,254 @@ describe('DatumThese', () => {
         assert.deepStrictEqual(reduce(DT.toRefresh(DT.success(1)), 0, add), 1);
         assert.deepStrictEqual(reduce(DT.toRefresh(DT.failure(1)), 0, add), 0);
         assert.deepStrictEqual(reduce(DT.toRefresh(DT.partialSuccess(0, 1)), 0, add), 1);
+    });
+
+    it('getShow', () => {
+        const S = DT.getShow(showString, showNumber);
+        assert.strictEqual(S.show(DT.initial), 'initial');
+        assert.strictEqual(S.show(DT.pending), 'pending');
+        assert.strictEqual(S.show(DT.success(1)), 'replete(right(1))');
+        assert.strictEqual(S.show(DT.failure('a')), 'replete(left("a"))');
+        assert.strictEqual(S.show(DT.partialSuccess('a', 1)), 'replete(both("a", 1))');
+        assert.strictEqual(S.show(DT.successR(1)), 'refresh(right(1))');
+        assert.strictEqual(S.show(DT.failureR('a')), 'refresh(left("a"))');
+        assert.strictEqual(S.show(DT.partialSuccessR('a', 1)), 'refresh(both("a", 1))');
+    });
+
+    it('getEq', () => {
+        const E = DT.getEq(eqString, eqNumber);
+
+        // Sanity check reference equality not needed
+        assert.strictEqual(E.equals(DT.success(1), DT.success(1)), true)
+
+        const uniqueValues = [
+            DT.initial,
+            DT.pending,
+            DT.success(1),
+            DT.failure('a'),
+            DT.partialSuccess('a', 1),
+            DT.success(2),
+            DT.failure('b'),
+            DT.partialSuccess('b', 2),
+            DT.successR(1),
+            DT.failureR('a'),
+            DT.partialSuccessR('a', 1),
+            DT.successR(2),
+            DT.failureR('b'),
+            DT.partialSuccessR('b', 2),
+        ];
+
+        for (let i = 0; i < uniqueValues.length; i++) {
+            for (let j = i; j < uniqueValues.length; j++) {
+                assert.strictEqual(E.equals(uniqueValues[i], uniqueValues[j]), i === j)
+            }
+        }
+    });
+
+    it('getApplySemigroup', () => {
+
+        const S = DT.getApplySemigroup(theseGetSemigroup(semigroupString, semigroupSum));
+
+        const values = [
+            DT.success(1),
+            DT.failure('a'),
+            DT.partialSuccess('a', 1),
+            DT.successR(1),
+            DT.failureR('a'),
+            DT.partialSuccessR('a', 1),
+        ];
+
+        const noValues = [
+            DT.initial, 
+            DT.pending
+        ];
+
+        assert.deepStrictEqual(S.concat(DT.initial, DT.initial), DT.initial);
+        assert.deepStrictEqual(S.concat(DT.initial, DT.pending), DT.initial);
+        assert.deepStrictEqual(S.concat(DT.pending, DT.pending), DT.pending);
+        assert.deepStrictEqual(S.concat(DT.pending, DT.initial), DT.pending);
+
+        noValues.forEach(noValue => {
+            values.forEach(value => {
+                assert.deepStrictEqual(S.concat(noValue, value), noValue);
+                assert.deepStrictEqual(S.concat(value, noValue), noValue);
+            });
+        });
+
+        const modifiers = [
+            identity,
+            DT.toRefresh
+        ];
+
+        // Replete/Refresh of first valued datum does not matter
+        modifiers.forEach(modifier => {
+            assert.deepStrictEqual(S.concat(modifier(DT.success(1)), DT.success(1)), DT.success(2));
+            assert.deepStrictEqual(S.concat(modifier(DT.success(1)), DT.failure('a')), DT.partialSuccess('a', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.success(1)), DT.partialSuccess('a', 1)), DT.partialSuccess('a', 2));
+            assert.deepStrictEqual(S.concat(modifier(DT.success(1)), DT.successR(1)), DT.successR(2));
+            assert.deepStrictEqual(S.concat(modifier(DT.success(1)), DT.failureR('a')), DT.partialSuccessR('a', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.success(1)), DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 2));
+    
+            assert.deepStrictEqual(S.concat(modifier(DT.failure('a')), DT.success(1)), DT.partialSuccess('a', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.failure('a')), DT.failure('a')), DT.failure('aa'));
+            assert.deepStrictEqual(S.concat(modifier(DT.failure('a')), DT.partialSuccess('a', 1)), DT.partialSuccess('aa', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.failure('a')), DT.successR(1)), DT.partialSuccessR('a', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.failure('a')), DT.failureR('a')), DT.failureR('aa'));
+            assert.deepStrictEqual(S.concat(modifier(DT.failure('a')), DT.partialSuccessR('a', 1)), DT.partialSuccessR('aa', 1));
+    
+            assert.deepStrictEqual(S.concat(modifier(DT.partialSuccess('a', 1)), DT.success(1)), DT.partialSuccess('a', 2));
+            assert.deepStrictEqual(S.concat(modifier(DT.partialSuccess('a', 1)), DT.failure('a')), DT.partialSuccess('aa', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.partialSuccess('a', 1)), DT.partialSuccess('a', 1)), DT.partialSuccess('aa', 2));
+            assert.deepStrictEqual(S.concat(modifier(DT.partialSuccess('a', 1)), DT.successR(1)), DT.partialSuccessR('a', 2));
+            assert.deepStrictEqual(S.concat(modifier(DT.partialSuccess('a', 1)), DT.failureR('a')), DT.partialSuccessR('aa', 1));
+            assert.deepStrictEqual(S.concat(modifier(DT.partialSuccess('a', 1)), DT.partialSuccessR('a', 1)), DT.partialSuccessR('aa', 2));
+        });
+    });
+
+    function assertAp(A: Apply2C<DT.URI, string>) {
+        const f = (n: number) => n * 2;
+
+        const noValues = [
+            DT.initial,
+            DT.pending,
+        ];
+
+        const values = [
+            DT.success(1),
+            DT.failure('a'),
+            DT.partialSuccess('a', 1),
+            DT.successR(1),
+            DT.failureR('a'),
+            DT.partialSuccessR('a', 1)
+        ];
+
+        noValues.forEach(noValue1 => {
+            noValues.forEach(noValue2 => {
+                assert.deepStrictEqual(A.ap(noValue1, noValue2), noValue1)
+            });
+        });
+
+        noValues.forEach(noValue => {
+            values.forEach(value => {
+                assert.deepStrictEqual(A.ap(noValue, value), noValue)
+            });
+        });
+
+        noValues.forEach(noValue => {
+            assert.deepStrictEqual(A.ap(DT.success(f), noValue), noValue)
+            assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), noValue), noValue)
+            assert.deepStrictEqual(A.ap(DT.successR(f), noValue), noValue)
+            assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), noValue), noValue)
+        });
+
+        values.concat(noValues).forEach(val => {
+            const failFn: DatumThese<string, typeof f> = DT.failure('a')
+            const failFnR: DatumThese<string, typeof f> = DT.failureR('a')
+            assert.deepStrictEqual(A.ap(failFn, val), DT.failure('a'))
+            assert.deepStrictEqual(A.ap(failFnR, val), DT.failure('a'))
+        })
+
+        assert.deepStrictEqual(A.ap(DT.success(f), DT.success(1)), DT.success(2));
+        assert.deepStrictEqual(A.ap(DT.success(f), DT.failure('a')), DT.failure('a'));
+        assert.deepStrictEqual(A.ap(DT.success(f), DT.partialSuccess('a', 1)), DT.partialSuccess('a', 2));
+        assert.deepStrictEqual(A.ap(DT.success(f), DT.successR(1)), DT.successR(2));
+        assert.deepStrictEqual(A.ap(DT.success(f), DT.failureR('a')), DT.failureR('a'));
+        assert.deepStrictEqual(A.ap(DT.success(f), DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 2));
+
+        assert.deepStrictEqual(A.ap(DT.successR(f), DT.success(1)), DT.success(2));
+        assert.deepStrictEqual(A.ap(DT.successR(f), DT.failure('a')), DT.failure('a'));
+        assert.deepStrictEqual(A.ap(DT.successR(f), DT.partialSuccess('a', 1)), DT.partialSuccess('a', 2));
+        assert.deepStrictEqual(A.ap(DT.successR(f), DT.successR(1)), DT.successR(2));
+        assert.deepStrictEqual(A.ap(DT.successR(f), DT.failureR('a')), DT.failureR('a'));
+        assert.deepStrictEqual(A.ap(DT.successR(f), DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 2));
+
+        assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), DT.success(1)), DT.partialSuccess('a', 2));
+        assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), DT.failure('a')), DT.failure('aa'));
+        assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), DT.partialSuccess('a', 1)), DT.partialSuccess('aa', 2));
+        assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), DT.successR(1)), DT.partialSuccessR('a', 2));
+        assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), DT.failureR('a')), DT.failureR('aa'));
+        assert.deepStrictEqual(A.ap(DT.partialSuccess('a', f), DT.partialSuccessR('a', 1)), DT.partialSuccessR('aa', 2));
+
+        assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), DT.success(1)), DT.partialSuccess('a', 2));
+        assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), DT.failure('a')), DT.failure('aa'));
+        assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), DT.partialSuccess('a', 1)), DT.partialSuccess('aa', 2));
+        assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), DT.successR(1)), DT.partialSuccessR('a', 2));
+        assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), DT.failureR('a')), DT.failureR('aa'));
+        assert.deepStrictEqual(A.ap(DT.partialSuccessR('a', f), DT.partialSuccessR('a', 1)), DT.partialSuccessR('aa', 2));
+    }
+
+    it('getApply', () => {
+        const A = DT.getApply(semigroupString);
+        assertAp(A);
+    });
+
+    function assertOf(A: Applicative2C<DT.URI, string>) {
+
+        assert.deepStrictEqual(A.of(1), DT.success(1));
+    }
+
+    it('getApplicative', () => {
+        const A = DT.getApplicative(semigroupString);
+        assertAp(A);
+        assertOf(A);
+    });
+
+    function assertChain(C: Chain2C<DT.URI, string>) {
+        const f = (n: number) => n > 1 ? DT.success(n * 2) : DT.partialSuccess('b', n);
+        const g = (n: number) => DT.failureR('c')
+        const h = (n: number) => DT.initial
+
+        const noValues = [
+            DT.initial,
+            DT.pending,
+        ];
+
+        noValues.forEach(noValue => {
+            assert.deepStrictEqual(C.chain(noValue, f), noValue);
+        });
+
+        [DT.failure('a'), DT.failureR('a')].forEach(fail => {
+            assert.deepStrictEqual(C.chain(fail, f), DT.failure('a'));
+        });
+
+        assert.deepStrictEqual(C.chain(DT.partialSuccess('a', 1), f), DT.partialSuccess('ab', 1));
+        assert.deepStrictEqual(C.chain(DT.partialSuccess('a', 2), f), DT.partialSuccess('a', 4));
+        assert.deepStrictEqual(C.chain(DT.partialSuccess('a', 1), g), DT.failureR('ac'));
+        assert.deepStrictEqual(C.chain(DT.partialSuccess('a', 1), h), DT.initial);
+        assert.deepStrictEqual(C.chain(DT.partialSuccessR('a', 1), f), DT.partialSuccess('ab', 1));
+        assert.deepStrictEqual(C.chain(DT.partialSuccessR('a', 2), f), DT.partialSuccess('a', 4));
+        assert.deepStrictEqual(C.chain(DT.partialSuccessR('a', 1), g), DT.failureR('ac'));
+        assert.deepStrictEqual(C.chain(DT.partialSuccessR('a', 1), h), DT.initial);
+
+
+        assert.deepStrictEqual(C.chain(DT.success(1), f), DT.partialSuccess('b', 1));
+        assert.deepStrictEqual(C.chain(DT.success(2), f), DT.success(4));
+        assert.deepStrictEqual(C.chain(DT.success(1), g), DT.failureR('c'));
+        assert.deepStrictEqual(C.chain(DT.success(1), h), DT.initial);
+        assert.deepStrictEqual(C.chain(DT.successR(1), f), DT.partialSuccess('b', 1));
+        assert.deepStrictEqual(C.chain(DT.successR(2), f), DT.success(4));
+        assert.deepStrictEqual(C.chain(DT.successR(1), g), DT.failureR('c'));
+        assert.deepStrictEqual(C.chain(DT.successR(1), h), DT.initial);
+    }
+
+    it('getChain', () => {
+        const C = DT.getChain(semigroupString);
+        assertAp(C)
+        assertChain(C)
+    });
+
+    it('getMonad', () => {
+        const M = DT.getMonad(semigroupString);
+        assertAp(M);;
+        assertChain(M);
+        assertOf(M);
+    });
+
+    it('getMonadThrow', () => {
+        const M = DT.getMonadThrow(semigroupString);
+        assertAp(M);;
+        assertChain(M);
+        assertOf(M);
+        assert.deepStrictEqual(M.throwError('bla'), DT.failure('bla'))
     });
 });
