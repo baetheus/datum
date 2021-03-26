@@ -527,12 +527,12 @@ export const Traversable: Traversable2<URI> = {
 /**
  * @since 3.2.0
  */
-export const sequenceTuple = sequenceT(Apply);
+export const sequenceTuple = sequenceT(datumEither);
 
 /**
  * @since 3.2.0
  */
-export const sequenceStruct = sequenceS(Apply);
+export const sequenceStruct = sequenceS(datumEither);
 
 /**
  * @since 3.2.0
