@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 3
+nav_order: 4
 parent: Modules
 ---
 
@@ -15,6 +15,7 @@ Added in v3.1.0
 - [utils](#utils)
   - [datum](#datum)
   - [datumEither](#datumeither)
+  - [datumThese](#datumthese)
   - [oneShot](#oneshot)
 
 ---
@@ -40,6 +41,16 @@ export declare const datumEither: typeof datumEither
 ```
 
 Added in v3.1.0
+
+## datumThese
+
+**Signature**
+
+```ts
+export declare const datumThese: typeof datumThese
+```
+
+Added in vTODO
 
 ## oneShot
 

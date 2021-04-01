@@ -14,7 +14,7 @@ An instance of `Datum` is either an instance of `Initial`, `Pending`, `Refresh` 
 
 A common use of `Datum` is as a container for dealing with refreshable data values. In this usage,
 the initial value is `Initial`. `Pending` represents in flight activity. `Refresh` indicates
-that data exists but is being refreshed, and `Replete` means data exists and is not being
+that data exists but is being refreshed, and `Replete` meands data exists and is not being
 refreshed.
 
 ---
@@ -22,15 +22,29 @@ refreshed.
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
+  - [Alt](#alt)
+  - [Alternative](#alternative)
+  - [Applicative](#applicative)
+  - [Apply](#apply)
+  - [Chain](#chain)
+  - [Compactable](#compactable)
   - [Datum (type alias)](#datum-type-alias)
+  - [Extend](#extend)
+  - [Filterable](#filterable)
+  - [Foldable](#foldable)
+  - [Functor](#functor)
   - [Initial (interface)](#initial-interface)
+  - [Monad](#monad)
+  - [MonadThrow](#monadthrow)
   - [Pending (interface)](#pending-interface)
   - [Refresh (interface)](#refresh-interface)
   - [Replete (interface)](#replete-interface)
+  - [Traversable](#traversable)
   - [URI](#uri)
   - [URI (type alias)](#uri-type-alias)
+  - [Witherable](#witherable)
   - [alt](#alt)
-  - [ap](#ap)
+  - [ap2](#ap2)
   - [apFirst](#apfirst)
   - [apSecond](#apsecond)
   - [chain](#chain)
@@ -38,7 +52,6 @@ refreshed.
   - [compact](#compact)
   - [constInitial](#constinitial)
   - [constPending](#constpending)
-  - [datum](#datum)
   - [duplicate](#duplicate)
   - [elem](#elem)
   - [exists](#exists)
@@ -53,8 +66,7 @@ refreshed.
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
   - [fromPredicate](#frompredicate)
-  - [getApplyMonoid](#getapplymonoid)
-  - [getApplySemigroup](#getapplysemigroup)
+  - [getApplySemigroup2](#getapplysemigroup2)
   - [getEq](#geteq)
   - [getOrElse](#getorelse)
   - [getOrd](#getord)
@@ -75,10 +87,76 @@ refreshed.
   - [refresh](#refresh)
   - [replete](#replete)
   - [separate](#separate)
+  - [~~ap~~](#ap)
+  - [~~datum~~](#datum)
+  - [~~getApplyMonoid~~](#getapplymonoid)
+  - [~~getApplySemigroup~~](#getapplysemigroup)
 
 ---
 
 # utils
+
+## Alt
+
+**Signature**
+
+```ts
+export declare const Alt: Alt1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Alternative
+
+**Signature**
+
+```ts
+export declare const Alternative: Alternative1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Applicative
+
+**Signature**
+
+```ts
+export declare const Applicative: Applicative1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Apply
+
+**Signature**
+
+```ts
+export declare const Apply: Apply1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+Note: This instance agrees with the standalone Applicative/Chain/Monad instances but _disagrees_ with the deprecated `datum` mega-instance.
+
+## Chain
+
+**Signature**
+
+```ts
+export declare const Chain: Chain1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Compactable
+
+**Signature**
+
+```ts
+export declare const Compactable: Compactable1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
 
 ## Datum (type alias)
 
@@ -89,6 +167,46 @@ export type Datum<D> = Initial | Pending | Refresh<D> | Replete<D>
 ```
 
 Added in v2.0.0
+
+## Extend
+
+**Signature**
+
+```ts
+export declare const Extend: Extend1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Filterable
+
+**Signature**
+
+```ts
+export declare const Filterable: Filterable1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Foldable
+
+**Signature**
+
+```ts
+export declare const Foldable: Foldable1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## Functor
+
+**Signature**
+
+```ts
+export declare const Functor: Functor1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
 
 ## Initial (interface)
 
@@ -101,6 +219,26 @@ export interface Initial {
 ```
 
 Added in v2.0.0
+
+## Monad
+
+**Signature**
+
+```ts
+export declare const Monad: Monad1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
+## MonadThrow
+
+**Signature**
+
+```ts
+export declare const MonadThrow: MonadThrow1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
 
 ## Pending (interface)
 
@@ -140,6 +278,16 @@ export interface Replete<D> {
 
 Added in v2.0.0
 
+## Traversable
+
+**Signature**
+
+```ts
+export declare const Traversable: Traversable1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
 ## URI
 
 **Signature**
@@ -160,6 +308,16 @@ export type URI = typeof URI
 
 Added in v2.0.0
 
+## Witherable
+
+**Signature**
+
+```ts
+export declare const Witherable: Witherable1<'@nll/datum/Datum'>
+```
+
+Added in v3.5.0
+
 ## alt
 
 **Signature**
@@ -170,15 +328,15 @@ export declare const alt: <A>(that: Lazy<Datum<A>>) => (fa: Datum<A>) => Datum<A
 
 Added in v2.0.0
 
-## ap
+## ap2
 
 **Signature**
 
 ```ts
-export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
+export declare const ap2: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
 ```
 
-Added in v2.0.0
+Added in v3.5.0
 
 ## apFirst
 
@@ -246,24 +404,6 @@ Added in v2.0.0
 
 ```ts
 export declare const constPending: Lazy<Pending>
-```
-
-Added in v2.0.0
-
-## datum
-
-**Signature**
-
-```ts
-export declare const datum: Monad1<'@nll/datum/Datum'> &
-  Foldable1<'@nll/datum/Datum'> &
-  Traversable1<'@nll/datum/Datum'> &
-  Alternative1<'@nll/datum/Datum'> &
-  Extend1<'@nll/datum/Datum'> &
-  Compactable1<'@nll/datum/Datum'> &
-  Filterable1<'@nll/datum/Datum'> &
-  Witherable1<'@nll/datum/Datum'> &
-  MonadThrow1<'@nll/datum/Datum'>
 ```
 
 Added in v2.0.0
@@ -398,7 +538,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Replete`, oth
 **Signature**
 
 ```ts
-export declare const fromNullable: <A>(a: A) => Datum<A>
+export declare const fromNullable: <A>(a: A | null | undefined) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -426,27 +566,19 @@ export declare const fromPredicate: {
 
 Added in v2.6.0
 
-## getApplyMonoid
-
-**Signature**
-
-```ts
-export declare const getApplyMonoid: <A>(M: Monoid<A>) => Monoid<Datum<A>>
-```
-
-Added in v2.0.0
-
-## getApplySemigroup
+## getApplySemigroup2
 
 `Apply` semigroup
 
+Note: This uses the `ap` functionality of the standalone `Apply` instance.
+
 **Signature**
 
 ```ts
-export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
+export declare const getApplySemigroup2: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
-Added in v2.0.0
+Added in v3.5.0
 
 ## getEq
 
@@ -573,7 +705,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
+export declare const isValued: <A>(ma: Datum<A>) => ma is Refresh<A> | Replete<A>
 ```
 
 Added in v2.0.0
@@ -675,6 +807,56 @@ Added in v2.0.0
 
 ```ts
 export declare const separate: <A, B>(fa: Datum<Either<A, B>>) => Separated<Datum<A>, Datum<B>>
+```
+
+Added in v2.0.0
+
+## ~~ap~~
+
+**Signature**
+
+```ts
+export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
+```
+
+Added in v2.0.0
+
+## ~~datum~~
+
+**Signature**
+
+```ts
+export declare const datum: Monad1<'@nll/datum/Datum'> &
+  Foldable1<'@nll/datum/Datum'> &
+  Traversable1<'@nll/datum/Datum'> &
+  Alternative1<'@nll/datum/Datum'> &
+  Extend1<'@nll/datum/Datum'> &
+  Compactable1<'@nll/datum/Datum'> &
+  Filterable1<'@nll/datum/Datum'> &
+  Witherable1<'@nll/datum/Datum'> &
+  MonadThrow1<'@nll/datum/Datum'>
+```
+
+Added in v2.0.0
+
+## ~~getApplyMonoid~~
+
+**Signature**
+
+```ts
+export declare const getApplyMonoid: <A>(M: Monoid<A>) => Monoid<Datum<A>>
+```
+
+Added in v2.0.0
+
+## ~~getApplySemigroup~~
+
+`Apply` semigroup
+
+**Signature**
+
+```ts
+export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
 Added in v2.0.0

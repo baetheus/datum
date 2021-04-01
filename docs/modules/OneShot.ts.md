@@ -1,6 +1,6 @@
 ---
 title: OneShot.ts
-nav_order: 4
+nav_order: 5
 parent: Modules
 ---
 
@@ -388,7 +388,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Complete`, ot
 **Signature**
 
 ```ts
-export declare const fromNullable: <A>(a: A) => OneShot<A>
+export declare const fromNullable: <A>(a: A | null | undefined) => OneShot<A>
 ```
 
 Added in v3.3.0

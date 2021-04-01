@@ -31,16 +31,27 @@ There are additional helper methods for going from refresh to replete and back.
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
+  - [Alt](#alt)
+  - [Alternative](#alternative)
+  - [Applicative](#applicative)
+  - [Apply](#apply)
+  - [Bifunctor](#bifunctor)
+  - [Chain](#chain)
   - [DatumEither (type alias)](#datumeither-type-alias)
   - [Failure (type alias)](#failure-type-alias)
+  - [Foldable](#foldable)
+  - [Functor](#functor)
+  - [Monad](#monad)
+  - [MonadThrow](#monadthrow)
   - [Success (type alias)](#success-type-alias)
   - [ToLeft (type alias)](#toleft-type-alias)
   - [ToRight (type alias)](#toright-type-alias)
+  - [Traversable](#traversable)
   - [URI](#uri)
   - [URI (type alias)](#uri-type-alias)
   - [Valued (type alias)](#valued-type-alias)
   - [alt](#alt)
-  - [ap](#ap)
+  - [ap2](#ap2)
   - [apFirst](#apfirst)
   - [apSecond](#apsecond)
   - [bimap](#bimap)
@@ -48,7 +59,6 @@ There are additional helper methods for going from refresh to replete and back.
   - [chainFirst](#chainfirst)
   - [constInitial](#constinitial)
   - [constPending](#constpending)
-  - [datumEither](#datumeither)
   - [failure](#failure)
   - [failureR](#failurer)
   - [flatten](#flatten)
@@ -81,12 +91,76 @@ There are additional helper methods for going from refresh to replete and back.
   - [successR](#successr)
   - [toRefresh](#torefresh)
   - [toReplete](#toreplete)
+  - [~~ap~~](#ap)
+  - [~~datumEither~~](#datumeither)
   - [~~fromEither2~~](#fromeither2)
   - [~~fromEither~~](#fromeither)
 
 ---
 
 # utils
+
+## Alt
+
+**Signature**
+
+```ts
+export declare const Alt: Alt2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## Alternative
+
+**Signature**
+
+```ts
+export declare const Alternative: Alternative2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## Applicative
+
+**Signature**
+
+```ts
+export declare const Applicative: Applicative2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## Apply
+
+**Signature**
+
+```ts
+export declare const Apply: Apply2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+Note: This instance agrees with the standalone Applicative/Chain/Monad instances but _disagrees_ with the deprecated `datum` mega-instance.
+
+## Bifunctor
+
+**Signature**
+
+```ts
+export declare const Bifunctor: Bifunctor2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## Chain
+
+**Signature**
+
+```ts
+export declare const Chain: Chain2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
 
 ## DatumEither (type alias)
 
@@ -107,6 +181,46 @@ export type Failure<E> = Valued<Left<E>>
 ```
 
 Added in v2.3.0
+
+## Foldable
+
+**Signature**
+
+```ts
+export declare const Foldable: Foldable2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## Functor
+
+**Signature**
+
+```ts
+export declare const Functor: Functor2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## Monad
+
+**Signature**
+
+```ts
+export declare const Monad: Monad2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
+
+## MonadThrow
+
+**Signature**
+
+```ts
+export declare const MonadThrow: MonadThrow2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
 
 ## Success (type alias)
 
@@ -137,6 +251,16 @@ export type ToRight<T> = T extends DatumEither<infer _, infer R> ? R : never
 ```
 
 Added in v3.2.0
+
+## Traversable
+
+**Signature**
+
+```ts
+export declare const Traversable: Traversable2<'@nll/datum/DatumEither'>
+```
+
+Added in v3.5.0
 
 ## URI
 
@@ -180,17 +304,17 @@ export declare const alt: <E, A>(
 
 Added in v2.0.0
 
-## ap
+## ap2
 
 **Signature**
 
 ```ts
-export declare const ap: <E, A>(
+export declare const ap2: <E, A>(
   fa: D.Datum<Either<E, A>>
 ) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
 ```
 
-Added in v2.0.0
+Added in v3.5.0
 
 ## apFirst
 
@@ -273,18 +397,6 @@ export declare const constPending: <E = never, D = never>() => D.Datum<Either<E,
 
 Added in v2.4.1
 
-## datumEither
-
-**Signature**
-
-```ts
-export declare const datumEither: Monad2<'@nll/datum/DatumEither'> &
-  Traversable2<'@nll/datum/DatumEither'> &
-  EitherM1<'@nll/datum/Datum'>
-```
-
-Added in v2.0.0
-
 ## failure
 
 **Signature**
@@ -349,7 +461,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, 
 **Signature**
 
 ```ts
-export declare const fromNullable: <E, A>(a: A) => D.Datum<Either<E, A>>
+export declare const fromNullable: <E, A>(a: A | null | undefined) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.4.0
@@ -479,7 +591,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const isValued: <A>(ma: D.Datum<A>) => ma is D.Replete<A> | D.Refresh<A>
+export declare const isValued: <A>(ma: D.Datum<A>) => ma is D.Refresh<A> | D.Replete<A>
 ```
 
 Added in v2.7.0
@@ -542,8 +654,8 @@ Added in v3.4.0
 export declare const refreshFold: <E, A, B>(
   onInitial: () => B,
   onPending: () => B,
-  onFailure: (e: E, r?: boolean) => B,
-  onSuccess: (a: A, r?: boolean) => B
+  onFailure: (e: E, r?: boolean | undefined) => B,
+  onSuccess: (a: A, r?: boolean | undefined) => B
 ) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
@@ -579,9 +691,9 @@ Added in v3.2.0
 
 ```ts
 export declare const squash: <E, A, B>(
-  onNone: (r?: boolean) => B,
-  onFailure: (e: E, r?: boolean) => B,
-  onSuccess: (a: A, r?: boolean) => B
+  onNone: (r?: boolean | undefined) => B,
+  onFailure: (e: E, r?: boolean | undefined) => B,
+  onSuccess: (a: A, r?: boolean | undefined) => B
 ) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
@@ -626,6 +738,30 @@ export declare const toReplete: <E, A>(fea: D.Datum<Either<E, A>>) => D.Datum<Ei
 ```
 
 Added in v2.7.0
+
+## ~~ap~~
+
+**Signature**
+
+```ts
+export declare const ap: <E, A>(
+  fa: D.Datum<Either<E, A>>
+) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
+```
+
+Added in v2.0.0
+
+## ~~datumEither~~
+
+**Signature**
+
+```ts
+export declare const datumEither: Monad2<'@nll/datum/DatumEither'> &
+  Traversable2<'@nll/datum/DatumEither'> &
+  EitherM1<'@nll/datum/Datum'>
+```
+
+Added in v2.0.0
 
 ## ~~fromEither2~~
 
