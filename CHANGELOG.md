@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/nullpub/datum/compare/v3.4.0...v3.5.0) (2021-04-01)
+
+
+### Features
+
+* deprecate ap/chain disagreement and standalone instances ([#19](https://github.com/nullpub/datum/issues/19)) ([484d81d](https://github.com/nullpub/datum/commit/484d81d7a3845464ac41b03239a311aa32e1968d))
+* implement initial DatumThese ADT ([#15](https://github.com/nullpub/datum/issues/15)) ([0ee8a3d](https://github.com/nullpub/datum/commit/0ee8a3d453d7bdf67a3197a920c53d0d9dd57731))
+
 ## [3.4.0](https://github.com/nullpub/datum/compare/v3.3.2...v3.4.0) (2021-02-06)
 
 
