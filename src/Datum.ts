@@ -11,7 +11,9 @@
  * refreshed.
  */
 import { Alternative1 } from 'fp-ts/es6/Alternative';
-import { Applicative } from 'fp-ts/es6/Applicative';
+import { Applicative as ApplicativeHKT, Applicative1 } from 'fp-ts/es6/Applicative';
+import { Apply1 } from 'fp-ts/es6/Apply';
+import { Chain1 } from 'fp-ts/es6/Chain';
 import { Compactable1, Separated } from 'fp-ts/es6/Compactable';
 import { Either, isLeft, isRight } from 'fp-ts/es6/Either';
 import { Eq } from 'fp-ts/es6/Eq';
@@ -19,6 +21,7 @@ import { Extend1 } from 'fp-ts/es6/Extend';
 import { Filterable1 } from 'fp-ts/es6/Filterable';
 import { Foldable1 } from 'fp-ts/es6/Foldable';
 import { constFalse, identity, Predicate, constant } from 'fp-ts/es6/function';
+import { Functor1 } from 'fp-ts/es6/Functor';
 import { HKT } from 'fp-ts/es6/HKT';
 import { Monad1 } from 'fp-ts/es6/Monad';
 import { MonadThrow1 } from 'fp-ts/es6/MonadThrow';
@@ -31,6 +34,7 @@ import { Semigroup } from 'fp-ts/es6/Semigroup';
 import { Show } from 'fp-ts/es6/Show';
 import { Traversable1 } from 'fp-ts/es6/Traversable';
 import { Witherable1 } from 'fp-ts/es6/Witherable';
+import { Alt1 } from 'fp-ts/es6/Alt';
 
 /**
  * @since 1.0.0
@@ -275,17 +279,43 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
  * `Apply` semigroup
  *
  * @since 2.0.0
+ * 
+ * @deprecated This matches the deprecated `ap` behavior of deprecated `datum` mega-instance. The
+ * next major release will change this functions behavior to match the exported `Apply` instance.
+ * 
+ * See `getApplySemigroup2` to use the future behavior in this release.
  */
 export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> =>
   getSemigroup(S);
 
 /**
  * @since 2.0.0
+ * 
+ * @deprecated This matches the deprecated `ap` behavior of deprecated `datum` mega-instance. The
+ * next major release will drop this function, as the `Apply` instance does not admit a valid Monoid.
  */
 export const getApplyMonoid = <A>(M: Monoid<A>): Monoid<Datum<A>> => ({
   ...getApplySemigroup(M),
   empty: replete(M.empty)
 });
+
+/**
+ * `Apply` semigroup
+ * 
+ * Note: This uses the `ap` functionality of the standalone `Apply` instance.
+ *
+ * @since 3.5.0
+ * 
+ */
+ export const getApplySemigroup2 = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
+  // TODO: replace with apply.getApplySemigroup if we bump the min supported version of fp-ts >= 2.10
+  // Or just remove in place of that factory instance
+  concat: (first: Datum<A>, second: Datum<A>) =>
+    Apply.ap(
+      Apply.map(first, (x: A) => (y: A) => S.concat(x, y)),
+      second
+    )
+})
 
 /**
  * Returns `true` if the Async is an instance of `Initial`, `false` otherwise
@@ -366,6 +396,8 @@ const mapC = <A, B>(fa: Datum<A>, f: (a: A) => B): Datum<B> =>
 
 /**
  * @since 2.0.0
+ * 
+ * @deprecated (Does not agree with chain)
  */
 const apC = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> =>
   fold<(a: A) => B, Datum<B>>(
@@ -392,6 +424,11 @@ const apC = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> =>
         a => replete(f(a))
       )(fa)
   )(fab);
+
+  /**
+   * @since 3.5.0
+   */
+const apC2 = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> => chainC(fab, f => mapC(fa, f))
 
 /**
  * @since 2.0.0
@@ -435,7 +472,7 @@ const reduceRightC = <A, B>(fa: Datum<A>, b: B, f: (a: A, b: B) => B): B =>
 /**
  * @since 2.0.0
  */
-const traverseC = <F>(F: Applicative<F>) => <A, B>(
+const traverseC = <F>(F: ApplicativeHKT<F>) => <A, B>(
   ta: Datum<A>,
   f: (a: A) => HKT<F, B>
 ): HKT<F, Datum<B>> =>
@@ -449,7 +486,7 @@ const traverseC = <F>(F: Applicative<F>) => <A, B>(
 /**
  * @since 2.0.0
  */
-const sequenceC = <F>(F: Applicative<F>) => <A>(
+const sequenceC = <F>(F: ApplicativeHKT<F>) => <A>(
   ta: Datum<HKT<F, A>>
 ): HKT<F, Datum<A>> =>
   fold<HKT<F, A>, HKT<F, Datum<A>>>(
@@ -541,7 +578,7 @@ const partitionMapC = <A, B, C>(fa: Datum<A>, f: (a: A) => Either<B, C>) =>
 /**
  * @since 2.0.0
  */
-const witherC = <F>(F: Applicative<F>) => <A, B>(
+const witherC = <F>(F: ApplicativeHKT<F>) => <A, B>(
   fa: Datum<A>,
   f: (a: A) => HKT<F, Option<B>>
 ): HKT<F, Datum<B>> =>
@@ -555,7 +592,7 @@ const witherC = <F>(F: Applicative<F>) => <A, B>(
 /**
  * @since 2.0.0
  */
-const wiltC = <F>(F: Applicative<F>) => <A, B, C>(
+const wiltC = <F>(F: ApplicativeHKT<F>) => <A, B, C>(
   fa: Datum<A>,
   f: (a: A) => HKT<F, Either<B, C>>
 ): HKT<F, Separated<Datum<B>, Datum<C>>> => {
@@ -575,6 +612,8 @@ const throwErrorC = <E, A>(e: E): Datum<A> => initial;
 
 /**
  * @since 2.0.0
+ * 
+ * @deprecated Use standalone instances. Note, this mega-instance has ap and chain instances that disagree (ap does not short-circuit when there is no value, chain does).
  */
 export const datum: Monad1<URI> &
   Foldable1<URI> &
@@ -609,6 +648,132 @@ export const datum: Monad1<URI> &
   throwError: throwErrorC
 };
 
+/**
+ * @since 3.5.0
+ */
+export const Functor: Functor1<URI> = {
+  URI,
+  map: mapC
+}
+
+/**
+ * @since 3.5.0
+ * 
+ * Note: This instance agrees with the standalone Applicative/Chain/Monad instances but _disagrees_ with the deprecated `datum` mega-instance.
+ */
+export const Apply: Apply1<URI> = {
+  ...Functor,
+  ap: apC2
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Chain: Chain1<URI> = {
+  ...Apply,
+  chain: chainC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Applicative: Applicative1<URI> = {
+  ...Apply,
+  of: replete
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Alt: Alt1<URI> = {
+  ...Functor,
+  alt: altC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Alternative: Alternative1<URI> = {
+  ...Alt,
+  ...Applicative,
+  zero: constInitial
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Monad: Monad1<URI> = {
+  ...Chain,
+  of: replete
+}
+
+/**
+ * @since 3.5.0
+ */
+export const MonadThrow: MonadThrow1<URI> = {
+  ...Monad,
+  throwError: throwErrorC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Foldable: Foldable1<URI> = {
+  URI,
+  reduce: reduceC,
+  reduceRight: reduceRightC,
+  foldMap: foldMapC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Traversable: Traversable1<URI> = {
+  ...Functor,
+  ...Foldable,
+  sequence: sequenceC,
+  traverse: traverseC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Extend: Extend1<URI> = {
+  ...Functor,
+  extend: extendC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Compactable: Compactable1<URI> = {
+  URI,
+  compact: compactC,
+  separate: separateC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Filterable: Filterable1<URI> = {
+  ...Functor,
+  ...Compactable,
+  partition: partitionC,
+  partitionMap: partitionMapC,
+  filter: filterC,
+  filterMap: filterMapC
+}
+
+/**
+ * @since 3.5.0
+ */
+export const Witherable: Witherable1<URI> = {
+  ...Traversable,
+  ...Filterable,
+  wilt: wiltC,
+  wither: witherC
+}
+
 const {
   alt,
   ap,
@@ -635,6 +800,10 @@ const {
   fromPredicate
 } = pipeable(datum);
 
+const {
+  ap: ap2
+} = pipeable(Apply);
+
 export {
   /**
    * @since 2.0.0
@@ -642,8 +811,15 @@ export {
   alt,
   /**
    * @since 2.0.0
+   * 
+   * @deprecated Does not agree with chain. This will be replaced in the next major release with the behavior of `ap2`
    */
   ap,
+  /**
+   * 
+   * @since 3.5.0
+   */
+  ap2,
   /**
    * @since 2.0.0
    */

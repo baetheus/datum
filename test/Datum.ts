@@ -186,6 +186,47 @@ describe('Datum', () => {
     );
   });
 
+  /**
+   * 1. Identity: `A.ap(A.of(a => a), fa) = fa`
+   * 2. Homomorphism: `A.ap(A.of(ab), A.of(a)) = A.of(ab(a))`
+   * 3. Interchange: `A.ap(fab, A.of(a)) = A.ap(A.of(ab => ab(a)), fab)`
+   */
+   it('ap2', () => {
+    const f = (n: number) => n * 2;
+
+    assert.deepStrictEqual(D.Apply.ap(D.initial, D.initial), D.initial);
+    assert.deepStrictEqual(D.Apply.ap(D.initial, D.pending), D.initial);
+    assert.deepStrictEqual(D.Apply.ap(D.initial, D.refresh(1)), D.initial);
+    assert.deepStrictEqual(D.Apply.ap(D.initial, D.replete(1)), D.initial);
+
+    assert.deepStrictEqual(D.Apply.ap(D.pending, D.initial), D.pending);
+    assert.deepStrictEqual(D.Apply.ap(D.pending, D.pending), D.pending);
+    assert.deepStrictEqual(D.Apply.ap(D.pending, D.refresh(1)), D.pending);
+    assert.deepStrictEqual(D.Apply.ap(D.pending, D.replete(1)), D.pending);
+
+    assert.deepStrictEqual(D.Apply.ap(D.refresh(f), D.initial), D.initial);
+    assert.deepStrictEqual(D.Apply.ap(D.refresh(f), D.pending), D.pending);
+    assert.deepStrictEqual(
+      D.Apply.ap(D.refresh(f), D.refresh(1)),
+      D.refresh(2)
+    );
+    assert.deepStrictEqual(
+      D.Apply.ap(D.refresh(f), D.replete(1)),
+      D.replete(2)
+    );
+
+    assert.deepStrictEqual(D.Apply.ap(D.replete(f), D.initial), D.initial);
+    assert.deepStrictEqual(D.Apply.ap(D.replete(f), D.pending), D.pending);
+    assert.deepStrictEqual(
+      D.Apply.ap(D.replete(f), D.refresh(1)),
+      D.refresh(2)
+    );
+    assert.deepStrictEqual(
+      D.Apply.ap(D.replete(f), D.replete(1)),
+      D.replete(2)
+    );
+  });
+
   it('chain', () => {
     const f = (n: number) => D.replete(n * 2);
     const g = () => D.initial;
@@ -423,6 +464,20 @@ describe('Datum', () => {
     assert.deepStrictEqual(M.concat(D.refresh(1), M.empty), D.refresh(1));
     assert.deepStrictEqual(M.concat(M.empty, D.replete(1)), D.replete(1));
     assert.deepStrictEqual(M.concat(D.replete(1), M.empty), D.replete(1));
+  });
+
+  it('getApplySemigroup2', () => {
+    const S = D.getApplySemigroup2(semigroupSum);
+    assert.deepStrictEqual(S.concat(D.initial, D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.pending, D.pending), D.pending);
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.initial, D.refresh(1)), D.initial);
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.refresh(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.replete(1), D.initial), D.initial);
+    assert.deepStrictEqual(S.concat(D.initial, D.replete(1)), D.initial);
+    assert.deepStrictEqual(S.concat(D.replete(1), D.refresh(2)), D.refresh(3));
+    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.replete(3));
+    assert.deepStrictEqual(S.concat(D.replete(1), D.replete(2)), D.replete(3));
   });
 
   it('elem', () => {
