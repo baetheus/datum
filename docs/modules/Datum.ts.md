@@ -44,7 +44,6 @@ refreshed.
   - [URI (type alias)](#uri-type-alias)
   - [Witherable](#witherable)
   - [alt](#alt)
-  - [ap2](#ap2)
   - [apFirst](#apfirst)
   - [apSecond](#apsecond)
   - [chain](#chain)
@@ -66,8 +65,9 @@ refreshed.
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
   - [fromPredicate](#frompredicate)
-  - [getApplySemigroup2](#getapplysemigroup2)
+  - [getApplySemigroup](#getapplysemigroup)
   - [getEq](#geteq)
+  - [getMonoid](#getmonoid)
   - [getOrElse](#getorelse)
   - [getOrd](#getord)
   - [getSemigroup](#getsemigroup)
@@ -88,9 +88,6 @@ refreshed.
   - [replete](#replete)
   - [separate](#separate)
   - [~~ap~~](#ap)
-  - [~~datum~~](#datum)
-  - [~~getApplyMonoid~~](#getapplymonoid)
-  - [~~getApplySemigroup~~](#getapplysemigroup)
 
 ---
 
@@ -328,16 +325,6 @@ export declare const alt: <A>(that: Lazy<Datum<A>>) => (fa: Datum<A>) => Datum<A
 
 Added in v2.0.0
 
-## ap2
-
-**Signature**
-
-```ts
-export declare const ap2: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
-```
-
-Added in v3.5.0
-
 ## apFirst
 
 **Signature**
@@ -538,7 +525,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Replete`, oth
 **Signature**
 
 ```ts
-export declare const fromNullable: <A>(a: A | null | undefined) => Datum<A>
+export declare const fromNullable: <A>(a: A) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -566,19 +553,17 @@ export declare const fromPredicate: {
 
 Added in v2.6.0
 
-## getApplySemigroup2
+## getApplySemigroup
 
 `Apply` semigroup
-
-Note: This uses the `ap` functionality of the standalone `Apply` instance.
 
 **Signature**
 
 ```ts
-export declare const getApplySemigroup2: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
+export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
-Added in v3.5.0
+Added in v2.0.0 (New semantics since 4.0.0)
 
 ## getEq
 
@@ -589,6 +574,18 @@ export declare const getEq: <A>(E: Eq<A>) => Eq<Datum<A>>
 ```
 
 Added in v2.0.0
+
+## getMonoid
+
+See getSemigroup. Empty value of initial.
+
+**Signature**
+
+```ts
+export declare const getMonoid: <A>(S: Semigroup<A>) => Monoid<Datum<A>>
+```
+
+Added in v4.0.0
 
 ## getOrElse
 
@@ -618,9 +615,13 @@ Added in v2.0.0
 
 ## getSemigroup
 
-Semigroup returning the left-most non-`Initial` and non-`Pending` value. If both operands
-are `Replete`s or `Refresh`s then the inner values are appended using the provided
-`Semigroup` and refresh is coalesced if either are `Refresh`.
+Viewing Datum as the following progess of state changes:
+
+Initial -> Pending -> Replete -> Refresh [-> Replete -> ...]
+
+This semigroup has a bias towards datums with values and a bias towards Pending/Refresh.
+Notably, concat(Pending, Replete) gives Refresh.
+If both datums have a value, they're combined with the given Semigroup instance.
 
 **Signature**
 
@@ -628,7 +629,7 @@ are `Replete`s or `Refresh`s then the inner values are appended using the provid
 export declare const getSemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
-Added in v2.0.0
+Added in v2.0.0 (New semantics since 4.0.0)
 
 ## getShow
 
@@ -705,7 +706,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const isValued: <A>(ma: Datum<A>) => ma is Refresh<A> | Replete<A>
+export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
 ```
 
 Added in v2.0.0
@@ -817,46 +818,6 @@ Added in v2.0.0
 
 ```ts
 export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
-```
-
-Added in v2.0.0
-
-## ~~datum~~
-
-**Signature**
-
-```ts
-export declare const datum: Monad1<'@nll/datum/Datum'> &
-  Foldable1<'@nll/datum/Datum'> &
-  Traversable1<'@nll/datum/Datum'> &
-  Alternative1<'@nll/datum/Datum'> &
-  Extend1<'@nll/datum/Datum'> &
-  Compactable1<'@nll/datum/Datum'> &
-  Filterable1<'@nll/datum/Datum'> &
-  Witherable1<'@nll/datum/Datum'> &
-  MonadThrow1<'@nll/datum/Datum'>
-```
-
-Added in v2.0.0
-
-## ~~getApplyMonoid~~
-
-**Signature**
-
-```ts
-export declare const getApplyMonoid: <A>(M: Monoid<A>) => Monoid<Datum<A>>
-```
-
-Added in v2.0.0
-
-## ~~getApplySemigroup~~
-
-`Apply` semigroup
-
-**Signature**
-
-```ts
-export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
 Added in v2.0.0

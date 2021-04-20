@@ -51,7 +51,6 @@ There are additional helper methods for going from refresh to replete and back.
   - [URI (type alias)](#uri-type-alias)
   - [Valued (type alias)](#valued-type-alias)
   - [alt](#alt)
-  - [ap2](#ap2)
   - [apFirst](#apfirst)
   - [apSecond](#apsecond)
   - [bimap](#bimap)
@@ -66,6 +65,9 @@ There are additional helper methods for going from refresh to replete and back.
   - [foldMap](#foldmap)
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
+  - [getApplySemigroup](#getapplysemigroup)
+  - [getMonoid](#getmonoid)
+  - [getSemigroup](#getsemigroup)
   - [initial](#initial)
   - [isFailure](#isfailure)
   - [isInitial](#isinitial)
@@ -92,7 +94,6 @@ There are additional helper methods for going from refresh to replete and back.
   - [toRefresh](#torefresh)
   - [toReplete](#toreplete)
   - [~~ap~~](#ap)
-  - [~~datumEither~~](#datumeither)
   - [~~fromEither2~~](#fromeither2)
   - [~~fromEither~~](#fromeither)
 
@@ -304,18 +305,6 @@ export declare const alt: <E, A>(
 
 Added in v2.0.0
 
-## ap2
-
-**Signature**
-
-```ts
-export declare const ap2: <E, A>(
-  fa: D.Datum<Either<E, A>>
-) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
-```
-
-Added in v3.5.0
-
 ## apFirst
 
 **Signature**
@@ -461,7 +450,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, 
 **Signature**
 
 ```ts
-export declare const fromNullable: <E, A>(a: A | null | undefined) => D.Datum<Either<E, A>>
+export declare const fromNullable: <E, A>(a: A) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.4.0
@@ -475,6 +464,36 @@ export declare const fromOption: <E, A>(onNone: Lazy<E>) => (o: Option<A>) => D.
 ```
 
 Added in v2.2.0
+
+## getApplySemigroup
+
+**Signature**
+
+```ts
+export declare const getApplySemigroup: <E, A>(S: Semigroup<Either<E, A>>) => Semigroup<D.Datum<Either<E, A>>>
+```
+
+Added in v4.0.0
+
+## getMonoid
+
+**Signature**
+
+```ts
+export declare const getMonoid: <E, A>(S: Semigroup<Either<E, A>>) => Monoid<D.Datum<Either<E, A>>>
+```
+
+Added in v4.0.0
+
+## getSemigroup
+
+**Signature**
+
+```ts
+export declare const getSemigroup: <E, A>(S: Semigroup<Either<E, A>>) => Semigroup<D.Datum<Either<E, A>>>
+```
+
+Added in v4.0.0
 
 ## initial
 
@@ -591,7 +610,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const isValued: <A>(ma: D.Datum<A>) => ma is D.Refresh<A> | D.Replete<A>
+export declare const isValued: <A>(ma: D.Datum<A>) => ma is D.Replete<A> | D.Refresh<A>
 ```
 
 Added in v2.7.0
@@ -654,8 +673,8 @@ Added in v3.4.0
 export declare const refreshFold: <E, A, B>(
   onInitial: () => B,
   onPending: () => B,
-  onFailure: (e: E, r?: boolean | undefined) => B,
-  onSuccess: (a: A, r?: boolean | undefined) => B
+  onFailure: (e: E, r?: boolean) => B,
+  onSuccess: (a: A, r?: boolean) => B
 ) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
@@ -671,7 +690,7 @@ export declare const sequenceStruct: <E, NER>(
 ) => D.Datum<Either<E, { [K in keyof NER]: [NER[K]] extends [D.Datum<Either<any, infer A>>] ? A : never }>>
 ```
 
-Added in v3.2.0
+Added in v3.2.0 (new semantics since 4.0.0)
 
 ## sequenceTuple
 
@@ -683,7 +702,7 @@ export declare const sequenceTuple: <E, T>(
 ) => D.Datum<Either<E, { [K in keyof T]: [T[K]] extends [D.Datum<Either<E, infer A>>] ? A : never }>>
 ```
 
-Added in v3.2.0
+Added in v3.2.0 (new semantics since 4.0.0)
 
 ## squash
 
@@ -691,9 +710,9 @@ Added in v3.2.0
 
 ```ts
 export declare const squash: <E, A, B>(
-  onNone: (r?: boolean | undefined) => B,
-  onFailure: (e: E, r?: boolean | undefined) => B,
-  onSuccess: (a: A, r?: boolean | undefined) => B
+  onNone: (r?: boolean) => B,
+  onFailure: (e: E, r?: boolean) => B,
+  onSuccess: (a: A, r?: boolean) => B
 ) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
@@ -747,18 +766,6 @@ Added in v2.7.0
 export declare const ap: <E, A>(
   fa: D.Datum<Either<E, A>>
 ) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
-```
-
-Added in v2.0.0
-
-## ~~datumEither~~
-
-**Signature**
-
-```ts
-export declare const datumEither: Monad2<'@nll/datum/DatumEither'> &
-  Traversable2<'@nll/datum/DatumEither'> &
-  EitherM1<'@nll/datum/Datum'>
 ```
 
 Added in v2.0.0

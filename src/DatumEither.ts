@@ -31,7 +31,7 @@ import {
   fromOption as eitherFromOption,
   fold as eitherFold,
 } from 'fp-ts/es6/Either';
-import { EitherM1, getEitherM } from 'fp-ts/es6/EitherT';
+import { getEitherM } from 'fp-ts/es6/EitherT';
 import { Monad2 } from 'fp-ts/es6/Monad';
 import { pipe, pipeable } from 'fp-ts/es6/pipeable';
 
@@ -50,6 +50,7 @@ import { Alternative2 } from 'fp-ts/es6/Alternative';
 import { MonadThrow2 } from 'fp-ts/es6/MonadThrow';
 import { Foldable2 } from 'fp-ts/es6/Foldable';
 import { Bifunctor2 } from 'fp-ts/es6/Bifunctor';
+import { Semigroup } from 'fp-ts/es6/Semigroup';
 
 
 /**
@@ -409,21 +410,6 @@ const reduceRightC = <E, A, B>(
     (a) => f(a, b)
   )(fa);
 
-/**
- * @since 2.0.0
- * 
- * @deprecated Use standalone instances and instance factories
- */
-export const datumEither: Monad2<URI> & Traversable2<URI> & EitherM1<D.URI> = {
-  URI,
-  ...getEitherM(D.datum),
-  traverse: traverseC,
-  sequence: sequenceC,
-  reduce: reduceC,
-  foldMap: foldMapC,
-  reduceRight: reduceRightC,
-};
-
 // TODO: After we bump the min bound to >= 2.10, replace this with individual helper fns
 const eitherTDatum = getEitherM(D.Monad)
 
@@ -525,37 +511,66 @@ export const Traversable: Traversable2<URI> = {
 }
 
 /**
- * @since 3.2.0
+ * @since 4.0.0
  */
-export const sequenceTuple = sequenceT(datumEither);
+export const getSemigroup = <E, A>(S: Semigroup<Either<E, A>>): Semigroup<DatumEither<E, A>> => 
+  D.getSemigroup(S)
+
+/**
+ * @since 4.0.0
+ */
+export const getMonoid = <E, A>(S: Semigroup<Either<E, A>>): Monoid<DatumEither<E, A>> => 
+  D.getMonoid(S)
+
+/**
+ * @since 4.0.0
+ */
+export const getApplySemigroup = <E, A>(S: Semigroup<Either<E, A>>): Semigroup<DatumEither<E, A>> => 
+  D.getApplySemigroup(S)
+
+/**
+ * @since 3.2.0 (new semantics since 4.0.0)
+ */
+export const sequenceTuple = sequenceT(Apply);
+
+/**
+ * @since 3.2.0 (new semantics since 4.0.0)
+ */
+export const sequenceStruct = sequenceS(Apply);
+
+/**
+ * @since 3.2.0 (ap semantics changed since 4.0.0)
+ */
+const {
+  ap,
+  apFirst,
+  apSecond,
+  chain,
+  chainFirst,
+  flatten,
+  map,
+} = pipeable(Monad);
 
 /**
  * @since 3.2.0
  */
-export const sequenceStruct = sequenceS(datumEither);
+const {
+  bimap,
+  mapLeft,
+} = pipeable(Bifunctor)
 
 /**
  * @since 3.2.0
  */
 const {
   alt,
-  ap,
-  apFirst,
-  apSecond,
-  bimap,
-  chain,
-  chainFirst,
-  flatten,
-  foldMap,
-  map,
-  mapLeft,
-  reduce,
-  reduceRight,
-} = pipeable(datumEither);
+} = pipeable(Alt)
 
 const {
-  ap: ap2
-} = pipeable(Apply);
+  foldMap,
+  reduce,
+  reduceRight,
+} = pipeable(Foldable)
 
 export {
   /**
@@ -563,16 +578,9 @@ export {
    */
   alt,
   /**
-   * @since 2.0.0
-   * 
-   * @deprecated Does not agree with chain. This will be replaced in the next major release with the behavior of `ap2`
+   * @since 2.0.0 (new semantics since 4.0.0)
    */
   ap,
-  /**
-   * @since 3.5.0
-   * 
-   */
-  ap2,
   /**
    * @since 2.0.0
    */

@@ -6,7 +6,7 @@ import { left, right, both, getSemigroup as theseGetSemigroup } from 'fp-ts/es6/
 import { monoidSum } from 'fp-ts/es6/Monoid';
 import { showNumber, showString } from 'fp-ts/es6/Show';
 import { eqNumber, eqString } from 'fp-ts/es6/Eq';
-import { semigroupString, semigroupSum } from 'fp-ts/es6/Semigroup';
+import { Semigroup, semigroupString, semigroupSum } from 'fp-ts/es6/Semigroup';
 import { identity } from 'fp-ts/es6/function';
 import { DatumThese } from '../src/DatumThese';
 import { Apply2C } from 'fp-ts/es6/Apply';
@@ -659,4 +659,88 @@ describe('DatumThese', () => {
         assertOf(M);
         assert.deepStrictEqual(M.throwError('bla'), DT.failure('bla'))
     });
+
+    function assertStringSumSemigroup(S: Semigroup<DT.DatumThese<string, number>>) {
+        assert.deepStrictEqual(S.concat(DT.initial, DT.initial), DT.initial);
+        assert.deepStrictEqual(S.concat(DT.initial, DT.pending), DT.pending);
+        assert.deepStrictEqual(S.concat(DT.initial, DT.failureR('a')), DT.failureR('a'));
+        assert.deepStrictEqual(S.concat(DT.initial, DT.successR(1)), DT.successR(1));
+        assert.deepStrictEqual(S.concat(DT.initial, DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.initial, DT.failure('a')), DT.failure('a'));
+        assert.deepStrictEqual(S.concat(DT.initial, DT.success(1)), DT.success(1));
+        assert.deepStrictEqual(S.concat(DT.initial, DT.partialSuccess('a', 1)), DT.partialSuccess('a', 1));
+    
+        assert.deepStrictEqual(S.concat(DT.pending, DT.initial), DT.pending);
+        assert.deepStrictEqual(S.concat(DT.pending, DT.pending), DT.pending);
+        assert.deepStrictEqual(S.concat(DT.pending, DT.failureR('a')), DT.failureR('a'));
+        assert.deepStrictEqual(S.concat(DT.pending, DT.successR(1)), DT.successR(1));
+        assert.deepStrictEqual(S.concat(DT.pending, DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.pending, DT.failure('a')), DT.failureR('a'));
+        assert.deepStrictEqual(S.concat(DT.pending, DT.success(1)), DT.successR(1));
+        assert.deepStrictEqual(S.concat(DT.pending, DT.partialSuccess('a', 1)), DT.partialSuccessR('a', 1));
+    
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.initial), DT.failureR('a'));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.pending), DT.failureR('a'));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.failureR('a')), DT.failureR('aa'));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.successR(1)), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.partialSuccessR('a', 1)), DT.partialSuccessR('aa', 1));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.failure('a')), DT.failureR('aa'));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.success(1)), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.failureR('a'), DT.partialSuccess('a', 1)), DT.partialSuccessR('aa', 1));
+    
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.initial), DT.successR(1));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.pending), DT.successR(1));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.failureR('a')), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.successR(1)), DT.successR(2));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 2));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.failure('a')), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.success(1)), DT.successR(2));
+        assert.deepStrictEqual(S.concat(DT.successR(1), DT.partialSuccess('a', 1)), DT.partialSuccessR('a', 2));
+    
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.initial), DT.failure('a'));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.pending), DT.failureR('a'));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.failureR('a')), DT.failureR('aa'));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.successR(1)), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.partialSuccessR('a', 1)), DT.partialSuccessR('aa', 1));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.failure('a')), DT.failure('aa'));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.success(1)), DT.partialSuccess('a', 1));
+        assert.deepStrictEqual(S.concat(DT.failure('a'), DT.partialSuccess('a', 1)), DT.partialSuccess('aa', 1));
+    
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.initial), DT.success(1));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.pending), DT.successR(1));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.failureR('a')), DT.partialSuccessR('a', 1));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.successR(1)), DT.successR(2));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.partialSuccessR('a', 1)), DT.partialSuccessR('a', 2));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.failure('a')), DT.partialSuccess('a', 1));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.success(1)), DT.success(2));
+        assert.deepStrictEqual(S.concat(DT.success(1), DT.partialSuccess('a', 1)), DT.partialSuccess('a', 2));
+      }
+
+      it('getSemigroup', () => {
+        const S = DT.getSemigroup(theseGetSemigroup(semigroupString, semigroupSum));
+
+        assertStringSumSemigroup(S);
+      });
+
+      it('getMonoid', () => {
+        const M = DT.getMonoid(theseGetSemigroup(semigroupString, semigroupSum))
+
+        assertStringSumSemigroup(M);
+
+        const values = [
+            DT.initial,
+            DT.pending,
+            DT.failureR('a'),
+            DT.successR(1),
+            DT.partialSuccessR('a', 1),
+            DT.failure('a'),
+            DT.success(1),
+            DT.partialSuccess('a', 1)
+        ];
+
+        values.forEach(value => {
+            assert.deepStrictEqual(M.concat(value, M.empty), value);
+            assert.deepStrictEqual(M.concat(M.empty, value), value)
+        });
+      });
 });

@@ -2,8 +2,10 @@ import * as assert from 'assert';
 import * as DE from '../src/DatumEither';
 import { refresh, replete } from '../src/Datum';
 import { some, none, option } from 'fp-ts/es6/Option';
-import { left, right } from 'fp-ts/es6/Either';
-import { monoidSum } from 'fp-ts/es6/Monoid';
+import { left, right, getSemigroup as eitherGetSemigroup } from 'fp-ts/es6/Either';
+import { Monoid, monoidSum } from 'fp-ts/es6/Monoid';
+import { Semigroup, semigroupSum } from 'fp-ts/es6/Semigroup';
+import { identity } from 'fp-ts/es6/function';
 
 describe('Datum', () => {
   it('URI', () => {
@@ -235,7 +237,7 @@ describe('Datum', () => {
   });
 
   it('traverse', () => {
-    const traverse = DE.datumEither.traverse(option);
+    const traverse = DE.Traversable.traverse(option);
     const fab = (n: number) => (n < 0 ? none : some(n));
 
     assert.deepEqual(traverse(DE.initial, fab), some(DE.initial));
@@ -260,7 +262,7 @@ describe('Datum', () => {
   });
 
   it('sequence', () => {
-    const sequence = DE.datumEither.sequence(option);
+    const sequence = DE.Traversable.sequence(option);
 
     assert.deepEqual(sequence(DE.initial), some(DE.initial));
     assert.deepEqual(sequence(DE.pending), some(DE.pending));
@@ -279,7 +281,7 @@ describe('Datum', () => {
   });
 
   it('reduce', () => {
-    const reduce = DE.datumEither.reduce;
+    const reduce = DE.Foldable.reduce;
     const add = (acc: number, cur: number): number => acc + cur;
 
     assert.deepEqual(reduce(DE.initial, 0, add), 0);
@@ -306,7 +308,7 @@ describe('Datum', () => {
   });
 
   it('reduceRight', () => {
-    const reduce = DE.datumEither.reduceRight;
+    const reduce = DE.Foldable.reduceRight;
     const add = (acc: number, cur: number): number => acc + cur;
 
     assert.deepEqual(reduce(DE.initial, 0, add), 0);
@@ -316,4 +318,121 @@ describe('Datum', () => {
     assert.deepEqual(reduce(DE.toRefresh(DE.success(1)), 0, add), 1);
     assert.deepEqual(reduce(DE.toRefresh(DE.failure(1)), 0, add), 0);
   });
+
+  function assertSemigroup(S: Semigroup<DE.DatumEither<string, number>>) {
+    assert.deepStrictEqual(S.concat(DE.initial, DE.initial), DE.initial);
+    assert.deepStrictEqual(S.concat(DE.initial, DE.pending), DE.pending);
+    assert.deepStrictEqual(S.concat(DE.initial, DE.failureR('a')), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.initial, DE.successR(1)), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.initial, DE.failure('a')), DE.failure('a'));
+    assert.deepStrictEqual(S.concat(DE.initial, DE.success(1)), DE.success(1));
+
+    assert.deepStrictEqual(S.concat(DE.pending, DE.initial), DE.pending);
+    assert.deepStrictEqual(S.concat(DE.pending, DE.pending), DE.pending);
+    assert.deepStrictEqual(S.concat(DE.pending, DE.failureR('a')), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.pending, DE.successR(1)), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.pending, DE.failure('a')), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.pending, DE.success(1)), DE.successR(1));
+
+    assert.deepStrictEqual(S.concat(DE.failureR('a'), DE.initial), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.failureR('a'), DE.pending), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.failureR('a'), DE.failureR('a')), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.failureR('a'), DE.successR(1)), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.failureR('a'), DE.failure('a')), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.failureR('a'), DE.success(1)), DE.successR(1));
+
+    assert.deepStrictEqual(S.concat(DE.successR(1), DE.initial), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.successR(1), DE.pending), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.successR(1), DE.failureR('a')), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.successR(1), DE.successR(1)), DE.successR(2));
+    assert.deepStrictEqual(S.concat(DE.successR(1), DE.failure('a')), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.successR(1), DE.success(1)), DE.successR(2));
+
+    assert.deepStrictEqual(S.concat(DE.failure('a'), DE.initial), DE.failure('a'));
+    assert.deepStrictEqual(S.concat(DE.failure('a'), DE.pending), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.failure('a'), DE.failureR('a')), DE.failureR('a'));
+    assert.deepStrictEqual(S.concat(DE.failure('a'), DE.successR(1)), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.failure('a'), DE.failure('a')), DE.failure('a'));
+    assert.deepStrictEqual(S.concat(DE.failure('a'), DE.success(1)), DE.success(1));
+
+    assert.deepStrictEqual(S.concat(DE.success(1), DE.initial), DE.success(1));
+    assert.deepStrictEqual(S.concat(DE.success(1), DE.pending), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.success(1), DE.failureR('a')), DE.successR(1));
+    assert.deepStrictEqual(S.concat(DE.success(1), DE.successR(1)), DE.successR(2));
+    assert.deepStrictEqual(S.concat(DE.success(1), DE.failure('a')), DE.success(1));
+    assert.deepStrictEqual(S.concat(DE.success(1), DE.success(1)), DE.success(2));
+  }
+
+  it('getSemigroup', () => {
+    const S: Semigroup<DE.DatumEither<string, number>> = DE.getSemigroup(eitherGetSemigroup(semigroupSum));
+
+    assertSemigroup(S);
+  });
+
+  it('getMonoid', () => {
+    const M: Monoid<DE.DatumEither<string, number>> = DE.getMonoid(eitherGetSemigroup(semigroupSum));
+
+    assertSemigroup(M);
+
+    const values = [
+      DE.initial,
+      DE.pending,
+      DE.failureR('a'),
+      DE.successR(1),
+      DE.failure('a'),
+      DE.success(1)
+    ];
+
+    values.forEach(value => {
+      assert.deepStrictEqual(M.concat(value, M.empty), value);
+      assert.deepStrictEqual(M.concat(M.empty, value), value)
+    });
+  });
+
+
+  it('getApplySemigroup', () => {
+    const S = DE.getApplySemigroup(eitherGetSemigroup(semigroupSum))
+
+    const values = [
+      DE.success(1),
+      DE.failure('a'),
+      DE.successR(1),
+      DE.failureR('a'),
+    ];
+
+    const noValues = [
+        DE.initial, 
+        DE.pending
+    ];
+
+    assert.deepStrictEqual(S.concat(DE.initial, DE.initial), DE.initial);
+    assert.deepStrictEqual(S.concat(DE.initial, DE.pending), DE.initial);
+    assert.deepStrictEqual(S.concat(DE.pending, DE.pending), DE.pending);
+    assert.deepStrictEqual(S.concat(DE.pending, DE.initial), DE.pending);
+
+    noValues.forEach(noValue => {
+        values.forEach(value => {
+            assert.deepStrictEqual(S.concat(noValue, value), noValue);
+            assert.deepStrictEqual(S.concat(value, noValue), noValue);
+        });
+    });
+
+    const modifiers = [
+        identity,
+        DE.toRefresh
+    ];
+
+    // Replete/Refresh of first valued datum does not matter
+    modifiers.forEach(modifier => {
+        assert.deepStrictEqual(S.concat(modifier(DE.success(1)), DE.success(1)), DE.success(2));
+        assert.deepStrictEqual(S.concat(modifier(DE.success(1)), DE.failure('a')), DE.success(1));
+        assert.deepStrictEqual(S.concat(modifier(DE.success(1)), DE.successR(1)), DE.successR(2));
+        assert.deepStrictEqual(S.concat(modifier(DE.success(1)), DE.failureR('a')), DE.successR(1));
+
+        assert.deepStrictEqual(S.concat(modifier(DE.failure('a')), DE.success(1)), DE.success(1));
+        assert.deepStrictEqual(S.concat(modifier(DE.failure('a')), DE.failure('a')), DE.failure('a'));
+        assert.deepStrictEqual(S.concat(modifier(DE.failure('a')), DE.successR(1)), DE.successR(1));
+        assert.deepStrictEqual(S.concat(modifier(DE.failure('a')), DE.failureR('a')), DE.failureR('a'));
+    });
+  })
 });
