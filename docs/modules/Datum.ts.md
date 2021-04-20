@@ -44,6 +44,7 @@ refreshed.
   - [URI (type alias)](#uri-type-alias)
   - [Witherable](#witherable)
   - [alt](#alt)
+  - [ap](#ap)
   - [apFirst](#apfirst)
   - [apSecond](#apsecond)
   - [chain](#chain)
@@ -87,7 +88,6 @@ refreshed.
   - [refresh](#refresh)
   - [replete](#replete)
   - [separate](#separate)
-  - [~~ap~~](#ap)
 
 ---
 
@@ -324,6 +324,16 @@ export declare const alt: <A>(that: Lazy<Datum<A>>) => (fa: Datum<A>) => Datum<A
 ```
 
 Added in v2.0.0
+
+## ap
+
+**Signature**
+
+```ts
+export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
+```
+
+Added in v2.0.0 (new semantics since 4.0.0)
 
 ## apFirst
 
@@ -808,16 +818,6 @@ Added in v2.0.0
 
 ```ts
 export declare const separate: <A, B>(fa: Datum<Either<A, B>>) => Separated<Datum<A>, Datum<B>>
-```
-
-Added in v2.0.0
-
-## ~~ap~~
-
-**Signature**
-
-```ts
-export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
 ```
 
 Added in v2.0.0

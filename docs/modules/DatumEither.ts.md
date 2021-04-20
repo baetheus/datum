@@ -51,6 +51,7 @@ There are additional helper methods for going from refresh to replete and back.
   - [URI (type alias)](#uri-type-alias)
   - [Valued (type alias)](#valued-type-alias)
   - [alt](#alt)
+  - [ap](#ap)
   - [apFirst](#apfirst)
   - [apSecond](#apsecond)
   - [bimap](#bimap)
@@ -93,7 +94,6 @@ There are additional helper methods for going from refresh to replete and back.
   - [successR](#successr)
   - [toRefresh](#torefresh)
   - [toReplete](#toreplete)
-  - [~~ap~~](#ap)
   - [~~fromEither2~~](#fromeither2)
   - [~~fromEither~~](#fromeither)
 
@@ -304,6 +304,18 @@ export declare const alt: <E, A>(
 ```
 
 Added in v2.0.0
+
+## ap
+
+**Signature**
+
+```ts
+export declare const ap: <E, A>(
+  fa: D.Datum<Either<E, A>>
+) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
+```
+
+Added in v2.0.0 (new semantics since 4.0.0)
 
 ## apFirst
 
@@ -757,18 +769,6 @@ export declare const toReplete: <E, A>(fea: D.Datum<Either<E, A>>) => D.Datum<Ei
 ```
 
 Added in v2.7.0
-
-## ~~ap~~
-
-**Signature**
-
-```ts
-export declare const ap: <E, A>(
-  fa: D.Datum<Either<E, A>>
-) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
-```
-
-Added in v2.0.0
 
 ## ~~fromEither2~~
 
