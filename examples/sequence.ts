@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/es6/pipeable';
 
 import {
   DatumEither,
-  datumEither,
+  Apply,
   failure,
   initial,
   map,
@@ -12,7 +12,7 @@ import {
   toRefresh
 } from '../src/DatumEither';
 
-const sequence = sequenceT(datumEither);
+const sequence = sequenceT(Apply);
 
 // Here are some DatumEithers
 const someInitial: DatumEither<string, string> = initial; // Type: Initial
