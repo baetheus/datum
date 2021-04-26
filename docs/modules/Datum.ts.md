@@ -333,7 +333,7 @@ Added in v2.0.0
 export declare const ap: <A>(fa: Datum<A>) => <B>(fab: Datum<(a: A) => B>) => Datum<B>
 ```
 
-Added in v2.0.0 (new semantics since 4.0.0)
+Added in v4.0.0
 
 ## apFirst
 
@@ -573,7 +573,7 @@ Added in v2.6.0
 export declare const getApplySemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
-Added in v2.0.0 (New semantics since 4.0.0)
+Added in v4.0.0
 
 ## getEq
 
@@ -639,7 +639,7 @@ If both datums have a value, they're combined with the given Semigroup instance.
 export declare const getSemigroup: <A>(S: Semigroup<A>) => Semigroup<Datum<A>>
 ```
 
-Added in v2.0.0 (New semantics since 4.0.0)
+Added in v4.0.0
 
 ## getShow
 

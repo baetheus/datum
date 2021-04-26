@@ -315,7 +315,7 @@ export declare const ap: <E, A>(
 ) => <B>(fab: D.Datum<Either<E, (a: A) => B>>) => D.Datum<Either<E, B>>
 ```
 
-Added in v2.0.0 (new semantics since 4.0.0)
+Added in v4.0.0
 
 ## apFirst
 
@@ -702,7 +702,7 @@ export declare const sequenceStruct: <E, NER>(
 ) => D.Datum<Either<E, { [K in keyof NER]: [NER[K]] extends [D.Datum<Either<any, infer A>>] ? A : never }>>
 ```
 
-Added in v3.2.0 (new semantics since 4.0.0)
+Added in v4.0.0
 
 ## sequenceTuple
 
@@ -714,7 +714,7 @@ export declare const sequenceTuple: <E, T>(
 ) => D.Datum<Either<E, { [K in keyof T]: [T[K]] extends [D.Datum<Either<E, infer A>>] ? A : never }>>
 ```
 
-Added in v3.2.0 (new semantics since 4.0.0)
+Added in v4.0.0
 
 ## squash
 

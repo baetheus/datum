@@ -200,7 +200,7 @@ export const getEq = <A>(E: Eq<A>): Eq<Datum<A>> => ({
  * Notably, concat(Pending, Replete) gives Refresh.
  * If both datums have a value, they're combined with the given Semigroup instance.
  *
- * @since 2.0.0 (New semantics since 4.0.0)
+ * @since 4.0.0
  */
 export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
   concat: (firstD: Datum<A>, secondD: Datum<A>) => 
@@ -288,7 +288,7 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
 /**
  * `Apply` semigroup
  *
- * @since 2.0.0 (New semantics since 4.0.0)
+ * @since 4.0.0
  * 
  */
 export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
@@ -734,8 +734,7 @@ export {
    */
   alt,
   /**
-   * @since 2.0.0 (new semantics since 4.0.0)
-   * 
+   * @since 4.0.0
    */
   ap,
   /**

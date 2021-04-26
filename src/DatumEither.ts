@@ -529,17 +529,17 @@ export const getApplySemigroup = <E, A>(S: Semigroup<Either<E, A>>): Semigroup<D
   D.getApplySemigroup(S)
 
 /**
- * @since 3.2.0 (new semantics since 4.0.0)
+ * @since 4.0.0
  */
 export const sequenceTuple = sequenceT(Apply);
 
 /**
- * @since 3.2.0 (new semantics since 4.0.0)
+ * @since 4.0.0
  */
 export const sequenceStruct = sequenceS(Apply);
 
 /**
- * @since 3.2.0 (ap semantics changed since 4.0.0)
+ * @since 4.0.0
  */
 const {
   ap,
@@ -578,7 +578,7 @@ export {
    */
   alt,
   /**
-   * @since 2.0.0 (new semantics since 4.0.0)
+   * @since 4.0.0
    */
   ap,
   /**
