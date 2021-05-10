@@ -6,7 +6,7 @@ import { monoidString, monoidSum } from 'fp-ts/es6/Monoid';
 import { none, some, option } from 'fp-ts/es6/Option';
 import { ordString } from 'fp-ts/es6/Ord';
 import { pipe } from 'fp-ts/es6/pipeable';
-import { semigroupSum } from 'fp-ts/es6/Semigroup';
+import { Semigroup, semigroupSum } from 'fp-ts/es6/Semigroup';
 import { showString } from 'fp-ts/es6/Show';
 import * as I from 'fp-ts/es6/Identity';
 import { array } from 'fp-ts/es6/Array';
@@ -113,10 +113,10 @@ describe('Datum', () => {
   it('map', () => {
     const f = (n: number) => n * 2;
 
-    assert.deepStrictEqual(D.datum.map(D.initial, f), D.initial);
-    assert.deepStrictEqual(D.datum.map(D.pending, f), D.pending);
-    assert.deepStrictEqual(D.datum.map(D.replete(2), f), D.replete(4));
-    assert.deepStrictEqual(D.datum.map(D.refresh(2), f), D.refresh(4));
+    assert.deepStrictEqual(D.Functor.map(D.initial, f), D.initial);
+    assert.deepStrictEqual(D.Functor.map(D.pending, f), D.pending);
+    assert.deepStrictEqual(D.Functor.map(D.replete(2), f), D.replete(4));
+    assert.deepStrictEqual(D.Functor.map(D.refresh(2), f), D.refresh(4));
   });
 
   it('getOrd', () => {
@@ -150,48 +150,7 @@ describe('Datum', () => {
    * 2. Homomorphism: `A.ap(A.of(ab), A.of(a)) = A.of(ab(a))`
    * 3. Interchange: `A.ap(fab, A.of(a)) = A.ap(A.of(ab => ab(a)), fab)`
    */
-  it('ap', () => {
-    const f = (n: number) => n * 2;
-
-    assert.deepStrictEqual(D.datum.ap(D.initial, D.initial), D.initial);
-    assert.deepStrictEqual(D.datum.ap(D.initial, D.pending), D.initial);
-    assert.deepStrictEqual(D.datum.ap(D.initial, D.refresh(1)), D.initial);
-    assert.deepStrictEqual(D.datum.ap(D.initial, D.replete(1)), D.initial);
-
-    assert.deepStrictEqual(D.datum.ap(D.pending, D.initial), D.initial);
-    assert.deepStrictEqual(D.datum.ap(D.pending, D.pending), D.pending);
-    assert.deepStrictEqual(D.datum.ap(D.pending, D.refresh(1)), D.pending);
-    assert.deepStrictEqual(D.datum.ap(D.pending, D.replete(1)), D.pending);
-
-    assert.deepStrictEqual(D.datum.ap(D.refresh(f), D.initial), D.initial);
-    assert.deepStrictEqual(D.datum.ap(D.refresh(f), D.pending), D.pending);
-    assert.deepStrictEqual(
-      D.datum.ap(D.refresh(f), D.refresh(1)),
-      D.refresh(2)
-    );
-    assert.deepStrictEqual(
-      D.datum.ap(D.refresh(f), D.replete(1)),
-      D.refresh(2)
-    );
-
-    assert.deepStrictEqual(D.datum.ap(D.replete(f), D.initial), D.initial);
-    assert.deepStrictEqual(D.datum.ap(D.replete(f), D.pending), D.pending);
-    assert.deepStrictEqual(
-      D.datum.ap(D.replete(f), D.refresh(1)),
-      D.refresh(2)
-    );
-    assert.deepStrictEqual(
-      D.datum.ap(D.replete(f), D.replete(1)),
-      D.replete(2)
-    );
-  });
-
-  /**
-   * 1. Identity: `A.ap(A.of(a => a), fa) = fa`
-   * 2. Homomorphism: `A.ap(A.of(ab), A.of(a)) = A.of(ab(a))`
-   * 3. Interchange: `A.ap(fab, A.of(a)) = A.ap(A.of(ab => ab(a)), fab)`
-   */
-   it('ap2', () => {
+   it('ap', () => {
     const f = (n: number) => n * 2;
 
     assert.deepStrictEqual(D.Apply.ap(D.initial, D.initial), D.initial);
@@ -231,17 +190,17 @@ describe('Datum', () => {
     const f = (n: number) => D.replete(n * 2);
     const g = () => D.initial;
 
-    assert.deepStrictEqual(D.datum.chain(D.initial, f), D.initial);
-    assert.deepStrictEqual(D.datum.chain(D.initial, g), D.initial);
+    assert.deepStrictEqual(D.Chain.chain(D.initial, f), D.initial);
+    assert.deepStrictEqual(D.Chain.chain(D.initial, g), D.initial);
 
-    assert.deepStrictEqual(D.datum.chain(D.pending, f), D.pending);
-    assert.deepStrictEqual(D.datum.chain(D.pending, g), D.pending);
+    assert.deepStrictEqual(D.Chain.chain(D.pending, f), D.pending);
+    assert.deepStrictEqual(D.Chain.chain(D.pending, g), D.pending);
 
-    assert.deepStrictEqual(D.datum.chain(D.refresh(1), f), D.replete(2));
-    assert.deepStrictEqual(D.datum.chain(D.refresh(1), g), D.initial);
+    assert.deepStrictEqual(D.Chain.chain(D.refresh(1), f), D.replete(2));
+    assert.deepStrictEqual(D.Chain.chain(D.refresh(1), g), D.initial);
 
-    assert.deepStrictEqual(D.datum.chain(D.replete(1), f), D.replete(2));
-    assert.deepStrictEqual(D.datum.chain(D.replete(1), g), D.initial);
+    assert.deepStrictEqual(D.Chain.chain(D.replete(1), f), D.replete(2));
+    assert.deepStrictEqual(D.Chain.chain(D.replete(1), g), D.initial);
   });
 
   /**
@@ -252,8 +211,8 @@ describe('Datum', () => {
    */
   it('alt', () => {
     const f = (n: number) => n * 2;
-    const alt = D.datum.alt;
-    const map = D.datum.map;
+    const alt = D.Alt.alt;
+    const map = D.Alt.map;
 
     assert.deepStrictEqual(
       alt(
@@ -326,8 +285,8 @@ describe('Datum', () => {
       () => 0,
       () => 1
     );
-    assert.deepStrictEqual(D.datum.extend(D.replete(2), f), D.replete(2));
-    assert.deepStrictEqual(D.datum.extend(D.initial, f), D.replete(0));
+    assert.deepStrictEqual(D.Extend.extend(D.replete(2), f), D.replete(2));
+    assert.deepStrictEqual(D.Extend.extend(D.initial, f), D.replete(0));
   });
 
   it('fromNullable', () => {
@@ -339,52 +298,52 @@ describe('Datum', () => {
   // TODO Fix these tests!
   it('traverse', () => {
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.initial, () => none),
+      D.Traversable.traverse(option)(D.initial, () => none),
       some(D.initial)
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.pending, () => none),
+      D.Traversable.traverse(option)(D.pending, () => none),
       some(D.pending)
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.refresh('foo'), a =>
+      D.Traversable.traverse(option)(D.refresh('foo'), a =>
         a.length >= 2 ? some(a) : none
       ),
       some(D.refresh('foo'))
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.refresh(1), a => (a >= 2 ? some(a) : none)),
+      D.Traversable.traverse(option)(D.refresh(1), a => (a >= 2 ? some(a) : none)),
       none
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.refresh(3), a => (a >= 2 ? some(a) : none)),
+      D.Traversable.traverse(option)(D.refresh(3), a => (a >= 2 ? some(a) : none)),
       some(D.refresh(3))
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.replete('foo'), a =>
+      D.Traversable.traverse(option)(D.replete('foo'), a =>
         a.length >= 2 ? some(a) : none
       ),
       some(D.replete('foo'))
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.replete(1), a => (a >= 2 ? some(a) : none)),
+      D.Traversable.traverse(option)(D.replete(1), a => (a >= 2 ? some(a) : none)),
       none
     );
     assert.deepStrictEqual(
-      D.datum.traverse(option)(D.replete(3), a => (a >= 2 ? some(a) : none)),
+      D.Traversable.traverse(option)(D.replete(3), a => (a >= 2 ? some(a) : none)),
       some(D.replete(3))
     );
   });
 
   // TODO Fix these tests!
   it('sequence', () => {
-    assert.deepStrictEqual(D.datum.sequence(array)(D.initial), [D.initial]);
-    assert.deepStrictEqual(D.datum.sequence(array)(D.pending), [D.pending]);
-    assert.deepStrictEqual(D.datum.sequence(array)(D.refresh([1, 2])), [
+    assert.deepStrictEqual(D.Traversable.sequence(array)(D.initial), [D.initial]);
+    assert.deepStrictEqual(D.Traversable.sequence(array)(D.pending), [D.pending]);
+    assert.deepStrictEqual(D.Traversable.sequence(array)(D.refresh([1, 2])), [
       D.refresh(1),
       D.refresh(2)
     ]);
-    assert.deepStrictEqual(D.datum.sequence(array)(D.replete([1, 2])), [
+    assert.deepStrictEqual(D.Traversable.sequence(array)(D.replete([1, 2])), [
       D.replete(1),
       D.replete(2)
     ]);
@@ -392,25 +351,25 @@ describe('Datum', () => {
 
   it('reduce', () => {
     assert.strictEqual(
-      D.datum.reduce(D.initial, 2, (b, a) => b + a),
+      D.Foldable.reduce(D.initial, 2, (b, a) => b + a),
       2
     );
     assert.strictEqual(
-      D.datum.reduce(D.pending, 2, (b, a) => b + a),
+      D.Foldable.reduce(D.pending, 2, (b, a) => b + a),
       2
     );
     assert.strictEqual(
-      D.datum.reduce(D.refresh(3), 2, (b, a) => b + a),
+      D.Foldable.reduce(D.refresh(3), 2, (b, a) => b + a),
       5
     );
     assert.strictEqual(
-      D.datum.reduce(D.replete(3), 2, (b, a) => b + a),
+      D.Foldable.reduce(D.replete(3), 2, (b, a) => b + a),
       5
     );
   });
 
   it('foldMap', () => {
-    const foldMap = D.datum.foldMap(monoidString);
+    const foldMap = D.Foldable.foldMap(monoidString);
     assert.strictEqual(foldMap(D.initial, identity), '');
     assert.strictEqual(foldMap(D.pending, identity), '');
     assert.strictEqual(foldMap(D.refresh('a'), identity), 'a');
@@ -418,7 +377,7 @@ describe('Datum', () => {
   });
 
   it('reduceRight', () => {
-    const reduceRight = D.datum.reduceRight;
+    const reduceRight = D.Foldable.reduceRight;
     const concat = (a: string, acc: string) => acc + a;
     assert.strictEqual(reduceRight(D.initial, 'init', concat), 'init');
     assert.strictEqual(reduceRight(D.pending, 'init', concat), 'init');
@@ -426,48 +385,49 @@ describe('Datum', () => {
     assert.strictEqual(reduceRight(D.replete('a'), 'init', concat), 'inita');
   });
 
+  function assertSemigroup(S: Semigroup<D.Datum<number>>) {
+
+    const triples = [
+      [D.initial, D.initial, D.initial],
+      [D.initial, D.pending, D.pending],
+      [D.initial, D.refresh(1), D.refresh(1)],
+      [D.initial, D.replete(1), D.replete(1)],
+      [D.pending, D.pending, D.pending],
+      [D.pending, D.refresh(1), D.refresh(1)],
+      [D.pending, D.replete(1), D.refresh(1)],
+      [D.refresh(1), D.refresh(1), D.refresh(2)],
+      [D.refresh(1), D.replete(1), D.refresh(2)],
+      [D.replete(1), D.replete(1), D.replete(2)]
+    ];
+    triples.forEach(([s1, s2, expected]) => {
+      assert.deepStrictEqual(S.concat(s1, s2), expected);
+      assert.deepStrictEqual(S.concat(s2, s1), expected);
+    });
+  }
+
   it('getSemigroup', () => {
     const S = D.getSemigroup(semigroupSum);
-    assert.deepStrictEqual(S.concat(D.initial, D.initial), D.initial);
-    assert.deepStrictEqual(S.concat(D.pending, D.pending), D.pending);
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.initial), D.initial);
-    assert.deepStrictEqual(S.concat(D.initial, D.refresh(1)), D.initial);
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.refresh(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.replete(1), D.initial), D.initial);
-    assert.deepStrictEqual(S.concat(D.initial, D.replete(1)), D.initial);
-    assert.deepStrictEqual(S.concat(D.replete(1), D.refresh(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.replete(1), D.replete(2)), D.replete(3));
+    assertSemigroup(S);
+  });
+
+  it('getMonoid', () => {
+    const M = D.getMonoid(monoidSum);
+    assertSemigroup(M);
+    const values = [
+      D.initial,
+      D.pending,
+      D.refresh(1),
+      D.replete(1)
+    ];
+
+    values.forEach(value => {
+      assert.deepStrictEqual(M.concat(M.empty, value), value)
+      assert.deepStrictEqual(M.concat(value, M.empty), value)
+    });
   });
 
   it('getApplySemigroup', () => {
     const S = D.getApplySemigroup(semigroupSum);
-    assert.deepStrictEqual(S.concat(D.initial, D.initial), D.initial);
-    assert.deepStrictEqual(S.concat(D.pending, D.pending), D.pending);
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.initial), D.initial);
-    assert.deepStrictEqual(S.concat(D.initial, D.refresh(1)), D.initial);
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.refresh(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.replete(1), D.initial), D.initial);
-    assert.deepStrictEqual(S.concat(D.initial, D.replete(1)), D.initial);
-    assert.deepStrictEqual(S.concat(D.replete(1), D.refresh(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.refresh(1), D.replete(2)), D.refresh(3));
-    assert.deepStrictEqual(S.concat(D.replete(1), D.replete(2)), D.replete(3));
-  });
-
-  it('getApplyMonoid', () => {
-    const M = D.getApplyMonoid(monoidSum);
-    assert.deepStrictEqual(M.concat(M.empty, D.initial), D.initial);
-    assert.deepStrictEqual(M.concat(D.initial, M.empty), D.initial);
-    assert.deepStrictEqual(M.concat(M.empty, D.pending), D.pending);
-    assert.deepStrictEqual(M.concat(D.pending, M.empty), D.pending);
-    assert.deepStrictEqual(M.concat(M.empty, D.refresh(1)), D.refresh(1));
-    assert.deepStrictEqual(M.concat(D.refresh(1), M.empty), D.refresh(1));
-    assert.deepStrictEqual(M.concat(M.empty, D.replete(1)), D.replete(1));
-    assert.deepStrictEqual(M.concat(D.replete(1), M.empty), D.replete(1));
-  });
-
-  it('getApplySemigroup2', () => {
-    const S = D.getApplySemigroup2(semigroupSum);
     assert.deepStrictEqual(S.concat(D.initial, D.initial), D.initial);
     assert.deepStrictEqual(S.concat(D.pending, D.pending), D.pending);
     assert.deepStrictEqual(S.concat(D.refresh(1), D.initial), D.initial);
@@ -532,34 +492,34 @@ describe('Datum', () => {
   });
 
   it('compact', () => {
-    assert.deepStrictEqual(D.datum.compact(D.initial), D.initial);
-    assert.deepStrictEqual(D.datum.compact(D.pending), D.pending);
-    assert.deepStrictEqual(D.datum.compact(D.refresh(none)), D.initial);
+    assert.deepStrictEqual(D.Compactable.compact(D.initial), D.initial);
+    assert.deepStrictEqual(D.Compactable.compact(D.pending), D.pending);
+    assert.deepStrictEqual(D.Compactable.compact(D.refresh(none)), D.initial);
     assert.deepStrictEqual(
-      D.datum.compact(D.refresh(some('123'))),
+      D.Compactable.compact(D.refresh(some('123'))),
       D.refresh('123')
     );
-    assert.deepStrictEqual(D.datum.compact(D.replete(none)), D.initial);
+    assert.deepStrictEqual(D.Compactable.compact(D.replete(none)), D.initial);
     assert.deepStrictEqual(
-      D.datum.compact(D.replete(some('123'))),
+      D.Compactable.compact(D.replete(some('123'))),
       D.replete('123')
     );
   });
 
   it('separate', () => {
-    assert.deepStrictEqual(D.datum.separate(D.initial), {
+    assert.deepStrictEqual(D.Compactable.separate(D.initial), {
       left: D.initial,
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.separate(D.pending), {
+    assert.deepStrictEqual(D.Compactable.separate(D.pending), {
       left: D.initial,
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.separate(D.refresh(left('123'))), {
+    assert.deepStrictEqual(D.Compactable.separate(D.refresh(left('123'))), {
       left: D.replete('123'),
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.separate(D.replete(right('123'))), {
+    assert.deepStrictEqual(D.Compactable.separate(D.replete(right('123'))), {
       left: D.initial,
       right: D.replete('123')
     });
@@ -567,36 +527,36 @@ describe('Datum', () => {
 
   it('filter', () => {
     const predicate = (a: number) => a === 2;
-    assert.deepStrictEqual(D.datum.filter(D.initial, predicate), D.initial);
-    assert.deepStrictEqual(D.datum.filter(D.refresh(1), predicate), D.initial);
+    assert.deepStrictEqual(D.Filterable.filter(D.initial, predicate), D.initial);
+    assert.deepStrictEqual(D.Filterable.filter(D.refresh(1), predicate), D.initial);
     assert.deepStrictEqual(
-      D.datum.filter(D.refresh(2), predicate),
+      D.Filterable.filter(D.refresh(2), predicate),
       D.refresh(2)
     );
-    assert.deepStrictEqual(D.datum.filter(D.replete(1), predicate), D.initial);
+    assert.deepStrictEqual(D.Filterable.filter(D.replete(1), predicate), D.initial);
     assert.deepStrictEqual(
-      D.datum.filter(D.replete(2), predicate),
+      D.Filterable.filter(D.replete(2), predicate),
       D.replete(2)
     );
   });
 
   it('filterMap', () => {
     const f = (n: number) => (predicate(n) ? some(n + 1) : none);
-    assert.deepStrictEqual(D.datum.filterMap(D.initial, f), D.initial);
-    assert.deepStrictEqual(D.datum.filterMap(D.replete(1), f), D.initial);
-    assert.deepStrictEqual(D.datum.filterMap(D.replete(3), f), D.replete(4));
+    assert.deepStrictEqual(D.Filterable.filterMap(D.initial, f), D.initial);
+    assert.deepStrictEqual(D.Filterable.filterMap(D.replete(1), f), D.initial);
+    assert.deepStrictEqual(D.Filterable.filterMap(D.replete(3), f), D.replete(4));
   });
 
   it('partition', () => {
-    assert.deepStrictEqual(D.datum.partition(D.initial, predicate), {
+    assert.deepStrictEqual(D.Filterable.partition(D.initial, predicate), {
       left: D.initial,
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.partition(D.replete(1), predicate), {
+    assert.deepStrictEqual(D.Filterable.partition(D.replete(1), predicate), {
       left: D.replete(1),
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.partition(D.replete(3), predicate), {
+    assert.deepStrictEqual(D.Filterable.partition(D.replete(3), predicate), {
       left: D.initial,
       right: D.replete(3)
     });
@@ -604,15 +564,15 @@ describe('Datum', () => {
 
   it('partitionMap', () => {
     const f = (n: number) => (predicate(n) ? right(n + 1) : left(n - 1));
-    assert.deepStrictEqual(D.datum.partitionMap(D.initial, f), {
+    assert.deepStrictEqual(D.Filterable.partitionMap(D.initial, f), {
       left: D.initial,
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.partitionMap(D.replete(1), f), {
+    assert.deepStrictEqual(D.Filterable.partitionMap(D.replete(1), f), {
       left: D.replete(0),
       right: D.initial
     });
-    assert.deepStrictEqual(D.datum.partitionMap(D.replete(3), f), {
+    assert.deepStrictEqual(D.Filterable.partitionMap(D.replete(3), f), {
       left: D.initial,
       right: D.replete(4)
     });
@@ -620,7 +580,7 @@ describe('Datum', () => {
 
   // TODO Fix these tests
   it('wither', () => {
-    const witherIdentity = D.datum.wither(I.identity);
+    const witherIdentity = D.Witherable.wither(I.identity);
     const f = (n: number) => I.identity.of(predicate(n) ? some(n + 1) : none);
     assert.deepStrictEqual(
       witherIdentity(D.initial, f),
@@ -650,7 +610,7 @@ describe('Datum', () => {
 
   // TODO Fix these tests
   it('wilt', () => {
-    const wiltIdentity = D.datum.wilt(I.identity);
+    const wiltIdentity = D.Witherable.wilt(I.identity);
     const f = (n: number) =>
       I.identity.of(predicate(n) ? right(n + 1) : left(n - 1));
     assert.deepStrictEqual(
