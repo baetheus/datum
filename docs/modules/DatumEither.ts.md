@@ -462,7 +462,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Success<A>`, 
 **Signature**
 
 ```ts
-export declare const fromNullable: <E, A>(a: A) => D.Datum<Either<E, A>>
+export declare const fromNullable: <E, A>(a: A | null | undefined) => D.Datum<Either<E, A>>
 ```
 
 Added in v2.4.0
@@ -622,7 +622,7 @@ Added in v2.1.0
 **Signature**
 
 ```ts
-export declare const isValued: <A>(ma: D.Datum<A>) => ma is D.Replete<A> | D.Refresh<A>
+export declare const isValued: <A>(ma: D.Datum<A>) => ma is D.Refresh<A> | D.Replete<A>
 ```
 
 Added in v2.7.0
@@ -685,8 +685,8 @@ Added in v3.4.0
 export declare const refreshFold: <E, A, B>(
   onInitial: () => B,
   onPending: () => B,
-  onFailure: (e: E, r?: boolean) => B,
-  onSuccess: (a: A, r?: boolean) => B
+  onFailure: (e: E, r?: boolean | undefined) => B,
+  onSuccess: (a: A, r?: boolean | undefined) => B
 ) => (fea: D.Datum<Either<E, A>>) => B
 ```
 
@@ -722,9 +722,9 @@ Added in v4.0.0
 
 ```ts
 export declare const squash: <E, A, B>(
-  onNone: (r?: boolean) => B,
-  onFailure: (e: E, r?: boolean) => B,
-  onSuccess: (a: A, r?: boolean) => B
+  onNone: (r?: boolean | undefined) => B,
+  onFailure: (e: E, r?: boolean | undefined) => B,
+  onSuccess: (a: A, r?: boolean | undefined) => B
 ) => (fea: D.Datum<Either<E, A>>) => B
 ```
 

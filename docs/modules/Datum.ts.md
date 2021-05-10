@@ -535,7 +535,7 @@ Takes a nullable value, if the value is not nully, turn it into a `Replete`, oth
 **Signature**
 
 ```ts
-export declare const fromNullable: <A>(a: A) => Datum<A>
+export declare const fromNullable: <A>(a: A | null | undefined) => Datum<A>
 ```
 
 Added in v2.0.0
@@ -716,7 +716,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export declare const isValued: <A>(ma: Datum<A>) => ma is Replete<A> | Refresh<A>
+export declare const isValued: <A>(ma: Datum<A>) => ma is Refresh<A> | Replete<A>
 ```
 
 Added in v2.0.0
