@@ -192,40 +192,50 @@ export const getEq = <A>(E: Eq<A>): Eq<Datum<A>> => ({
 });
 
 /**
- * Semigroup returning the left-most non-`Initial` and non-`Pending` value. If both operands
- * are `Replete`s or `Refresh`s then the inner values are appended using the provided
- * `Semigroup` and refresh is coalesced if either are `Refresh`.
+ * Viewing Datum as the following progess of state changes:
+ * 
+ * Initial -> Pending -> Replete -> Refresh [-> Replete -> ...]
+ * 
+ * This semigroup has a bias towards datums with values and a bias towards Pending/Refresh. 
+ * Notably, concat(Pending, Replete) gives Refresh.
+ * If both datums have a value, they're combined with the given Semigroup instance.
  *
- * @since 2.0.0
+ * @since 4.0.0
  */
 export const getSemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
-  concat: (fx, fy): Datum<A> =>
+  concat: (firstD: Datum<A>, secondD: Datum<A>) => 
     fold<A, Datum<A>>(
-      constInitial,
-      constant(
-        fold<A, Datum<A>>(
-          constInitial,
-          constPending,
-          constPending,
-          constPending
-        )(fy)
-      ),
-      x =>
-        fold<A, Datum<A>>(
-          constInitial,
-          constPending,
-          y => refresh(S.concat(x, y)),
-          y => refresh(S.concat(x, y))
-        )(fy),
-      x =>
-        fold<A, Datum<A>>(
-          constInitial,
-          constPending,
-          y => refresh(S.concat(x, y)),
-          y => replete(S.concat(x, y))
-        )(fy)
-    )(fx)
+      constant(secondD), // Empty value
+      () => fold<A, Datum<A>>(
+        constant(firstD),
+        constant(secondD),
+        constant(secondD),
+        refresh
+      )(secondD),
+      first => fold<A, Datum<A>>(
+        constant(firstD),
+        constant(firstD),
+        second => refresh(S.concat(first, second)),
+        second => refresh(S.concat(first, second))
+      )(secondD),
+      first => fold<A, Datum<A>>(
+        constant(firstD),
+        constant(refresh(first)),
+        second => refresh(S.concat(first, second)),
+        second => replete(S.concat(first, second))
+      )(secondD)
+    )(firstD)
 });
+
+/**
+ * See getSemigroup. Empty value of initial.
+ * 
+ * @since 4.0.0
+ */
+ export const getMonoid = <A>(S: Semigroup<A>): Monoid<Datum<A>> => ({
+  ...getSemigroup(S),
+  empty: initial
+})
 
 const constZero = constant<0>(0);
 const constNegOne = constant<-1>(-1);
@@ -278,36 +288,10 @@ export function getOrd<A>(O: Ord<A>): Ord<Datum<A>> {
 /**
  * `Apply` semigroup
  *
- * @since 2.0.0
- * 
- * @deprecated This matches the deprecated `ap` behavior of deprecated `datum` mega-instance. The
- * next major release will change this functions behavior to match the exported `Apply` instance.
- * 
- * See `getApplySemigroup2` to use the future behavior in this release.
- */
-export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> =>
-  getSemigroup(S);
-
-/**
- * @since 2.0.0
- * 
- * @deprecated This matches the deprecated `ap` behavior of deprecated `datum` mega-instance. The
- * next major release will drop this function, as the `Apply` instance does not admit a valid Monoid.
- */
-export const getApplyMonoid = <A>(M: Monoid<A>): Monoid<Datum<A>> => ({
-  ...getApplySemigroup(M),
-  empty: replete(M.empty)
-});
-
-/**
- * `Apply` semigroup
- * 
- * Note: This uses the `ap` functionality of the standalone `Apply` instance.
- *
- * @since 3.5.0
+ * @since 4.0.0
  * 
  */
- export const getApplySemigroup2 = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
+export const getApplySemigroup = <A>(S: Semigroup<A>): Semigroup<Datum<A>> => ({
   // TODO: replace with apply.getApplySemigroup if we bump the min supported version of fp-ts >= 2.10
   // Or just remove in place of that factory instance
   concat: (first: Datum<A>, second: Datum<A>) =>
@@ -394,41 +378,10 @@ const mapC = <A, B>(fa: Datum<A>, f: (a: A) => B): Datum<B> =>
     a => replete(f(a))
   )(fa);
 
-/**
- * @since 2.0.0
- * 
- * @deprecated (Does not agree with chain)
- */
-const apC = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> =>
-  fold<(a: A) => B, Datum<B>>(
-    constInitial,
-    () =>
-      fold<A, Datum<B>>(
-        constInitial,
-        constPending,
-        constPending,
-        constPending
-      )(fa),
-    f =>
-      fold<A, Datum<B>>(
-        constInitial,
-        constPending,
-        a => refresh(f(a)),
-        a => refresh(f(a))
-      )(fa),
-    f =>
-      fold<A, Datum<B>>(
-        constInitial,
-        constPending,
-        a => refresh(f(a)),
-        a => replete(f(a))
-      )(fa)
-  )(fab);
-
   /**
    * @since 3.5.0
    */
-const apC2 = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> => chainC(fab, f => mapC(fa, f))
+const apC = <A, B>(fab: Datum<(a: A) => B>, fa: Datum<A>): Datum<B> => chainC(fab, f => mapC(fa, f))
 
 /**
  * @since 2.0.0
@@ -610,43 +563,6 @@ const wiltC = <F>(F: ApplicativeHKT<F>) => <A, B, C>(
  */
 const throwErrorC = <E, A>(e: E): Datum<A> => initial;
 
-/**
- * @since 2.0.0
- * 
- * @deprecated Use standalone instances. Note, this mega-instance has ap and chain instances that disagree (ap does not short-circuit when there is no value, chain does).
- */
-export const datum: Monad1<URI> &
-  Foldable1<URI> &
-  Traversable1<URI> &
-  Alternative1<URI> &
-  Extend1<URI> &
-  Compactable1<URI> &
-  Filterable1<URI> &
-  Witherable1<URI> &
-  MonadThrow1<URI> = {
-  URI,
-  map: mapC,
-  of: replete,
-  ap: apC,
-  chain: chainC,
-  reduce: reduceC,
-  foldMap: foldMapC,
-  reduceRight: reduceRightC,
-  traverse: traverseC,
-  sequence: sequenceC,
-  zero: constInitial,
-  alt: altC,
-  extend: extendC,
-  compact: compactC,
-  separate: separateC,
-  filter: filterC,
-  filterMap: filterMapC,
-  partition: partitionC,
-  partitionMap: partitionMapC,
-  wither: witherC,
-  wilt: wiltC,
-  throwError: throwErrorC
-};
 
 /**
  * @since 3.5.0
@@ -663,7 +579,7 @@ export const Functor: Functor1<URI> = {
  */
 export const Apply: Apply1<URI> = {
   ...Functor,
-  ap: apC2
+  ap: apC
 }
 
 /**
@@ -775,34 +691,42 @@ export const Witherable: Witherable1<URI> = {
 }
 
 const {
-  alt,
   ap,
   apFirst,
   apSecond,
   chain,
   chainFirst,
-  duplicate,
-  extend,
-  filter,
-  filterMap,
   flatten,
-  foldMap,
   map,
-  partition,
-  partitionMap,
-  reduce,
-  reduceRight,
-  compact,
-  separate,
   fromEither,
   filterOrElse,
   fromOption,
   fromPredicate
-} = pipeable(datum);
+} = pipeable(MonadThrow);
 
 const {
-  ap: ap2
-} = pipeable(Apply);
+  alt,
+} = pipeable(Alt)
+
+const {
+  foldMap,
+  reduce,
+  reduceRight,
+} = pipeable(Foldable)
+
+const {
+  partition,
+  partitionMap,
+  compact,
+  separate,
+  filter,
+  filterMap,
+} = pipeable(Witherable)
+
+const {
+  duplicate,
+  extend,
+} = pipeable(Extend)
 
 export {
   /**
@@ -810,16 +734,9 @@ export {
    */
   alt,
   /**
-   * @since 2.0.0
-   * 
-   * @deprecated Does not agree with chain. This will be replaced in the next major release with the behavior of `ap2`
+   * @since 4.0.0
    */
   ap,
-  /**
-   * 
-   * @since 3.5.0
-   */
-  ap2,
   /**
    * @since 2.0.0
    */

@@ -62,6 +62,8 @@ There are additional helper methods for going from refresh to replete and back.
   - [getEq](#geteq)
   - [getMonad](#getmonad)
   - [getMonadThrow](#getmonadthrow)
+  - [getMonoid](#getmonoid)
+  - [getSemigroup](#getsemigroup)
   - [getShow](#getshow)
   - [initial](#initial)
   - [isFailure](#isfailure)
@@ -360,9 +362,6 @@ export declare const getApplySemigroup: <E, A>(S: Semigroup<These<E, A>>) => Sem
 
 Added in v3.5.0
 
-Note: As this was introduced after the deprecation of `Datum.datum.ap`, this currently relies on the future
-functionality in `Datum.Apply.ap`.
-
 ## getChain
 
 **Signature**
@@ -402,6 +401,26 @@ export declare const getMonadThrow: <E>(S: Semigroup<E>) => MonadThrow2C<'@nll/d
 ```
 
 Added in v3.5.0
+
+## getMonoid
+
+**Signature**
+
+```ts
+export declare const getMonoid: <E, A>(S: Semigroup<These<E, A>>) => Monoid<D.Datum<These<E, A>>>
+```
+
+Added in v4.0.0
+
+## getSemigroup
+
+**Signature**
+
+```ts
+export declare const getSemigroup: <E, A>(S: Semigroup<These<E, A>>) => Semigroup<D.Datum<These<E, A>>>
+```
+
+Added in v4.0.0
 
 ## getShow
 

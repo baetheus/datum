@@ -459,7 +459,7 @@ export const fromNullable = <E, A>(
 // Also, fix the instance factories below to not re-use getMonad for better tree-shaking.
 const theseTDatum: Traversable2<URI> & TheseM1<D.URI> = {
     URI,
-    ...getTheseM(D.datum),
+    ...getTheseM(D.Monad),
     traverse: traverseC,
     sequence: sequenceC,
     reduce: reduceC,
@@ -573,13 +573,22 @@ export const getEq = <E, A>(EE: Eq<E>, EA: Eq<A>): Eq<DatumThese<E, A>> =>
   D.getEq(theseGetEq(EE, EA))
 
 /**
+ * @since 4.0.0
+ */
+export const getSemigroup = <E, A>(S: Semigroup<These<E, A>>): Semigroup<DatumThese<E, A>> =>
+  D.getSemigroup(S)
+
+/**
+ * @since 4.0.0
+ */
+export const getMonoid = <E, A>(S: Semigroup<These<E, A>>): Monoid<DatumThese<E, A>> =>
+  D.getMonoid(S)
+
+/**
  * @since 3.5.0
- * 
- * Note: As this was introduced after the deprecation of `Datum.datum.ap`, this currently relies on the future
- * functionality in `Datum.Apply.ap`.
  */
 export const getApplySemigroup = <E, A>(S: Semigroup<These<E, A>>): Semigroup<DatumThese<E, A>> =>
-  D.getApplySemigroup2(S)
+  D.getApplySemigroup(S)
 
 
 export {
