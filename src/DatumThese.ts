@@ -51,7 +51,7 @@ import { HKT } from 'fp-ts/es6/HKT';
 import { Semigroup } from 'fp-ts/es6/Semigroup';
 import { Monoid } from 'fp-ts/es6/Monoid';
 import { Traversable2 } from 'fp-ts/es6/Traversable';
-import { getTheseM, TheseM1 } from 'fp-ts/lib/TheseT';
+import { getTheseM, TheseM1 } from 'fp-ts/es6/TheseT';
 import { pipeable } from 'fp-ts/es6/pipeable';
 import { Functor2 } from 'fp-ts/es6/Functor';
 import { Apply2C } from 'fp-ts/es6/Apply';
