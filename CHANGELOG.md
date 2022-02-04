@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/nullpub/datum/compare/v3.5.0...v4.0.0) (2022-02-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* This commit removes and replaces existing apis
+Co-authored-by: Sam Protas <sprotas@50onred.com>
+
+### Features
+
+* remove mega instances and old ap ([#21](https://github.com/nullpub/datum/issues/21)) ([00d934d](https://github.com/nullpub/datum/commit/00d934d9d26f601819d44e17f0b8d4a26ade4fc6))
+
+
+### Bug Fixes
+
+* only depend on fp-ts/es6 ([#37](https://github.com/nullpub/datum/issues/37)) ([9db343b](https://github.com/nullpub/datum/commit/9db343b4976100240026cfb32e9f6f15316db5ac))
+
 ## [3.5.0](https://github.com/nullpub/datum/compare/v3.4.0...v3.5.0) (2021-04-01)
 
 
