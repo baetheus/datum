@@ -3,11 +3,11 @@
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/nullpub/datum">
-    <img src="https://img.shields.io/travis/nullpub/datum/master.svg" alt="build status" height="20">
+  <a href="https://travis-ci.org/baetheus/datum">
+    <img src="https://img.shields.io/travis/baetheus/datum/master.svg" alt="build status" height="20">
   </a>
-  <a href='https://coveralls.io/github/nullpub/datum?branch=master'>
-    <img src='https://coveralls.io/repos/github/nullpub/datum/badge.svg?branch=master' alt='Coverage Status' height="20"/>
+  <a href='https://coveralls.io/github/baetheus/datum?branch=master'>
+    <img src='https://coveralls.io/repos/github/baetheus/datum/badge.svg?branch=master' alt='Coverage Status' height="20"/>
   </a>
   <a href="https://www.npmjs.com/package/@nll/datum">
     <img src="https://img.shields.io/npm/dm/@nll/datum.svg" alt="npm downloads" height="20">
@@ -15,14 +15,14 @@
 </p>
 
 <p align="center">
-  <a href="https://david-dm.org/nullpub/datum">
-    <img src="https://img.shields.io/david/nullpub/datum.svg" alt="dependency status" height="20">
+  <a href="https://david-dm.org/baetheus/datum">
+    <img src="https://img.shields.io/david/baetheus/datum.svg" alt="dependency status" height="20">
   </a>
-  <a href="https://david-dm.org/nullpub/datum?type=dev">
-    <img src="https://img.shields.io/david/dev/nullpub/datum.svg" alt="dev dependency status" height="20">
+  <a href="https://david-dm.org/baetheus/datum?type=dev">
+    <img src="https://img.shields.io/david/dev/baetheus/datum.svg" alt="dev dependency status" height="20">
   </a>
-  <a href="https://david-dm.org/nullpub/datum?type=peer">
-    <img src="https://img.shields.io/david/peer/nullpub/datum.svg" alt="peer dependency status" height="20">
+  <a href="https://david-dm.org/baetheus/datum?type=peer">
+    <img src="https://img.shields.io/david/peer/baetheus/datum.svg" alt="peer dependency status" height="20">
   </a>
 </p>
 
@@ -34,7 +34,7 @@ ADT for asynchronous data updated to work with [fp-ts@2+](https://github.com/gca
 
 ## Documentation
 
-[Full Documentation](https://nullpub.github.io/datum/)
+[Full Documentation](https://baetheus.github.io/datum/)
 
 ## Usage Example
 

@@ -6,4 +6,4 @@ search_enabled: true
 # Aux links for the upper right navigation
 aux_links:
   '@nll/datum on GitHub':
-    - 'https://github.com/nullpub/datum#readme'
+    - 'https://github.com/baetheus/datum#readme'

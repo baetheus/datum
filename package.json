@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nullpub/datum.git"
+    "url": "git+https://github.com/baetheus/datum.git"
   },
   "keywords": [
     "fp-ts",
@@ -33,9 +33,9 @@
   "author": "Brandon Blaylock <brandon@null.pub> (https://blaylock.dev)",
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/nullpub/datum/issues"
+    "url": "https://github.com/baetheus/datum/issues"
   },
-  "homepage": "https://github.com/nullpub/datum#readme",
+  "homepage": "https://github.com/baetheus/datum#readme",
   "devDependencies": {
     "@babel/core": "^7.12.0",
     "@babel/preset-env": "^7.12.0",
